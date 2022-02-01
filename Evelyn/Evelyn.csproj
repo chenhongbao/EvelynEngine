@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>PetriSoft.Evelyn</AssemblyName>
+    <RootNamespace>PetriSoft.Evelyn</RootNamespace>
+    <Authors>Chen Hongbao</Authors>
+    <Company>PetriSoft Inc.</Company>
+    <Copyright>GNU Affero General Public License Version 3</Copyright>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+    <Description>Evelyn Engine - A Quantitative Trading Engine by PetriSoft Inc.</Description>
+  </PropertyGroup>
+
+</Project>
