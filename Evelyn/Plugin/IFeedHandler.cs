@@ -21,8 +21,6 @@ namespace PetriSoft.Evelyn.Plugin
     {
         public void OnFeed(Tick tick);
 
-        public void OnFeed(OHLC ohlc);
-
         public void OnInstrumentEvent(InstrumentEvent instrumentEvent);
 
         public void OnSubscribed(string instrumentID, Description description);
