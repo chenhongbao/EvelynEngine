@@ -17,56 +17,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace PetriSoft.Evelyn
 {
-    public record class InstrumentEvent : MarketItem
+    public partial record class InstrumentEvent : MarketItem
     {
-        /// <summary>
-        /// Instrument event types.
-        /// </summary>
-        public enum EventType
-        {
-            /// <summary>
-            /// Before market open.
-            /// </summary>
-            BeforeTrading = 1,
 
-            /// <summary>
-            /// Non trading between trading sessions of a day.
-            /// </summary>
-            NonTrading,
-
-            /// <summary>
-            /// Auction ordering before contious trading.
-            /// </summary>
-            AuctionOrdering,
-
-            /// <summary>
-            /// Auction balance.
-            /// </summary>
-            AuctionBalance,
-
-            /// <summary>
-            /// Auction match.
-            /// </summary>
-            AuctionMatch,
-
-            /// <summary>
-            /// Continous trading within a trading session.
-            /// </summary>
-            Continous,
-
-            /// <summary>
-            /// Instrument trading is closed.
-            /// </summary>
-            Closed
-        }
-
-        private EventType? _event;
+        private InstrumentEventType? _event;
         private DateTime? _enterTime;
 
         /// <summary>
         /// Instrument event type, or throw <see cref="NullValueException"/> if the type is null.
         /// </summary>
-        public EventType Event
+        public InstrumentEventType Event
         {
             get
             {
