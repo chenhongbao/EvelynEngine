@@ -19,12 +19,37 @@ namespace PetriSoft.Evelyn.Plugin
 {
     public interface IFeedHandler
     {
+        /// <summary>
+        /// Tick feed callback and this method must be implemented.
+        /// </summary>
+        /// <param name="tick">Tick feed.</param>
         public void OnFeed(Tick tick);
 
+        /// <summary>
+        /// OHLC feed callback, and the method is optional because not all data source provide this kind of feed.
+        /// <para>OHLC feed can be input via <see cref="PetriSoft.Evelyn.Engine.IFeedChannel"/> and the callback receives the feeds.</para>
+        /// </summary>
+        /// <param name="ohlc">OHLC feed.</param>
+        public void OnFeed(OHLC ohlc);
+
+        /// <summary>
+        /// Instrument event callback for state changes of the instrument within a trading day.
+        /// </summary>
+        /// <param name="instrumentEvent">Instrument event feed.</param>
         public void OnInstrumentEvent(InstrumentEvent instrumentEvent);
 
+        /// <summary>
+        /// Data feed subscription callback.
+        /// </summary>
+        /// <param name="instrumentID">Instrument ID.</param>
+        /// <param name="description">Description of the feed containing error code and message if it has.</param>
         public void OnSubscribed(string instrumentID, Description description);
 
+        /// <summary>
+        /// Data feed un-subscription callback.
+        /// </summary>
+        /// <param name="instrumentID">Instrument ID.</param>
+        /// <param name="description">Description of the feed containing error code and message if it has.</param>
         public void OnUnsubscribed(string instrumentID, Description description);
     }
 }

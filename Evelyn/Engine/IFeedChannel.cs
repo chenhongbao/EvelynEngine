@@ -15,15 +15,25 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace PetriSoft.Evelyn.Plugin
+namespace PetriSoft.Evelyn.Engine
 {
-    public interface IOrderHandler
+    /// <summary>
+    /// Feed channel.
+    /// </summary>
+    /// <typeparam name="T">Feed type.</typeparam>
+    public interface IFeedChannel<T> where T : MarketItem
     {
         /// <summary>
-        /// Trade callback after an order is inserted to broker.
+        /// Send feed item to all listeners on this channel.
         /// </summary>
-        /// <param name="trade">Trade feed.</param>
-        /// <param name="description">Description of the trade feed.</param>
-        public void OnTrade(Trade trade, Description description);
+        /// <param name="item">Feed item.</param>
+        public void Send(T item);
+
+        /// <summary>
+        /// Set listeners on this channel.
+        /// </summary>
+        /// <param name="actions">Listening actions.</param>
+        /// <returns></returns>
+        public IFeedChannel<T> Listening(params Action<T>[] actions);
     }
 }
