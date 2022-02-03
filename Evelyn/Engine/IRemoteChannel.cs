@@ -19,10 +19,17 @@ using System.Net;
 
 namespace PetriSoft.Evelyn.Engine
 {
-    public interface IRemoteChannel<T> : IDataChannel<T> where T : MarketItem
+    public interface IRemoteChannel: IDataChannel
     {
+        /// <summary>
+        /// Close the channel.
+        /// </summary>
+        /// <param name="description">Close reason.</param>
         public void Close(Description? description = null);
 
+        /// <summary>
+        /// Get remote endpoint.
+        /// </summary>
         public EndPoint RemoteEndPoint { get; }
     }
 }

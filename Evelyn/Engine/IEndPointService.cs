@@ -27,6 +27,6 @@ namespace PetriSoft.Evelyn.Engine
         /// </summary>
         /// <typeparam name="T">Channeling data type.</typeparam>
         /// <param name="acceptor">Acceptor delegate.</param>
-        public void Accept<T>(Action<IRemoteChannel<T>> acceptor) where T : MarketItem;
+        public void Accept<T>(Action<IRemoteChannel> acceptor);
     }
 }

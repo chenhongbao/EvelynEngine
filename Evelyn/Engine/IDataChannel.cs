@@ -20,20 +20,19 @@ namespace PetriSoft.Evelyn.Engine
     /// <summary>
     /// Feed channel.
     /// </summary>
-    /// <typeparam name="T">Feed type.</typeparam>
-    public interface IDataChannel<T> where T : MarketItem
+    public interface IDataChannel
     {
         /// <summary>
         /// Send feed item to all listeners on this channel.
         /// </summary>
         /// <param name="item">Feed item.</param>
-        public void Send(T item);
+        public void Send<T>(T item);
 
         /// <summary>
         /// Set listeners on this channel.
         /// </summary>
         /// <param name="actions">Listening actions.</param>
         /// <returns></returns>
-        public IDataChannel<T> Listening(params Action<T>[] actions);
+        public IDataChannel Listening<T>(params Action<T>[] actions);
     }
 }
