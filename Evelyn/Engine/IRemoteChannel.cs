@@ -15,25 +15,14 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using System.Net;
+
 namespace PetriSoft.Evelyn.Engine
 {
-    /// <summary>
-    /// Feed channel.
-    /// </summary>
-    /// <typeparam name="T">Feed type.</typeparam>
-    public interface IFeedChannel<T> where T : MarketItem
+    public interface IRemoteChannel<T> : IDataChannel<T> where T : MarketItem
     {
-        /// <summary>
-        /// Send feed item to all listeners on this channel.
-        /// </summary>
-        /// <param name="item">Feed item.</param>
-        public void Send(T item);
+        public void Close(Description? description = null);
 
-        /// <summary>
-        /// Set listeners on this channel.
-        /// </summary>
-        /// <param name="actions">Listening actions.</param>
-        /// <returns></returns>
-        public IFeedChannel<T> Listening(params Action<T>[] actions);
+        public EndPoint RemoteEndPoint { get; }
     }
 }

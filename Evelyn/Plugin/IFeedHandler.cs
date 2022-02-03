@@ -27,7 +27,7 @@ namespace PetriSoft.Evelyn.Plugin
 
         /// <summary>
         /// OHLC feed callback, and the method is optional because not all data source provide this kind of feed.
-        /// <para>OHLC feed can be input via <see cref="PetriSoft.Evelyn.Engine.IFeedChannel"/> and the callback receives the feeds.</para>
+        /// <para>OHLC feed can be input via <see cref="Engine.IDataChannel{T}"/> and the callback receives the feeds.</para>
         /// </summary>
         /// <param name="ohlc">OHLC feed.</param>
         public void OnFeed(OHLC ohlc);

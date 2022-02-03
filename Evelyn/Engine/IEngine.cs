@@ -34,9 +34,10 @@ namespace PetriSoft.Evelyn.Engine
         /// <summary>
         /// Enable server for remote client.
         /// </summary>
-        /// <param name="listening">Server listening port.</param>
+        /// <param name="point">Listening end point, <c>null</c> for default listening end point.</param>
+        /// <param name="listening">Server listening service providing communicating protocol, <c>null</c> for default protocol.</param>
         /// <returns>This <see cref="IEngine"/> object.</returns>
-        public IEngine EnableRemoteClient(EndPoint listening);
+        public IEngine EnableRemoteClient(EndPoint? point = null, IEndPointService? listening = null);
 
         /// <summary>
         /// Enable support for local clients.
