@@ -19,11 +19,16 @@ using System.Net;
 
 namespace PetriSoft.Evelyn.Engine
 {
-    public interface IRemoteChannel: IDataChannel
+    internal class DefaultEndPointService : IEndPointService
     {
-        /// <summary>
-        /// Get remote endpoint.
-        /// </summary>
-        public EndPoint RemoteEndPoint { get; }
+        public IEndPointService Accept<T>(Action<IRemoteChannel> acceptor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEndPointService ListenAt(EndPoint listening)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

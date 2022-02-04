@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace PetriSoft.Evelyn.Engine
 {
-    public class Engine : IEngine
+    internal class Engine : IEngine
     {
         private static readonly int _CLIENT_LISTEN_PORT = 10990;
         private static readonly int _MANAGE_LISTEN_PORT = 10992;
@@ -34,9 +34,15 @@ namespace PetriSoft.Evelyn.Engine
         private EndPoint? _cliSvcEP = null;
         private EndPoint? _mngEP = null;
 
+        private IEndPointService? _cliEpSvc = null;
+        private IConfigurator? _configurator = null;
+        private IBroker? _broker = null;
+        private IFeedSource? _feedSource = null;
+
         public void Setup(IConfigurator configurator)
         {
-            throw new NotImplementedException();
+            _configurator = configurator ?? throw new ArgumentNullException("Configurator is null.");
+            _configurator.Create(out _broker, out _feedSource);
         }
 
         public IEngine EnableLocalClient(params LocalClient[] clients)
@@ -46,7 +52,18 @@ namespace PetriSoft.Evelyn.Engine
 
         public IEngine EnableRemoteClient(EndPoint? point = null, IEndPointService? listening = null)
         {
-            throw new NotImplementedException();
+            if (_cliSvcEP != null)
+            {
+                throw new InvalidOperationException("Engine has been listening for client connection at " + _cliSvcEP.ToString() + ".");
+            }
+
+            _cliSvcEP = point ?? SelectProperServerEndPoint(_CLIENT_LISTEN_PORT);
+
+            _cliEpSvc = listening ?? new DefaultEndPointService();
+            _cliEpSvc.ListenAt(_cliSvcEP);
+            _cliEpSvc.Accept(RemoteChannelAcceptor);
+
+            return this;
         }
 
         public IEngine EnableManagement(bool local, bool remote = false, EndPoint? managementListening = null)
@@ -57,6 +74,11 @@ namespace PetriSoft.Evelyn.Engine
         public EndPoint? ClientServiceEndPoint => _cliSvcEP;
 
         public EndPoint? ManagementEndPoint => _mngEP;
+
+        private void RemoteChannelAcceptor(IRemoteChannel channel)
+        {
+            throw new NotImplementedException();
+        }
 
         private EndPoint SelectProperServerEndPoint(int port)
         {

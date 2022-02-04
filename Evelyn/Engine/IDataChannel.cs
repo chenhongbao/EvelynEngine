@@ -29,10 +29,16 @@ namespace PetriSoft.Evelyn.Engine
         public void Send<T>(T item);
 
         /// <summary>
+        /// Close the channel.
+        /// </summary>
+        /// <param name="description">Close reason.</param>
+        public void Close(Description? description = null);
+
+        /// <summary>
         /// Set listeners on this channel.
         /// </summary>
         /// <param name="actions">Listening actions.</param>
         /// <returns></returns>
-        public IDataChannel Accept<T>(params Action<T>[] actions);
+        public IDataChannel Accept<T>(params Action<T, IDataChannel>[] actions);
     }
 }

@@ -35,9 +35,8 @@ namespace PetriSoft.Evelyn.Engine
         /// Accept remote connection. A end point service can have multiple remote channel acceptors
         /// that will receive callback on every incomming connection.
         /// </summary>
-        /// <typeparam name="T">Channeling data type.</typeparam>
         /// <param name="acceptor">Acceptor delegate.</param>
         /// <returns>This end point service.</returns>
-        public IEndPointService Accept<T>(Action<IRemoteChannel> acceptor);
+        public IEndPointService Accept(Action<IRemoteChannel> acceptor);
     }
 }
