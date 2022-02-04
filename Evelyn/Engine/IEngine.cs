@@ -54,5 +54,15 @@ namespace PetriSoft.Evelyn.Engine
         /// <param name="managementListening">Listening port for remote management access.</param>
         /// <returns></returns>
         public IEngine EnableManagement(bool local, bool remote = false, EndPoint? managementListening = null);
+
+        /// <summary>
+        /// Get client service listening end point, or <c>null</c> if it is not listening for client connection.
+        /// </summary>
+        public EndPoint? ClientServiceEndPoint { get; }
+
+        /// <summary>
+        /// Get management end point, or <c>null</c> if it not listening for management request.
+        /// </summary>
+        public EndPoint? ManagementEndPoint { get; }
     }
 }

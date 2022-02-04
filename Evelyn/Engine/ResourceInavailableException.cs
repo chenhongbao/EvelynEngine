@@ -15,24 +15,27 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using System.Runtime.Serialization;
+
 namespace PetriSoft.Evelyn.Engine
 {
-    /// <summary>
-    /// Feed channel.
-    /// </summary>
-    public interface IDataChannel
+    [Serializable]
+    public class ResourceInavailableException : Exception
     {
-        /// <summary>
-        /// Send feed item to all listeners on this channel.
-        /// </summary>
-        /// <param name="item">Feed item.</param>
-        public void Send<T>(T item);
+        public ResourceInavailableException()
+        {
+        }
 
-        /// <summary>
-        /// Set listeners on this channel.
-        /// </summary>
-        /// <param name="actions">Listening actions.</param>
-        /// <returns></returns>
-        public IDataChannel Accept<T>(params Action<T>[] actions);
+        public ResourceInavailableException(string? message) : base(message)
+        {
+        }
+
+        public ResourceInavailableException(string? message, Exception? innerException) : base(message, innerException)
+        {
+        }
+
+        protected ResourceInavailableException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
     }
 }

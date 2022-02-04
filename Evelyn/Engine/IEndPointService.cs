@@ -15,6 +15,8 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using System.Net;
+
 namespace PetriSoft.Evelyn.Engine
 {
     /// <summary>
@@ -23,10 +25,19 @@ namespace PetriSoft.Evelyn.Engine
     public interface IEndPointService
     {
         /// <summary>
-        /// Accept remote connection.
+        /// Set the end point service to listen at port.
+        /// </summary>
+        /// <param name="listening">Listening end point.</param>
+        /// <returns>This end point service.</returns>
+        public IEndPointService ListenAt(EndPoint listening);
+
+        /// <summary>
+        /// Accept remote connection. A end point service can have multiple remote channel acceptors
+        /// that will receive callback on every incomming connection.
         /// </summary>
         /// <typeparam name="T">Channeling data type.</typeparam>
         /// <param name="acceptor">Acceptor delegate.</param>
-        public void Accept<T>(Action<IRemoteChannel> acceptor);
+        /// <returns>This end point service.</returns>
+        public IEndPointService Accept<T>(Action<IRemoteChannel> acceptor);
     }
 }
