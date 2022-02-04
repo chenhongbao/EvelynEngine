@@ -36,13 +36,13 @@ namespace PetriSoft.Evelyn.Engine
 
         private IEndPointService? _cliEpSvc = null;
         private IConfigurator? _configurator = null;
-        private IBroker? _broker = null;
-        private IFeedSource? _feedSource = null;
+        private IEngineBroker? _engineBroker = null;
 
         public void Setup(IConfigurator configurator)
         {
             _configurator = configurator ?? throw new ArgumentNullException("Configurator is null.");
-            _configurator.Create(out _broker, out _feedSource);
+            _configurator.Create(out var broker, out var feedSource);
+            _engineBroker = new EngineBroker(broker, feedSource);
         }
 
         public IEngine EnableLocalClient(params LocalClient[] clients)
@@ -77,7 +77,7 @@ namespace PetriSoft.Evelyn.Engine
 
         private void RemoteChannelAcceptor(IRemoteChannel channel)
         {
-            throw new NotImplementedException();
+            (_engineBroker ?? throw new NullValueException("Engine broker is not initialized.")).RegisterClientChannel(channel);
         }
 
         private EndPoint SelectProperServerEndPoint(int port)
