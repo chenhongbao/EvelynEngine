@@ -19,7 +19,7 @@ using System.Net;
 
 namespace PetriSoft.Evelyn.Engine
 {
-    internal class ManagementService : IManagementService
+    internal class ManagementService : IEndPointService
     {
         private readonly Engine _engine;
 
@@ -28,7 +28,12 @@ namespace PetriSoft.Evelyn.Engine
             _engine = engine;
         }
 
-        public void ListenAt(EndPoint mngEP)
+        public IEndPointService Accept(Action<IRemoteChannel> acceptor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEndPointService ListenAt(EndPoint listening)
         {
             throw new NotImplementedException();
         }

@@ -31,7 +31,7 @@ namespace PetriSoft.Evelyn.Engine
         private EndPoint? _mngEP = null;
 
         private IEndPointService? _cliEpSvc = null;
-        private IManagementService? _mngSvc = null;
+        private IEndPointService? _mngSvc = null;
         private IConfigurator? _configurator = null;
         private IEngineBroker? _engineBroker = null;
 
@@ -60,7 +60,7 @@ namespace PetriSoft.Evelyn.Engine
 
             _cliSvcEP = point ?? SelectProperServerEndPoint(_CLIENT_LISTEN_PORT);
 
-            _cliEpSvc = listening ?? new DefaultEndPointService();
+            _cliEpSvc = listening ?? new DefaultClientService();
             _cliEpSvc.ListenAt(_cliSvcEP);
             _cliEpSvc.Accept(RemoteChannelAcceptor);
 
@@ -108,7 +108,7 @@ namespace PetriSoft.Evelyn.Engine
                 }
             }
 
-            throw new ResourceInavailableException("Socket failed listening at port " + port + ".");
+            throw new ResourceUnavailableException("Socket failed listening at port " + port + ".");
         }
     }
 }

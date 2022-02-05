@@ -15,15 +15,30 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using System.Net;
+using System.Runtime.Serialization;
 
 namespace PetriSoft.Evelyn.Engine
 {
     /// <summary>
-    /// Management service with local access by default.
+    /// The required resource is not available.
     /// </summary>
-    public interface IManagementService
+    [Serializable]
+    public class ResourceUnavailableException : Exception
     {
-        void ListenAt(EndPoint mngEP);
+        public ResourceUnavailableException()
+        {
+        }
+
+        public ResourceUnavailableException(string? message) : base(message)
+        {
+        }
+
+        public ResourceUnavailableException(string? message, Exception? innerException) : base(message, innerException)
+        {
+        }
+
+        protected ResourceUnavailableException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
     }
 }

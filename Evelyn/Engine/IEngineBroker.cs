@@ -19,9 +19,21 @@ using PetriSoft.Evelyn.Plugin;
 
 namespace PetriSoft.Evelyn.Engine
 {
+    /// <summary>
+    /// Broker for clients' requests inside engine.
+    /// </summary>
     public interface IEngineBroker
     {
+        /// <summary>
+        /// Register client connection.
+        /// </summary>
+        /// <param name="channel">Remote connection from clients.</param>
         public void RegisterClientChannel(IRemoteChannel channel);
+
+        /// <summary>
+        /// Register local clients.
+        /// </summary>
+        /// <param name="client">Local client.</param>
         public void RegisterClient(LocalClient client);
     }
 }

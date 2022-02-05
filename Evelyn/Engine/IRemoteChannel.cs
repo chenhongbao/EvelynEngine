@@ -25,5 +25,10 @@ namespace PetriSoft.Evelyn.Engine
         /// Get remote endpoint.
         /// </summary>
         public EndPoint RemoteEndPoint { get; }
+
+        /// <summary>
+        /// Get unique channel ID.
+        /// </summary>
+        public long ChannelID { get; }
     }
 }

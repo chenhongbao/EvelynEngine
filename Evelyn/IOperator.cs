@@ -1,5 +1,5 @@
 ﻿/*
-Null value exception for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
+Event of specified instrument for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -15,20 +15,16 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using System.Net;
-
-namespace PetriSoft.Evelyn.Engine
+namespace PetriSoft.Evelyn
 {
-    internal class DefaultEndPointService : IEndPointService
+    public interface IOperator
     {
-        public IEndPointService Accept<T>(Action<IRemoteChannel> acceptor)
-        {
-            throw new NotImplementedException();
-        }
+        public void Subscribe(string instrumentID);
 
-        public IEndPointService ListenAt(EndPoint listening)
-        {
-            throw new NotImplementedException();
-        }
+        public void Unsubscribe(string instrumentID);
+
+        public void New(NewOrder newOrder);
+
+        public void Delete(string orderID);
     }
 }

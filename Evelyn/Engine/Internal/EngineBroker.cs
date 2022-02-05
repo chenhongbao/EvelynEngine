@@ -30,6 +30,11 @@ namespace PetriSoft.Evelyn.Engine
             _feedSource = feedSource;
         }
 
+        public void RegisterClient(LocalClient client)
+        {
+            throw new NotImplementedException();
+        }
+
         public void RegisterClientChannel(IRemoteChannel channel)
         {
             throw new NotImplementedException();

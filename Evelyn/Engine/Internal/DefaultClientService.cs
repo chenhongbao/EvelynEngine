@@ -15,27 +15,20 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using System.Runtime.Serialization;
+using System.Net;
 
 namespace PetriSoft.Evelyn.Engine
 {
-    [Serializable]
-    public class ResourceInavailableException : Exception
+    internal class DefaultClientService : IEndPointService
     {
-        public ResourceInavailableException()
+        public IEndPointService Accept(Action<IRemoteChannel> acceptor)
         {
+            throw new NotImplementedException();
         }
 
-        public ResourceInavailableException(string? message) : base(message)
+        public IEndPointService ListenAt(EndPoint listening)
         {
-        }
-
-        public ResourceInavailableException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected ResourceInavailableException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
+            throw new NotImplementedException();
         }
     }
 }
