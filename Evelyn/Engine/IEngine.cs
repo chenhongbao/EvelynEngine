@@ -47,13 +47,12 @@ namespace PetriSoft.Evelyn.Engine
         public IEngine EnableLocalClient(params LocalClient[] clients);
 
         /// <summary>
-        /// Enable management console.
+        /// Enable management console. Local access to management service is open by default.
         /// </summary>
-        /// <param name="local"><c>true</c> to enable management access from local machine.</param>
         /// <param name="remote"><c>true</c> to enable management access from remote machine.</param>
         /// <param name="managementListening">Listening port for remote management access.</param>
         /// <returns></returns>
-        public IEngine EnableManagement(bool local, bool remote = false, EndPoint? managementListening = null);
+        public IEngine EnableManagement(bool remote = false, EndPoint? managementListening = null);
 
         /// <summary>
         /// Get client service listening end point, or <c>null</c> if it is not listening for client connection.

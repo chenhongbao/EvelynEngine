@@ -16,13 +16,9 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using PetriSoft.Evelyn.Plugin;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PetriSoft.Evelyn.Engine
 {
@@ -35,6 +31,7 @@ namespace PetriSoft.Evelyn.Engine
         private EndPoint? _mngEP = null;
 
         private IEndPointService? _cliEpSvc = null;
+        private IManagementService? _mngSvc = null;
         private IConfigurator? _configurator = null;
         private IEngineBroker? _engineBroker = null;
 
@@ -47,7 +44,11 @@ namespace PetriSoft.Evelyn.Engine
 
         public IEngine EnableLocalClient(params LocalClient[] clients)
         {
-            throw new NotImplementedException();
+            foreach (var client in clients)
+            {
+                (_engineBroker ?? throw new NullValueException("Broker engine is not initialized.")).RegisterClient(client);
+            }
+            return this;
         }
 
         public IEngine EnableRemoteClient(EndPoint? point = null, IEndPointService? listening = null)
@@ -66,14 +67,22 @@ namespace PetriSoft.Evelyn.Engine
             return this;
         }
 
-        public IEngine EnableManagement(bool local, bool remote = false, EndPoint? managementListening = null)
+        public IEngine EnableManagement(bool remote = false, EndPoint? managementListening = null)
         {
-            throw new NotImplementedException();
+            _mngSvc = new ManagementService(this);
+            if (remote)
+            {
+                _mngEP = managementListening ?? SelectProperServerEndPoint(_MANAGE_LISTEN_PORT);
+                _mngSvc.ListenAt(_mngEP);
+            }
+            return this;
         }
 
         public EndPoint? ClientServiceEndPoint => _cliSvcEP;
 
         public EndPoint? ManagementEndPoint => _mngEP;
+
+        internal IEngineBroker EngineBroker => _engineBroker ?? throw new NullValueException("Engine broker is null.");
 
         private void RemoteChannelAcceptor(IRemoteChannel channel)
         {

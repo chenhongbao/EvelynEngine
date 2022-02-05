@@ -15,13 +15,22 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using PetriSoft.Evelyn.Plugin;
+using System.Net;
 
 namespace PetriSoft.Evelyn.Engine
 {
-    public interface IEngineBroker
+    internal class ManagementService : IManagementService
     {
-        public void RegisterClientChannel(IRemoteChannel channel);
-        public void RegisterClient(LocalClient client);
+        private readonly Engine _engine;
+
+        public ManagementService(Engine engine)
+        {
+            _engine = engine;
+        }
+
+        public void ListenAt(EndPoint mngEP)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
