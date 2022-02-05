@@ -82,7 +82,9 @@ namespace PetriSoft.Evelyn.Engine
 
         public EndPoint? ManagementEndPoint => _mngEP;
 
-        internal IEngineBroker EngineBroker => _engineBroker ?? throw new NullValueException("Engine broker is null.");
+        public IEngineBroker EngineBroker => _engineBroker ?? throw new NullValueException("Engine broker is null.");
+
+        public IConfigurator Configurator => _configurator ?? throw new NullValueException("Configurator is null.");
 
         private void RemoteChannelAcceptor(IRemoteChannel channel)
         {

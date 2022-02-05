@@ -63,5 +63,15 @@ namespace PetriSoft.Evelyn.Engine
         /// Get management end point, or <c>null</c> if it not listening for management request.
         /// </summary>
         public EndPoint? ManagementEndPoint { get; }
+
+        /// <summary>
+        /// Get engine broker if it is intialized.
+        /// </summary>
+        public IEngineBroker EngineBroker { get; }
+
+        /// <summary>
+        /// Get configurator if it is set up.
+        /// </summary>
+        public IConfigurator Configurator { get; }
     }
 }
