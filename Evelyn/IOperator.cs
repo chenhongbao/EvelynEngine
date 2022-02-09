@@ -17,14 +17,31 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace PetriSoft.Evelyn
 {
+    /// <summary>
+    /// Trading operator.
+    /// </summary>
     public interface IOperator
     {
-        public void Subscribe(string instrumentID);
-
-        public void Unsubscribe(string instrumentID);
-
+        /// <summary>
+        /// Send new single order to broker.
+        /// </summary>
+        /// <param name="newOrder">New order.</param>
         public void New(NewOrder newOrder);
 
+        /// <summary>
+        /// Delete an existing non-finished order from broker.
+        /// </summary>
+        /// <param name="orderID">Order ID.</param>
         public void Delete(string orderID);
+
+        /// <summary>
+        /// Get account.
+        /// </summary>
+        public ClientAccount Account { get; }
+
+        /// <summary>
+        /// Get position.
+        /// </summary>
+        public ClientPosition Position { get; }
     }
 }
