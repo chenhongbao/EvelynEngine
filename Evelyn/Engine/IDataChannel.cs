@@ -37,9 +37,9 @@ namespace PetriSoft.Evelyn.Engine
         /// <summary>
         /// Set listeners on this channel.
         /// </summary>
-        /// <param name="actions">Listening actions.</param>
+        /// <param name="acceptor">Listening action.</param>
         /// <returns></returns>
-        public IDataChannel Accept<T>(params Action<T, IDataChannel>[] actions);
+        public IDataChannel Accept<T>(Action<T, IDataChannel> acceptor);
 
         /// <summary>
         /// Get close status of the channel.

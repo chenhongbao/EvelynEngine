@@ -32,6 +32,14 @@ namespace PetriSoft.Evelyn.Engine
         public void Setup(IConfigurator configurator);
 
         /// <summary>
+        /// Add interceptor to process the specified type of object before forwarding to client.
+        /// </summary>
+        /// <typeparam name="T">Type of the intercepted object.</typeparam>
+        /// <param name="interceptor">Interceptor delegate.</param>
+        /// <returns></returns>
+        public IEngine AddInterceptor<T>(Action<T, IDataChannel> interceptor);
+
+        /// <summary>
         /// Enable server for remote client.
         /// </summary>
         /// <param name="point">Listening end point, <c>null</c> for default listening end point.</param>
