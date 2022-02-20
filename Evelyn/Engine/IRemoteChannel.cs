@@ -19,7 +19,7 @@ using System.Net;
 
 namespace PetriSoft.Evelyn.Engine
 {
-    public interface IRemoteChannel: IDataChannel
+    public interface IRemoteChannel: IChannel
     {
         /// <summary>
         /// Get remote endpoint.

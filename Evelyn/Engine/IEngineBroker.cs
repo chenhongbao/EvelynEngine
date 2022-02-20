@@ -37,27 +37,10 @@ namespace PetriSoft.Evelyn.Engine
         public void RegisterClient(LocalClient client);
 
         /// <summary>
-        /// Intercept the <see cref="Trade"/> type data.
+        /// Intercept the specified type data.
         /// </summary>
+        /// <typeparam name="T">Type.</typeparam>
         /// <param name="interceptor">Interceptor to handle <see cref="Trade"/>.</param>
-        public void AddInterceptpr(Action<Trade, IDataChannel> interceptor);
-
-        /// <summary>
-        /// Intercept the <see cref="NewOrder"/> type data.
-        /// </summary>
-        /// <param name="interceptor">Interceptor to handle <see cref="NewOrder"/>.</param>
-        public void AddInterceptpr(Action<NewOrder, IDataChannel> interceptor);
-
-        /// <summary>
-        /// Intercept the <see cref="Tick"/> type data.
-        /// </summary>
-        /// <param name="interceptor">Interceptor to handle <see cref="Tick"/>.</param>
-        public void AddInterceptpr(Action<Tick, IDataChannel> interceptor);
-
-        /// <summary>
-        /// Intercept the <see cref="OHLC"/> type data.
-        /// </summary>
-        /// <param name="interceptor">Interceptor to handle <see cref="OHLC"/>.</param>
-        public void AddInterceptpr(Action<OHLC, IDataChannel> interceptor);
+        public void AddInterceptpr<T>(Action<T, IChannel> interceptor);
     }
 }

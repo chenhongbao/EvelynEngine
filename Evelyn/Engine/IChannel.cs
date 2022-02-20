@@ -18,9 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 namespace PetriSoft.Evelyn.Engine
 {
     /// <summary>
-    /// Feed channel.
+    /// Data channel.
     /// </summary>
-    public interface IDataChannel
+    public interface IChannel
     {
         /// <summary>
         /// Send feed item to all listeners on this channel.
@@ -39,7 +39,7 @@ namespace PetriSoft.Evelyn.Engine
         /// </summary>
         /// <param name="acceptor">Listening action.</param>
         /// <returns></returns>
-        public IDataChannel Accept<T>(Action<T, IDataChannel> acceptor);
+        public IChannel Accept<T>(Action<T, IChannel> acceptor);
 
         /// <summary>
         /// Get close status of the channel.

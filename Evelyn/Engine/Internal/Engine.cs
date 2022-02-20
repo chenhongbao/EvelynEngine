@@ -111,25 +111,7 @@ namespace PetriSoft.Evelyn.Engine
             throw new ResourceUnavailableException("Socket failed listening at port " + port + ".");
         }
 
-        public IEngine AddInterceptor(Action<Trade, IDataChannel> interceptor)
-        {
-            (_engineBroker ?? throw new NullValueException("Engine broker is not initialized.")).AddInterceptpr(interceptor);
-            return this;
-        }
-
-        public IEngine AddInterceptor(Action<NewOrder, IDataChannel> interceptor)
-        {
-            (_engineBroker ?? throw new NullValueException("Engine broker is not initialized.")).AddInterceptpr(interceptor);
-            return this;
-        }
-
-        public IEngine AddInterceptor(Action<Tick, IDataChannel> interceptor)
-        {
-            (_engineBroker ?? throw new NullValueException("Engine broker is not initialized.")).AddInterceptpr(interceptor);
-            return this;
-        }
-
-        public IEngine AddInterceptor(Action<OHLC, IDataChannel> interceptor)
+        public IEngine AddInterceptor<T>(Action<T, IChannel> interceptor)
         {
             (_engineBroker ?? throw new NullValueException("Engine broker is not initialized.")).AddInterceptpr(interceptor);
             return this;

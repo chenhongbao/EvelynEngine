@@ -32,32 +32,12 @@ namespace PetriSoft.Evelyn.Engine
         public void Setup(IConfigurator configurator);
 
         /// <summary>
-        /// Add interceptor to process the <see cref="Trade"/> type before forwarding to client.
+        /// Add interceptor to process the specified type before forwarding to client.
         /// </summary>
+        /// <typeparam name="T">Type.</typeparam>
         /// <param name="interceptor">Interceptor delegate.</param>
         /// <returns></returns>
-        public IEngine AddInterceptor(Action<Trade, IDataChannel> interceptor);
-
-        /// <summary>
-        /// Add interceptor to process the <see cref="NewOrder"/> type of object before forwarding to client.
-        /// </summary>
-        /// <param name="interceptor">Interceptor delegate.</param>
-        /// <returns></returns>
-        public IEngine AddInterceptor(Action<NewOrder, IDataChannel> interceptor);
-
-        /// <summary>
-        /// Add interceptor to process the <see cref="Tick"/> type of object before forwarding to client.
-        /// </summary>
-        /// <param name="interceptor">Interceptor delegate.</param>
-        /// <returns></returns>
-        public IEngine AddInterceptor(Action<Tick, IDataChannel> interceptor);
-
-        /// <summary>
-        /// Add interceptor to process the <see cref="OHLC"/> type of object before forwarding to client.
-        /// </summary>
-        /// <param name="interceptor">Interceptor delegate.</param>
-        /// <returns></returns>
-        public IEngine AddInterceptor(Action<OHLC, IDataChannel> interceptor);
+        public IEngine AddInterceptor<T>(Action<T, IChannel> interceptor);
 
         /// <summary>
         /// Enable server for remote client.
