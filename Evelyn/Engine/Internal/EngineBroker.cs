@@ -30,6 +30,26 @@ namespace PetriSoft.Evelyn.Engine
             _feedSource = feedSource;
         }
 
+        public void AddInterceptpr(Action<Trade, IDataChannel> interceptor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddInterceptpr(Action<NewOrder, IDataChannel> interceptor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddInterceptpr(Action<Tick, IDataChannel> interceptor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddInterceptpr(Action<OHLC, IDataChannel> interceptor)
+        {
+            throw new NotImplementedException();
+        }
+
         public void RegisterClient(LocalClient client)
         {
             throw new NotImplementedException();
