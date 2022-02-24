@@ -20,24 +20,14 @@ namespace PetriSoft.Evelyn
     public enum OrderStatus
     {
         /// <summary>
-        /// New order is submitted, but not in queue.
+        /// New order is submitted and inqueue.
         /// </summary>
-        Submitted = 1,
-
-        /// <summary>
-        /// Order is in queue for trade.
-        /// </summary>
-        Queueing,
-
-        /// <summary>
-        /// Part of order is filled.
-        /// </summary>
-        TradePart,
+        Trading = 1,
 
         /// <summary>
         /// All of order is filled.
         /// </summary>
-        TradeAll,
+        Completed,
 
         /// <summary>
         /// Order is deleted.
