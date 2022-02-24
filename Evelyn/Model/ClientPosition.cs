@@ -15,30 +15,18 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using System.Runtime.Serialization;
-
-namespace PetriSoft.Evelyn
+namespace PetriSoft.Evelyn.Model
 {
     /// <summary>
-    /// An exception indicating the specified value is null when it is supposed to be not null.
+    /// Position.
     /// </summary>
-    [Serializable]
-    public class NullValueException : Exception
+    public class ClientPosition
     {
-        public NullValueException()
-        {
-        }
+        private readonly List<Contract> _contracts = new List<Contract>();
 
-        public NullValueException(string? message) : base(message)
-        {
-        }
-
-        public NullValueException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected NullValueException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+        /// <summary>
+        /// Contracts in this position.
+        /// </summary>
+        public List<Contract> Contracts => _contracts;
     }
 }

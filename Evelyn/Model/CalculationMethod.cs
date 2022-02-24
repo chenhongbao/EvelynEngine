@@ -1,5 +1,5 @@
 ﻿/*
-Event of specified instrument for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
+Null value exception for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -15,28 +15,21 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace PetriSoft.Evelyn
+namespace PetriSoft.Evelyn.Model
 {
-    public enum OrderStatus
+    /// <summary>
+    /// Rate calculation method.
+    /// </summary>
+    public enum CalculationMethod
     {
         /// <summary>
-        /// New order is submitted and inqueue.
+        /// Calculation by volume, which is the rate multipled by volume.
         /// </summary>
-        Trading = 1,
+        CalculateVolume = 1,
 
         /// <summary>
-        /// All of order is filled.
+        /// Calculation by amount, which is the rate multipled by amount, and then volume.
         /// </summary>
-        Completed,
-
-        /// <summary>
-        /// Order is deleted.
-        /// </summary>
-        Deleted,
-
-        /// <summary>
-        /// Order is rejected.
-        /// </summary>
-        Rejected
+        CalculateAmount
     }
 }

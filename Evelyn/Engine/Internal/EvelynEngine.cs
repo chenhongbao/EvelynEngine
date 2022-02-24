@@ -15,6 +15,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using PetriSoft.Evelyn.Exceptions;
 using PetriSoft.Evelyn.Plugin;
 
 using System.Net;
@@ -22,7 +23,7 @@ using System.Net.Sockets;
 
 namespace PetriSoft.Evelyn.Engine
 {
-    internal class Engine : IEngine
+    internal class EvelynEngine : IEngine
     {
         private static readonly int _CLIENT_LISTEN_PORT = 10990;
         private static readonly int _MANAGE_LISTEN_PORT = 10992;

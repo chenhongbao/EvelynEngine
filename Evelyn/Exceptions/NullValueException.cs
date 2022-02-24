@@ -15,22 +15,30 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace PetriSoft.Evelyn
+using System.Runtime.Serialization;
+
+namespace PetriSoft.Evelyn.Exceptions
 {
     /// <summary>
-    /// Settle-by-trade account.
+    /// An exception indicating the specified value is null when it is supposed to be not null.
     /// </summary>
-    public class ClientAccount
+    [Serializable]
+    public class NullValueException : Exception
     {
-        private double? _balance = null;
-
-        /// <summary>
-        /// Balance containing trading profit up to date.
-        /// </summary>
-        public double Balance
+        public NullValueException()
         {
-            get => _balance ?? throw new NullValueException("Balance is null.");
-            set => _balance = value;
+        }
+
+        public NullValueException(string? message) : base(message)
+        {
+        }
+
+        public NullValueException(string? message, Exception? innerException) : base(message, innerException)
+        {
+        }
+
+        protected NullValueException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
         }
     }
 }

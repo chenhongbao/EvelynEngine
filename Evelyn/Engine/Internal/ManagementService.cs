@@ -21,9 +21,9 @@ namespace PetriSoft.Evelyn.Engine
 {
     internal class ManagementService : IEndPointService
     {
-        private readonly Engine _engine;
+        private readonly EvelynEngine _engine;
 
-        public ManagementService(Engine engine)
+        public ManagementService(EvelynEngine engine)
         {
             _engine = engine;
         }

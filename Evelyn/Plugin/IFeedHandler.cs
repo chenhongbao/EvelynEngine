@@ -15,6 +15,8 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using PetriSoft.Evelyn.Model;
+
 namespace PetriSoft.Evelyn.Plugin
 {
     public interface IFeedHandler
@@ -27,7 +29,7 @@ namespace PetriSoft.Evelyn.Plugin
 
         /// <summary>
         /// OHLC feed callback, and the method is optional because not all data source provide this kind of feed.
-        /// <para>OHLC feed can be input via <see cref="Engine.IDataChannel{T}"/> and the callback receives the feeds.</para>
+        /// <para>OHLC feed can be input via <see cref="Engine.IChannel"/> and the callback receives the feeds.</para>
         /// </summary>
         /// <param name="ohlc">OHLC feed.</param>
         public void OnFeed(OHLC ohlc);

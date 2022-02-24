@@ -15,18 +15,24 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace PetriSoft.Evelyn
+using PetriSoft.Evelyn.Exceptions;
+
+namespace PetriSoft.Evelyn.Model
 {
     /// <summary>
-    /// Position.
+    /// Settle-by-trade account.
     /// </summary>
-    public class ClientPosition
+    public class ClientAccount
     {
-        private readonly List<Contract> _contracts = new List<Contract>();
+        private double? _balance = null;
 
         /// <summary>
-        /// Contracts in this position.
+        /// Balance containing trading profit up to date.
         /// </summary>
-        public List<Contract> Contracts => _contracts;
+        public double Balance
+        {
+            get => _balance ?? throw new NullValueException("Balance is null.");
+            set => _balance = value;
+        }
     }
 }
