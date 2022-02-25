@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using System.Runtime.Serialization;
 
-namespace PetriSoft.Evelyn.Exceptions
+namespace PetriSoft.Evelyn
 {
     /// <summary>
     /// The required resource is not available.
