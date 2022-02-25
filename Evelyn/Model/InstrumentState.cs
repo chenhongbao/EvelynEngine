@@ -20,7 +20,7 @@ namespace PetriSoft.Evelyn.Model
         /// <summary>
         /// Instrument event types.
         /// </summary>
-        public enum InstrumentEventType
+        public enum InstrumentState
         {
             /// <summary>
             /// Before market open.

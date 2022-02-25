@@ -27,6 +27,8 @@ namespace PetriSoft.Evelyn.Model
         private long? _multiple;
         private CalculationMethod? _marginMethod;
         private CalculationMethod? _commissionMethod;
+        private InstrumentState? _instrumentState;
+        private DateTime? _stateTimestamp;
 
         /// <summary>
         /// Margin rate.
@@ -71,6 +73,24 @@ namespace PetriSoft.Evelyn.Model
         {
             get => _commissionMethod ?? throw new NullValueException("Margin type is null.");
             set => _commissionMethod = value;
+        }
+
+        /// <summary>
+        /// Instrument state.
+        /// </summary>
+        public InstrumentState State
+        {
+            get => _instrumentState ?? throw new NullValueException("Instrument trading state is null.");
+            set => _instrumentState = value;
+        }
+
+        /// <summary>
+        /// Time stamp for the last change of instrument state.
+        /// </summary>
+        public DateTime StateTimestamp
+        {
+            get => _stateTimestamp ?? throw new NullValueException("State timestamp is null.");
+            set => _stateTimestamp = value;
         }
     }
 }

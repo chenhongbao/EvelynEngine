@@ -29,7 +29,7 @@ namespace PetriSoft.Evelyn.Plugin
 
         /// <summary>
         /// OHLC feed callback, and the method is optional because not all data source provide this kind of feed.
-        /// <para>OHLC feed can be input via <see cref="Engine.IChannel"/> and the callback receives the feeds.</para>
+        /// <para>OHLC feed can be input via <see cref="Engine.IMultiChannel"/> and the callback receives the feeds.</para>
         /// </summary>
         /// <param name="ohlc">OHLC feed.</param>
         public void OnFeed(OHLC ohlc);
@@ -37,8 +37,8 @@ namespace PetriSoft.Evelyn.Plugin
         /// <summary>
         /// Instrument event callback for state changes of the instrument within a trading day.
         /// </summary>
-        /// <param name="instrumentEvent">Instrument event feed.</param>
-        public void OnInstrumentEvent(InstrumentEvent instrumentEvent);
+        /// <param name="instrument">Instrument event feed.</param>
+        public void OnInstrument(Instrument instrument);
 
         /// <summary>
         /// Data feed subscription callback.
