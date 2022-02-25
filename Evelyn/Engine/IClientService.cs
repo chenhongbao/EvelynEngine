@@ -23,25 +23,28 @@ namespace PetriSoft.Evelyn.Engine
     /// <summary>
     /// Remote client service.
     /// </summary>
-    public interface IEndPointService
+    public interface IClientService
     {
         /// <summary>
         /// Send <see cref="Tick"/> to client and client calls <see cref="Plugin.IFeedHandler.OnFeed(Tick)"/>.
         /// </summary>
         /// <param name="tick">Tick data.</param>
-        public void ToClient(Tick tick);
+        /// <param name="clientID">Client to receive the data.</param>
+        public void ToClient(Tick tick, string clientID);
 
         /// <summary>
         /// Send <see cref="OHLC"/> to client and client calls <see cref="Plugin.IFeedHandler.OnFeed(OHLC)"/>.
         /// </summary>
         /// <param name="ohlc">OHCL data.</param>
-        public void ToClient(OHLC ohlc);
+        ///  <param name="clientID">Client to receive the data.</param>
+        public void ToClient(OHLC ohlc, string clientID);
 
         /// <summary>
         /// Send <see cref="Instrument"/> to client and client calls <see cref="Plugin.IFeedHandler.OnInstrument(Instrument)"/>.
         /// </summary>
         /// <param name="instrument">Instrument data.</param>
-        public void ToClient(Instrument instrument);
+        /// <param name="clientID">Client to receive the data.</param>
+        public void ToClient(Instrument instrument, string clientID);
 
         /// <summary>
         /// Send subscrption feedback to client and client calls <see cref="Plugin.IFeedHandler.OnSubscribed(string, Description, bool)"/>.
@@ -49,25 +52,27 @@ namespace PetriSoft.Evelyn.Engine
         /// <param name="instrumentID">Instrument ID.</param>
         /// <param name="description">Description of operation feedback.</param>
         /// <param name="subscribed"><c>True</c> if instrument is subscribed, <c>false</c> otherwise.</param>
-        public void ToClient(string instrumentID, Description description, bool subscribed);
+        /// <param name="clientID">Client to receive the data.</param>
+        public void ToClient(string instrumentID, Description description, bool subscribed, string clientID);
 
         /// <summary>
         /// Send trade feedback to client and client calls <see cref="Plugin.IOrderHandler.OnTrade(Trade, Description)"/>.
         /// </summary>
         /// <param name="trade">Trade data.</param>
         /// <param name="description">Description of the trade feedback.</param>
-        public void ToClient(Trade trade, Description description);
+        /// <param name="clientID">Client to receive the data.</param>
+        public void ToClient(Trade trade, Description description, string clientID);
 
         /// <summary>
         /// Add order handler.
         /// </summary>
         /// <param name="orderAcceptor">Order acceptor.</param>
-        public void Accept(IOrderAcceptor orderAcceptor);
+        public void FromClient(IOrderAcceptor orderAcceptor);
 
         /// <summary>
         /// Add subscription acceptor.
         /// </summary>
         /// <param name="subscriptionAcceptor">Subscription acceptor.</param>
-        public void Accept(ISubscriptionAcceptor subscriptionAcceptor);
+        public void FromClient(ISubscriptionAcceptor subscriptionAcceptor);
     }
 }

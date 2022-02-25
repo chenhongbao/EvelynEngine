@@ -50,7 +50,7 @@ namespace PetriSoft.Evelyn.Engine
         /// </summary>
         /// <param name="clientService">Implementation of client service.</param>
         /// <returns>This <see cref="IEngine"/> object.</returns>
-        public IEngine EnableRemoteClient(IEndPointService clientService);
+        public IEngine EnableRemoteClient(IClientService clientService);
 
         /// <summary>
         /// Enable support for local clients.

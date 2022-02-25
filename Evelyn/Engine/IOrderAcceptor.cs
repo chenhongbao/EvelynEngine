@@ -28,14 +28,14 @@ namespace PetriSoft.Evelyn.Engine
         /// Accept new order.
         /// </summary>
         /// <param name="newOrder">New order.</param>
-        /// <param name="messageID">Message ID of the message that carries the specified new order.</param>
-        public void OnNewOrder(NewOrder newOrder, Guid messageID);
+        /// <param name="clientID">Client sending the request.</param>
+        public void OnNewOrder(NewOrder newOrder, string clientID);
 
         /// <summary>
         /// Delete an existing order.
         /// </summary>
         /// <param name="orderID">Order ID to delete.</param>
-        /// <param name="messageID">Message ID of the message that carries the specified deleting order.</param>
-        public void OnDeleteOrder(string orderID, Guid messageID);
+        /// <param name="clientID">Client sending the request.</param>
+        public void OnDeleteOrder(string orderID, string clientID);
     }
 }

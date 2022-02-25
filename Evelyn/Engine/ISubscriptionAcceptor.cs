@@ -26,12 +26,14 @@ namespace PetriSoft.Evelyn.Engine
         /// Accept an subscription request.
         /// </summary>
         /// <param name="instrumentID">Instrument to subscribe.</param>
-        public void OnSubscription(string instrumentID);
+        /// <param name="clientID">Client sending the request.</param>
+        public void OnSubscription(string instrumentID, string clientID);
 
         /// <summary>
         /// Accept an unsubscription request.
         /// </summary>
         /// <param name="instrumentID">Instrument to unsubscribe.</param>
-        public void OnUnsubscription(string instrumentID);
+        /// <param name="clientID">Client sending the request.</param>
+        public void OnUnsubscription(string instrumentID, string clientID);
     }
 }
