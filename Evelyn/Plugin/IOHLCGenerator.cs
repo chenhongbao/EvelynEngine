@@ -17,25 +17,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using PetriSoft.Evelyn.Model;
 
-namespace PetriSoft.Evelyn.Engine
+namespace PetriSoft.Evelyn.Plugin
 {
     /// <summary>
-    /// Order acceptor interface.
+    /// OHLC generator interface.
     /// </summary>
-    public interface IOrderAcceptor
+    public interface IOHLCGenerator
     {
         /// <summary>
-        /// Accept new order.
+        /// Update tick into generator and try generating <see cref="OHLC"/>.
         /// </summary>
-        /// <param name="newOrder">New order.</param>
-        /// <param name="messageID">Message ID of the message that carries the specified new order.</param>
-        public void OnNewOrder(NewOrder newOrder, Guid messageID);
-
-        /// <summary>
-        /// Delete an existing order.
-        /// </summary>
-        /// <param name="orderID">Order ID to delete.</param>
-        /// <param name="messageID">Message ID of the message that carries the specified deleting order.</param>
-        public void OnDeleteOrder(string orderID, Guid messageID);
+        /// <param name="tick">New tick.</param>
+        /// <returns><see cref="OHLC"/> data or <c>null</c> if none is generated.</returns>
+        public OHLC? Generator(Tick tick);
     }
 }

@@ -32,6 +32,13 @@ namespace PetriSoft.Evelyn.Engine
         public void Setup(IConfigurator configurator);
 
         /// <summary>
+        /// Enable OHLC generation.
+        /// </summary>
+        /// <param name="generator">OHLC generator.</param>
+        /// <returns>This <see cref="IEngine"/> object.</returns>
+        public IEngine EnableOHLC(IOHLCGenerator generator);
+
+        /// <summary>
         /// Enable server for remote client.
         /// </summary>
         /// <param name="point">Listening end point, <c>null</c> for default listening end point.</param>

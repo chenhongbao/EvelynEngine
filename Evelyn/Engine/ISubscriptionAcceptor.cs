@@ -17,10 +17,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace PetriSoft.Evelyn.Engine
 {
+    /// <summary>
+    /// Subscription acceptor.
+    /// </summary>
     public interface ISubscriptionAcceptor
     {
+        /// <summary>
+        /// Accept an subscription request.
+        /// </summary>
+        /// <param name="instrumentID">Instrument to subscribe.</param>
         public void OnSubscription(string instrumentID);
 
+        /// <summary>
+        /// Accept an unsubscription request.
+        /// </summary>
+        /// <param name="instrumentID">Instrument to unsubscribe.</param>
         public void OnUnsubscription(string instrumentID);
     }
 }
