@@ -15,36 +15,12 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using PetriSoft.Evelyn.Plugin;
-
 namespace PetriSoft.Evelyn.Engine
 {
-    internal class EngineBroker : IEngineBroker
+    public interface ISubscriptionAcceptor
     {
-        private readonly IBroker _broker;
-        private readonly IFeedSource _feedSource;
+        public void OnSubscription(string instrumentID);
 
-        private readonly IChannel _channel = new DefaultChannel();
-
-        public EngineBroker(IBroker broker, IFeedSource feedSource)
-        {
-            _broker = broker;
-            _feedSource = feedSource;
-        }
-
-        public void AddInterceptpr<T>(Action<T, IChannel> interceptor)
-        {
-            _channel.Accept(interceptor);
-        }
-
-        public void RegisterClient(LocalClient client)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RegisterClientChannel(IRemoteChannel channel)
-        {
-            throw new NotImplementedException();
-        }
+        public void OnUnsubscription(string instrumentID);
     }
 }

@@ -32,20 +32,18 @@ namespace PetriSoft.Evelyn.Engine
         public void Setup(IConfigurator configurator);
 
         /// <summary>
-        /// Add interceptor to process the specified type before forwarding to client.
-        /// </summary>
-        /// <typeparam name="T">Type.</typeparam>
-        /// <param name="interceptor">Interceptor delegate.</param>
-        /// <returns></returns>
-        public IEngine AddInterceptor<T>(Action<T, IChannel> interceptor);
-
-        /// <summary>
         /// Enable server for remote client.
         /// </summary>
         /// <param name="point">Listening end point, <c>null</c> for default listening end point.</param>
-        /// <param name="listening">Server listening service providing communicating protocol, <c>null</c> for default protocol.</param>
         /// <returns>This <see cref="IEngine"/> object.</returns>
-        public IEngine EnableRemoteClient(EndPoint? point = null, IEndPointService? listening = null);
+        public IEngine EnableRemoteClient(EndPoint? point = null);
+
+        /// <summary>
+        /// Enable a customized remote client service managing communication between peers.
+        /// </summary>
+        /// <param name="clientService">Implementation of client service.</param>
+        /// <returns>This <see cref="IEngine"/> object.</returns>
+        public IEngine EnableRemoteClient(IEndPointService clientService);
 
         /// <summary>
         /// Enable support for local clients.
@@ -71,11 +69,6 @@ namespace PetriSoft.Evelyn.Engine
         /// Get management end point, or <c>null</c> if it not listening for management request.
         /// </summary>
         public EndPoint? ManagementEndPoint { get; }
-
-        /// <summary>
-        /// Get engine broker if it is intialized.
-        /// </summary>
-        public IEngineBroker EngineBroker { get; }
 
         /// <summary>
         /// Get configurator if it is set up.

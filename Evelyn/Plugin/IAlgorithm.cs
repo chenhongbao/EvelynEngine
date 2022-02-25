@@ -35,10 +35,5 @@ namespace PetriSoft.Evelyn.Plugin
         /// Callback upon unloading of the algorithm.
         /// </summary>
         public void OnUnload();
-
-        public sealed new void OnUnsubscribed(string _0, Description _1)
-        {
-            throw new InvalidOperationException("The method is not supposed to be called.");
-        }
     }
 }

@@ -45,13 +45,7 @@ namespace PetriSoft.Evelyn.Plugin
         /// </summary>
         /// <param name="instrumentID">Instrument ID.</param>
         /// <param name="description">Description of the feed containing error code and message if it has.</param>
-        public void OnSubscribed(string instrumentID, Description description);
-
-        /// <summary>
-        /// Data feed un-subscription callback.
-        /// </summary>
-        /// <param name="instrumentID">Instrument ID.</param>
-        /// <param name="description">Description of the feed containing error code and message if it has.</param>
-        public void OnUnsubscribed(string instrumentID, Description description);
+        /// <param name="subscribed"><c>True</c> if instrument is subscribed, <c>false</c> otherwise.</param>
+        public void OnSubscribed(string instrumentID, Description description, bool subscribed);
     }
 }

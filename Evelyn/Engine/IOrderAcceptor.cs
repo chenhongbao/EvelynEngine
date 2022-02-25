@@ -19,33 +19,10 @@ using PetriSoft.Evelyn.Model;
 
 namespace PetriSoft.Evelyn.Engine
 {
-    /// <summary>
-    /// Data channel.
-    /// </summary>
-    public interface IChannel
+    public interface IOrderAcceptor
     {
-        /// <summary>
-        /// Send feed item to all listeners on this channel.
-        /// </summary>
-        /// <param name="item">Feed item.</param>
-        public void Send<T>(T item);
+        public void OnNewOrder(NewOrder newOrder, Guid messageID);
 
-        /// <summary>
-        /// Close the channel.
-        /// </summary>
-        /// <param name="description">Close reason.</param>
-        public void Close(Description? description = null);
-
-        /// <summary>
-        /// Set listeners on this channel.
-        /// </summary>
-        /// <param name="acceptor">Listening action.</param>
-        /// <returns></returns>
-        public IChannel Accept<T>(Action<T, IChannel> acceptor);
-
-        /// <summary>
-        /// Get close status of the channel.
-        /// </summary>
-        public bool IsClosed { get; }
+        public void OnDeleteOrder(string orderID, Guid messageID);
     }
 }
