@@ -29,6 +29,6 @@ namespace PetriSoft.Evelyn.Plugin
         /// </summary>
         /// <param name="tick">New tick.</param>
         /// <returns><see cref="OHLC"/> data or <c>null</c> if none is generated.</returns>
-        public OHLC? Generator(Tick tick);
+        public OHLC? Generate(Tick tick);
     }
 }
