@@ -1,5 +1,4 @@
 ﻿/*
-Null value exception for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -15,25 +14,14 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using PetriSoft.Evelyn.Engine;
-using PetriSoft.Evelyn.Model;
+using PetriSoft.Evelyn.Frame;
 
 namespace PetriSoft.Evelyn.Plugin
 {
-    /// <summary>
-    /// Trading algorithm plugin interface.
-    /// </summary>
     public interface IAlgorithm : IFeedHandler, IOrderHandler
     {
-        /// <summary>
-        /// Callback upon loading of the algorithm.
-        /// </summary>
-        /// <param name="op">Trade operator.</param>
         public void OnLoad(IOperator op);
 
-        /// <summary>
-        /// Callback upon unloading of the algorithm.
-        /// </summary>
         public void OnUnload();
     }
 }

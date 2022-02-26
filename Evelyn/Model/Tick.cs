@@ -1,5 +1,4 @@
 ﻿/*
-Market data tick for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -17,101 +16,93 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace PetriSoft.Evelyn.Model
 {
-    /// <summary>
-    /// Tick or market data snapshot for an instrument.
-    /// </summary>
-    public record class Tick : MarketItem
+    public struct Tick
     {
-        private long? _openInterest;
-        private long? _preOpenInterest;
-        private double? _preClosePrice;
-        private double? _preSettlementPrice;
+        private string? _instrumentID = null;
+        private DateOnly? _tradingDay = null;
+        private DateTime? _timeStamp = null;
+        private double? _lastPrice = null;
+        private long? _volume = null;
+        private long? _openInterest = null;
+        private long? _preOpenInterest = null;
+        private double? _preClosePrice = null;
+        private double? _preSettlementPrice = null;
 
-        /// <summary>
-        /// Average price for current trading day.
-        /// </summary>
-        public double? AveragePrice { get; set; }
+        public Tick()
+        {
+        }
 
-        /// <summary>
-        /// Last trading price of the instrumentl or null Iif there is no trade in the current 
-        /// trading day.
-        /// </summary>
-        public double? LastPrice { get; set; }
+        public string InstrumentID
+        {
+            get => _instrumentID ?? throw new NullValueException("Instrument ID is null.");
+            set => _instrumentID = value;
+        }
 
-        /// <summary>
-        /// Open price of the current trading day, or null if the instrument hasn't been opened
-        /// in the current trading day.
-        /// </summary>
-        public double? OpenPrice { get; set; }
+        public string ExchangeID { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Highest price of the current trading day, or null if the instrument hasn't been 
-        /// traded in the current day.
-        /// </summary>
-        public double? HighPrice { get; set; }
+        public string Symbol { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Lowest price of the current trading day, or null if the instrument hasn't been 
-        /// traded in the current day.
-        /// </summary>
-        public double? LowPrice { get; set; }
 
-        /// <summary>
-        /// Close price of the current trading day, or null if the instrument is not closed yet in
-        /// the current trading day.
-        /// </summary>
-        public double? ClosePrice { get; set; }
+        public DateOnly TradingDay
+        {
+            get => _tradingDay ?? throw new NullValueException("Trading day is null.");
+            set => _tradingDay = value;
+        }
 
-        /// <summary>
-        /// Highest price of the current trading day, or null if the instrument is not settled yet in
-        /// the current trading day.
-        /// </summary>
-        public double? SettlementPrice { get; set; }
+        public DateTime TimeStamp
+        {
+            get => _timeStamp ?? throw new NullValueException("Timestamp is null.");
+            set => _timeStamp = value;
+        }
 
-        /// <summary>
-        /// Total trading valume of the current trading day, or null is there is no trade yet.
-        /// </summary>
-        public long? Volume { get; set; }
+        public double? AveragePrice { get; set; } = null;
 
-        /// <summary>
-        /// Open interest of the instrument.
-        /// </summary>
+        public double LastPrice
+        {
+            get => _lastPrice ?? throw new NullValueException("Last price is null");
+            set => _lastPrice = value;
+        }
+
+        public double? OpenPrice { get; set; } = null;
+
+        public double? HighPrice { get; set; } = null;
+
+        public double? LowPrice { get; set; } = null;
+
+        public double? ClosePrice { get; set; } = null;
+
+        public double? SettlementPrice { get; set; } = null;
+
+        public long Volume
+        {
+            get => _volume ?? throw new NullValueException("Volume is null.");
+            set => _volume = value;
+        }
+
         public long OpenInterest
         {
             get => _openInterest ?? throw new NullValueException("Open interest is null.");
             set => _openInterest = value;
         }
 
-        /// <summary>
-        /// Close price of the instrument yesterday.
-        /// </summary>
         public double PreClosePrice
         {
             get => _preClosePrice ?? throw new NullValueException("Pre close price is null.");
             set => _preClosePrice = value;
         }
 
-        /// <summary>
-        /// Settlement price of the instrument yesterday.
-        /// </summary>
         public double PreSettlementPrice
         {
             get => _preSettlementPrice ?? throw new NullValueException("Pre settlement price is null.");
             set => _preSettlementPrice = value;
         }
 
-        /// <summary>
-        /// Open interest of the instrument yesterday.
-        /// </summary>
         public long PreOpenInterest
         {
             get => _preOpenInterest ?? throw new NullValueException("Pre open interest is null.");
             set => _preOpenInterest = value;
         }
 
-        /// <summary>
-        /// Spread summary of the snapshot at the time when this tick is generated.
-        /// </summary>
         public IReadOnlyList<TickSpread> Spreads { get; set; } = new List<TickSpread>();
     }
 }

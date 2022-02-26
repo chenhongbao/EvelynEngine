@@ -1,5 +1,4 @@
 ﻿/*
-Null value exception for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -15,18 +14,9 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace PetriSoft.Evelyn.Model
+namespace PetriSoft.Evelyn.CLI
 {
-    /// <summary>
-    /// Position.
-    /// </summary>
-    public class ClientPosition
+    public interface IManagement
     {
-        private readonly List<Contract> _contracts = new List<Contract>();
-
-        /// <summary>
-        /// Contracts in this position.
-        /// </summary>
-        public List<Contract> Contracts => _contracts;
     }
 }

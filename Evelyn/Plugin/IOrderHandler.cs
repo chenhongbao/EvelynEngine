@@ -1,5 +1,4 @@
 ﻿/*
-Null value exception for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -21,11 +20,6 @@ namespace PetriSoft.Evelyn.Plugin
 {
     public interface IOrderHandler
     {
-        /// <summary>
-        /// Trade callback after an order is inserted to broker.
-        /// </summary>
-        /// <param name="trade">Trade feed.</param>
-        /// <param name="description">Description of the trade feed.</param>
         public void OnTrade(Trade trade, Description description);
     }
 }

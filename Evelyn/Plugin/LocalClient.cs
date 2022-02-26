@@ -1,5 +1,4 @@
 ﻿/*
-Null value exception for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -19,24 +18,14 @@ using PetriSoft.Evelyn.Model;
 
 namespace PetriSoft.Evelyn.Plugin
 {
-    /// <summary>
-    /// Local algorithm client.
-    /// </summary>
     public class LocalClient
     {
         private readonly IAlgorithm _algorithm;
-        private readonly ClientAccount _account;
-        private readonly ClientPosition _position;
+        private readonly Account _account;
+        private readonly Position _position;
         private readonly List<Instrument> _instruments = new List<Instrument>();
 
-        /// <summary>
-        /// Construct a local algorithm client with the specified initial account and position.
-        /// </summary>
-        /// <param name="algorithm">Algorithm to run in the local client.</param>
-        /// <param name="account">Initial client's account.</param>
-        /// <param name="position">Initial client's position.</param>
-        /// <param name="instruments">Instrument information for this client.</param>
-        public LocalClient(IAlgorithm algorithm, ClientAccount account, ClientPosition position, params Instrument[] instruments)
+        public LocalClient(IAlgorithm algorithm, Account account, Position position, params Instrument[] instruments)
         {
             _algorithm = algorithm;
             _account = account;
@@ -44,25 +33,12 @@ namespace PetriSoft.Evelyn.Plugin
             _instruments.AddRange(instruments);
         }
 
-        /// <summary>
-        /// Client's algorithm.
-        /// </summary>
         public IAlgorithm Algorithm => _algorithm;
 
-        /// <summary>
-        /// Client's account.
-        /// </summary>
-        public ClientAccount Account => _account;
+        public Account Account => _account;
 
-        /// <summary>
-        /// Client's position.
-        /// </summary>
-        public ClientPosition Position => _position;
+        public Position Position => _position;
 
-        /// <summary>
-        /// Client's subscribing instruments.
-        /// <para>The instrument information is also used for account management.</para>
-        /// </summary>
         public IReadOnlyCollection<Instrument> Instruments => _instruments;
     }
 }

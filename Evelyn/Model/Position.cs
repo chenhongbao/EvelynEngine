@@ -1,5 +1,4 @@
 ﻿/*
-Null value exception for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -15,30 +14,16 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using System.Runtime.Serialization;
-
-namespace PetriSoft.Evelyn
+namespace PetriSoft.Evelyn.Model
 {
-    /// <summary>
-    /// The required resource is not available.
-    /// </summary>
-    [Serializable]
-    public class ResourceUnavailableException : Exception
+    public struct Position
     {
-        public ResourceUnavailableException()
+        private readonly List<Contract> _contracts = new List<Contract>();
+
+        public Position()
         {
         }
 
-        public ResourceUnavailableException(string? message) : base(message)
-        {
-        }
-
-        public ResourceUnavailableException(string? message, Exception? innerException) : base(message, innerException)
-        {
-        }
-
-        protected ResourceUnavailableException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+        public List<Contract> Contracts => _contracts;
     }
 }

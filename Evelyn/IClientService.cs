@@ -14,11 +14,24 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace PetriSoft.Evelyn.Model
+using PetriSoft.Evelyn.Model;
+
+namespace PetriSoft.Evelyn
 {
-    public enum OrderDirection
+    public interface IClientService
     {
-        Buy = 1,
-        Sell
+        public void ToClient(Tick tick, string clientID);
+
+        public void ToClient(OHLC ohlc, string clientID);
+
+        public void ToClient(Instrument instrument, string clientID);
+
+        public void ToClient(string instrumentID, Description description, bool isSubscribed, string clientID);
+
+        public void ToClient(Trade trade, Description description, string clientID);
+
+        public void FromClient(IClientOrderHandler orderHandler);
+
+        public void FromClient(IClientSubscriptionHandler subscriptionHandler);
     }
 }

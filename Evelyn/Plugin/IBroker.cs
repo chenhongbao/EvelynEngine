@@ -1,5 +1,4 @@
 ﻿/*
-Null value exception for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -21,17 +20,8 @@ namespace PetriSoft.Evelyn.Plugin
 {
     public interface IBroker
     {
-        /// <summary>
-        /// Insert a new single order to broker.
-        /// </summary>
-        /// <param name="newOrder">New single order.</param>
-        /// <param name="orderHandler">Order handler for the given single order.</param>
         public void New(NewOrder newOrder, IOrderHandler orderHandler);
 
-        /// <summary>
-        /// Delete an existing order that has not been compeleted.
-        /// </summary>
-        /// <param name="orderID">Order ID to be delete from broker.</param>
         public void Delete(string orderID);
     }
 }

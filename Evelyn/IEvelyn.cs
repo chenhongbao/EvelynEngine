@@ -14,11 +14,28 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace PetriSoft.Evelyn.Model
+using PetriSoft.Evelyn.Plugin;
+using System.Net;
+
+namespace PetriSoft.Evelyn
 {
-    public enum OrderDirection
+    public interface IEvelyn
     {
-        Buy = 1,
-        Sell
+        public void Setup(IConfigurator configurator);
+
+        public IEvelyn EnableOHLC(IOHLCGenerator? generator = null);
+
+        public IEvelyn EnableRemoteClient(EndPoint? point = null);
+
+        public IEvelyn EnableRemoteClient(IClientService clientService);
+
+        public IEvelyn EnableLocalClient(LocalClient client);
+
+        public IEvelyn EnableManagement(bool remote = false, EndPoint? managementListening = null);
+        public EndPoint? ClientServiceEndPoint { get; }
+
+        public EndPoint? ManagementEndPoint { get; }
+
+        public IConfigurator Configurator { get; }
     }
 }

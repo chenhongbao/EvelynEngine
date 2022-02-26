@@ -1,5 +1,4 @@
 ﻿/*
-Null value exception for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -17,45 +16,53 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace PetriSoft.Evelyn.Model
 {
-    /// <summary>
-    /// Contract.
-    /// </summary>
-    public record class Contract : MarketItem
+    public struct Contract
     {
+        private string? _instrumentID;
+        private DateOnly? _tradingDay;
+        private DateTime? _timeStamp;
         private double? _price;
         private ContractStatus? _status;
 
-        /// <summary>
-        /// Contract status.
-        /// </summary>
+        public string InstrumentID
+        {
+            get => _instrumentID ?? throw new NullValueException("Instrument ID is null.");
+            set => _instrumentID = value;
+        }
+
+        public string ExchangeID { get; set; } = string.Empty;
+
+        public string Symbol { get; set; } = string.Empty;
+
+
+        public DateOnly TradingDay
+        {
+            get => _tradingDay ?? throw new NullValueException("Trading day is null.");
+            set => _tradingDay = value;
+        }
+
+        public DateTime TimeStamp
+        {
+            get => _timeStamp ?? throw new NullValueException("Timestamp is null.");
+            set => _timeStamp = value;
+        }
+
         public ContractStatus Status
         {
             get => _status ?? throw new NullValueException("Contract status is  null.");
             set => _status = value;
         }
 
-        /// <summary>
-        /// Contract open price.
-        /// </summary>
         public double Price
         {
             get => _price ?? throw new NullValueException("Price is null.");
             set => _price = value;
         }
 
-        /// <summary>
-        /// Contract close price. <c>null</c> if the contract is not being closed nor closed.
-        /// </summary>
         public double? ClosePrice { get; set; }
 
-        /// <summary>
-        /// Contract close time stamp. <c>null</c> if the contract is not being closed nor closed.
-        /// </summary>
         public DateTime? CloseTimeStamp { get; set; }
 
-        /// <summary>
-        /// Contract close trading day. <c>null</c> if the contract is not being closed nor closed.
-        /// </summary>
         public DateOnly? CloseTradingDay { get; set; }
     }
 }

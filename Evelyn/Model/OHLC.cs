@@ -1,5 +1,4 @@
 ﻿/*
-OHLC for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -17,77 +16,82 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace PetriSoft.Evelyn.Model
 {
-    /// <summary>
-    /// OHLC of the instrument in the specified time span.
-    /// </summary>
-    public record class OHLC : MarketItem
+    public struct OHLC
     {
-        private double? _openPrice;
-        private double? _highPrice;
-        private double? _lowPrice;
-        private double? _closePrice;
-        private long? _openInterest;
-        private long? _volume;
-        private TimeSpan? _timeSpan;
+        private string? _instrumentID = null;
+        private DateOnly? _tradingDay = null;
+        private DateTime? _timeStamp = null;
+        private double? _openPrice = null;
+        private double? _highPrice = null;
+        private double? _lowPrice = null;
+        private double? _closePrice = null;
+        private long? _openInterest = null;
+        private long? _volume = null;
+        private TimeSpan? _timeSpan = null;
 
-        /// <summary>
-        /// Open price or the first price within the given time.
-        /// </summary>
+        public OHLC()
+        {
+        }
+
+        public string InstrumentID
+        {
+            get => _instrumentID ?? throw new NullValueException("Instrument ID is null.");
+            set => _instrumentID = value;
+        }
+
+        public string ExchangeID { get; set; } = string.Empty;
+
+        public string Symbol { get; set; } = string.Empty;
+
+
+        public DateOnly TradingDay
+        {
+            get => _tradingDay ?? throw new NullValueException("Trading day is null.");
+            set => _tradingDay = value;
+        }
+
+        public DateTime TimeStamp
+        {
+            get => _timeStamp ?? throw new NullValueException("Timestamp is null.");
+            set => _timeStamp = value;
+        }
+
         public double OpenPrice
         {
             get => _openPrice ?? throw new NullValueException("Open price is null.");
             set => _openPrice = value;
         }
 
-        /// <summary>
-        /// Highest price within the given time.
-        /// </summary>
         public double HighPrice
         {
             get => _highPrice ?? throw new NullValueException("High price is null.");
             set => _highPrice = value;
         }
 
-        /// <summary>
-        /// Lowest price within the given time.
-        /// </summary>
         public double LowPrice
         {
             get => _lowPrice ?? throw new NullValueException("Low price is null.");
             set => _lowPrice = value;
         }
 
-        /// <summary>
-        /// Close price or the last price within the given time.
-        /// </summary>
         public double ClosePrice
         {
             get => _closePrice ?? throw new NullValueException("Close price is null.");
             set => _closePrice = value;
         }
 
-        /// <summary>
-        /// Open interest at the moment when the OHLC is completed.
-        /// </summary>
         public long OpenInterest
         {
             get => _openInterest ?? throw new NullValueException("Open interest is null.");
             set => _openInterest = value;
         }
 
-        /// <summary>
-        /// Sum of trading volume in the given time.
-        /// </summary>
         public long Volume
         {
             get => _volume ?? throw new NullValueException("Volume is null.");
             set => _volume = value;
         }
 
-        /// <summary>
-        /// The period of time when the OHLC is generated. For example, one-min OHLC has
-        /// a time span of 1 minute.
-        /// </summary>
         public TimeSpan Time
         {
             get => _timeSpan ?? throw new NullValueException("Time span is null.");

@@ -1,5 +1,4 @@
 ﻿/*
-Null value exception for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -19,17 +18,8 @@ namespace PetriSoft.Evelyn.Plugin
 {
     public interface IFeedSource
     {
-        /// <summary>
-        /// Subscribe data feed of the specified instrument.
-        /// </summary>
-        /// <param name="instrumentID">Instrument ID to subscribe.</param>
-        /// <param name="feedHandler">Data feed handler for the subscribed instrument.</param>
         public void Subscribe(string instrumentID, IFeedHandler feedHandler);
 
-        /// <summary>
-        /// Unsubscribe the data feed of the specified instrument.
-        /// </summary>
-        /// <param name="instrumentID">Instrument ID to unsubscribe.</param>
         public void Unsubscribe(string instrumentID);
     }
 }

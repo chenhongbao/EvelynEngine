@@ -1,5 +1,4 @@
 ﻿/*
-Event of specified instrument for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -17,16 +16,43 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace PetriSoft.Evelyn.Model
 {
-    /// <summary>
-    /// New single order.
-    /// </summary>
-    public record class NewOrder : MarketItem
+    public struct NewOrder
     {
-        private string? _orderID;
-        private double? _price;
-        private long? _quantity;
-        private OrderDirection? _direction;
-        private OrderOffset? _offset;
+        private string? _instrumentID = null;
+        private DateOnly? _tradingDay = null;
+        private DateTime? _timeStamp = null;
+        private string? _orderID = null;
+        private double? _price = null;
+        private long? _quantity = null;
+        private OrderDirection? _direction = null;
+        private OrderOffset? _offset = null;
+
+        public NewOrder()
+        {
+        }
+
+        public string InstrumentID
+        {
+            get => _instrumentID ?? throw new NullValueException("Instrument ID is null.");
+            set => _instrumentID = value;
+        }
+
+        public string ExchangeID { get; set; } = string.Empty;
+
+        public string Symbol { get; set; } = string.Empty;
+
+
+        public DateOnly TradingDay
+        {
+            get => _tradingDay ?? throw new NullValueException("Trading day is null.");
+            set => _tradingDay = value;
+        }
+
+        public DateTime TimeStamp
+        {
+            get => _timeStamp ?? throw new NullValueException("Timestamp is null.");
+            set => _timeStamp = value;
+        }
 
         public string OrderID
         {
@@ -34,36 +60,24 @@ namespace PetriSoft.Evelyn.Model
             set => _orderID = value;
         }
 
-        /// <summary>
-        /// Price to trade.
-        /// </summary>
         public double Price
         {
             get => _price ?? throw new NullValueException("Price is null.");
             set => _price = value;
         }
 
-        /// <summary>
-        /// Quantity to trade.
-        /// </summary>
         public long Quantity
         {
             get => _quantity ?? throw new NullValueException("Quantity is null.");
             set => _quantity = value;
         }
 
-        /// <summary>
-        /// Direction to trade.
-        /// </summary>
         public OrderDirection Direction
         {
             get => _direction ?? throw new NullValueException("Direction is null");
             set => _direction = value;
         }
 
-        /// <summary>
-        /// Offset to trade.
-        /// </summary>
         public OrderOffset Offset
         {
             get => _offset ?? throw new NullValueException("Offset is null.");

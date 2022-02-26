@@ -1,5 +1,4 @@
 ﻿/*
-Null value exception for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -17,19 +16,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace PetriSoft.Evelyn.Model
 {
-    /// <summary>
-    /// Describe the result of a request.
-    /// </summary>
-    public class Description
+    public struct Description
     {
-        /// <summary>
-        /// Return code of a request.
-        /// </summary>
-        public int Code { get; set; }
+        public Description()
+        {
+        }
 
-        /// <summary>
-        /// Message of a request.
-        /// </summary>
+        public int Code { get; set; } = 0;
+
         public string Message { get; set; } = "";
     }
 }

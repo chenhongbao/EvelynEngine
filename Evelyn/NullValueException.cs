@@ -1,5 +1,4 @@
 ﻿/*
-Null value exception for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -15,22 +14,27 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace PetriSoft.Evelyn.Model
-{
-    /// <summary>
-    /// Settle-by-trade account.
-    /// </summary>
-    public class ClientAccount
-    {
-        private double? _balance = null;
+using System.Runtime.Serialization;
 
-        /// <summary>
-        /// Balance containing trading profit up to date.
-        /// </summary>
-        public double Balance
+namespace PetriSoft.Evelyn
+{
+    [Serializable]
+    public class NullValueException : Exception
+    {
+        public NullValueException()
         {
-            get => _balance ?? throw new NullValueException("Balance is null.");
-            set => _balance = value;
+        }
+
+        public NullValueException(string? message) : base(message)
+        {
+        }
+
+        public NullValueException(string? message, Exception? innerException) : base(message, innerException)
+        {
+        }
+
+        protected NullValueException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
         }
     }
 }

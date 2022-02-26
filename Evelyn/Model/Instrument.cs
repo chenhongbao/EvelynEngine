@@ -1,5 +1,4 @@
 ﻿/*
-Null value exception for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -17,76 +16,82 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace PetriSoft.Evelyn.Model
 {
-    /// <summary>
-    /// Instrument information.
-    /// </summary>
-    public record class Instrument : MarketItem
+    public struct Instrument
     {
-        private double? _margin;
-        private double? _commission;
-        private long? _multiple;
-        private CalculationMethod? _marginMethod;
-        private CalculationMethod? _commissionMethod;
-        private InstrumentState? _instrumentState;
-        private DateTime? _stateTimestamp;
+        private string? _instrumentID = null;
+        private DateOnly? _tradingDay = null;
+        private DateTime? _timeStamp = null;
+        private double? _margin = null;
+        private double? _commission = null;
+        private long? _multiple = null;
+        private CalculationMethod? _marginMethod = null;
+        private CalculationMethod? _commissionMethod = null;
+        private InstrumentState? _instrumentState = null;
+        private DateTime? _stateTimestamp = null;
 
-        /// <summary>
-        /// Margin rate.
-        /// </summary>
+        public Instrument()
+        {
+        }
+
+        public string InstrumentID
+        {
+            get => _instrumentID ?? throw new NullValueException("Instrument ID is null.");
+            set => _instrumentID = value;
+        }
+
+        public string ExchangeID { get; set; } = string.Empty;
+
+        public string Symbol { get; set; } = string.Empty;
+
+
+        public DateOnly TradingDay
+        {
+            get => _tradingDay ?? throw new NullValueException("Trading day is null.");
+            set => _tradingDay = value;
+        }
+
+        public DateTime TimeStamp
+        {
+            get => _timeStamp ?? throw new NullValueException("Timestamp is null.");
+            set => _timeStamp = value;
+        }
+
         public double Margin
         {
             get => _margin ?? throw new NullValueException("Margin rate is null.");
             set => _margin = value;
         }
 
-        /// <summary>
-        /// Commission rate.
-        /// </summary>
         public double Commission
         {
             get => _commission ?? throw new NullValueException("Commission rate is null.");
             set => _commission = value;
         }
 
-        /// <summary>
-        /// Instrument multiple.
-        /// </summary>
         public long Multiple
         {
             get => _multiple ?? throw new NullValueException("Multiple is null.");
             set => _multiple = value;
         }
 
-        /// <summary>
-        /// Margin calculation method.
-        /// </summary>
         public CalculationMethod MarginMethod
         {
             get => _marginMethod ?? throw new NullValueException("Margin type is null.");
             set => _marginMethod = value;
         }
 
-        /// <summary>
-        /// Commission calculation method.
-        /// </summary>
         public CalculationMethod CommissionMethod
         {
             get => _commissionMethod ?? throw new NullValueException("Margin type is null.");
             set => _commissionMethod = value;
         }
 
-        /// <summary>
-        /// Instrument state.
-        /// </summary>
         public InstrumentState State
         {
             get => _instrumentState ?? throw new NullValueException("Instrument trading state is null.");
             set => _instrumentState = value;
         }
 
-        /// <summary>
-        /// Time stamp for the last change of instrument state.
-        /// </summary>
         public DateTime StateTimestamp
         {
             get => _stateTimestamp ?? throw new NullValueException("State timestamp is null.");

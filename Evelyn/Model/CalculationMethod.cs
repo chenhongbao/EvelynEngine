@@ -1,5 +1,4 @@
 ﻿/*
-Null value exception for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -17,19 +16,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace PetriSoft.Evelyn.Model
 {
-    /// <summary>
-    /// Rate calculation method.
-    /// </summary>
     public enum CalculationMethod
     {
-        /// <summary>
-        /// Calculation by volume, which is the rate multipled by volume.
-        /// </summary>
-        CalculateVolume = 1,
-
-        /// <summary>
-        /// Calculation by amount, which is the rate multipled by amount, and then volume.
-        /// </summary>
-        CalculateAmount
+        PerVolume = 1,
+        PerAmount
     }
 }

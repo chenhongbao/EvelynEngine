@@ -1,5 +1,4 @@
 ﻿/*
-Event of specified instrument for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -17,44 +16,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace PetriSoft.Evelyn.Model
 {
-        /// <summary>
-        /// Instrument event types.
-        /// </summary>
-        public enum InstrumentState
-        {
-            /// <summary>
-            /// Before market open.
-            /// </summary>
-            BeforeTrading = 1,
-
-            /// <summary>
-            /// Non trading between trading sessions of a day.
-            /// </summary>
-            NonTrading,
-
-            /// <summary>
-            /// Auction ordering before contious trading.
-            /// </summary>
-            AuctionOrdering,
-
-            /// <summary>
-            /// Auction balance.
-            /// </summary>
-            AuctionBalance,
-
-            /// <summary>
-            /// Auction match.
-            /// </summary>
-            AuctionMatch,
-
-            /// <summary>
-            /// Continous trading within a trading session.
-            /// </summary>
-            Continous,
-
-            /// <summary>
-            /// Instrument trading is closed.
-            /// </summary>
-            Closed
-        }
+    public enum InstrumentState
+    {
+        BeforeTrading = 1,
+        NonTrading,
+        AuctionOrdering,
+        AuctionBalance,
+        AuctionMatch,
+        Continous,
+        Closed
+    }
 }

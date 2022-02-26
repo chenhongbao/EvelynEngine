@@ -1,5 +1,4 @@
 ﻿/*
-Null value exception for Evelyn Engine, a quantitative trading engine by Chen Hongbao.
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -17,34 +16,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace PetriSoft.Evelyn.Model
 {
-    /// <summary>
-    /// Contract status.
-    /// </summary>
     public enum ContractStatus
     {
-        /// <summary>
-        /// Contract is being opened and position doesn't include this contract.
-        /// </summary>
         Opening = 1,
-
-        /// <summary>
-        /// Contract is open.
-        /// </summary>
         Open,
-
-        /// <summary>
-        /// Contract is closing and position still include this contract.
-        /// </summary>
         Closing,
-
-        /// <summary>
-        /// Contract is closed and is not included by position.
-        /// </summary>
         Closed,
-
-        /// <summary>
-        /// Contract is deleted and is not included by position.
-        /// </summary>
         Deleted
     }
 }
