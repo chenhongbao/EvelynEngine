@@ -21,6 +21,11 @@ namespace PetriSoft.Evelyn
 {
     public interface IEvelyn
     {
+        public static IEvelyn New()
+        {
+            return new Internal.EvelynEngine();
+        }
+
         public void Setup(IConfigurator configurator);
 
         public IEvelyn EnableOHLC(IOHLCGenerator? generator = null);
