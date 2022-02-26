@@ -29,25 +29,25 @@ namespace PetriSoft.Evelyn.Model
 
         public double AskPrice
         {
-            get => _askPrice ?? throw new NullValueException("Ask price is null.");
+            get => _askPrice ?? throw new NoValueException("Ask price has no value.");
             set => _askPrice = value;
         }
 
         public double BidPrice
         {
-            get => _bidPrice ?? throw new NullValueException("Bid price is null.");
+            get => _bidPrice ?? throw new NoValueException("Bid price has no value.");
             set => _bidPrice = value;
         }
 
         public long AskVolume
         {
-            get => _askVolume ?? throw new NullValueException("Ask volume is null.");
+            get => _askVolume ?? throw new NoValueException("Ask volume has no value.");
             set => _askVolume = value;
         }
 
         public long BidVolume
         {
-            get => _bidVolume ?? throw new NullValueException("Bid volume is null.");
+            get => _bidVolume ?? throw new NoValueException("Bid volume has no value.");
             set => _bidVolume = value;
         }
     }

@@ -35,7 +35,7 @@ namespace PetriSoft.Evelyn.Model
 
         public string InstrumentID
         {
-            get => _instrumentID ?? throw new NullValueException("Instrument ID is null.");
+            get => _instrumentID ?? throw new NoValueException("Instrument ID has no value.");
             set => _instrumentID = value;
         }
 
@@ -46,55 +46,55 @@ namespace PetriSoft.Evelyn.Model
 
         public DateOnly TradingDay
         {
-            get => _tradingDay ?? throw new NullValueException("Trading day is null.");
+            get => _tradingDay ?? throw new NoValueException("Trading day has no value.");
             set => _tradingDay = value;
         }
 
         public DateTime TimeStamp
         {
-            get => _timeStamp ?? throw new NullValueException("Timestamp is null.");
+            get => _timeStamp ?? throw new NoValueException("Timestamp has no value.");
             set => _timeStamp = value;
         }
 
         public double Margin
         {
-            get => _margin ?? throw new NullValueException("Margin rate is null.");
+            get => _margin ?? throw new NoValueException("Margin rate has no value.");
             set => _margin = value;
         }
 
         public double Commission
         {
-            get => _commission ?? throw new NullValueException("Commission rate is null.");
+            get => _commission ?? throw new NoValueException("Commission rate has no value.");
             set => _commission = value;
         }
 
         public long Multiple
         {
-            get => _multiple ?? throw new NullValueException("Multiple is null.");
+            get => _multiple ?? throw new NoValueException("Multiple has no value.");
             set => _multiple = value;
         }
 
         public CalculationMethod MarginMethod
         {
-            get => _marginMethod ?? throw new NullValueException("Margin type is null.");
+            get => _marginMethod ?? throw new NoValueException("Margin type has no value.");
             set => _marginMethod = value;
         }
 
         public CalculationMethod CommissionMethod
         {
-            get => _commissionMethod ?? throw new NullValueException("Margin type is null.");
+            get => _commissionMethod ?? throw new NoValueException("Margin type has no value.");
             set => _commissionMethod = value;
         }
 
         public InstrumentState State
         {
-            get => _instrumentState ?? throw new NullValueException("Instrument trading state is null.");
+            get => _instrumentState ?? throw new NoValueException("Instrument trading state has no value.");
             set => _instrumentState = value;
         }
 
         public DateTime StateTimestamp
         {
-            get => _stateTimestamp ?? throw new NullValueException("State timestamp is null.");
+            get => _stateTimestamp ?? throw new NoValueException("State timestamp has no value.");
             set => _stateTimestamp = value;
         }
     }

@@ -19,21 +19,21 @@ using System.Runtime.Serialization;
 namespace PetriSoft.Evelyn
 {
     [Serializable]
-    public class NullValueException : Exception
+    public class NoValueException : Exception
     {
-        public NullValueException()
+        public NoValueException()
         {
         }
 
-        public NullValueException(string? message) : base(message)
+        public NoValueException(string? message) : base(message)
         {
         }
 
-        public NullValueException(string? message, Exception? innerException) : base(message, innerException)
+        public NoValueException(string? message, Exception? innerException) : base(message, innerException)
         {
         }
 
-        protected NullValueException(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected NoValueException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

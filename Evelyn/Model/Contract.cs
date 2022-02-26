@@ -18,15 +18,19 @@ namespace PetriSoft.Evelyn.Model
 {
     public struct Contract
     {
-        private string? _instrumentID;
-        private DateOnly? _tradingDay;
-        private DateTime? _timeStamp;
-        private double? _price;
-        private ContractStatus? _status;
+        private string? _instrumentID = null;
+        private DateOnly? _tradingDay = null;
+        private DateTime? _timeStamp = null;
+        private double? _price = null;
+        private ContractStatus? _status = null;
+
+        public Contract()
+        { 
+        }
 
         public string InstrumentID
         {
-            get => _instrumentID ?? throw new NullValueException("Instrument ID is null.");
+            get => _instrumentID ?? throw new NoValueException("Instrument ID has no value.");
             set => _instrumentID = value;
         }
 
@@ -37,32 +41,32 @@ namespace PetriSoft.Evelyn.Model
 
         public DateOnly TradingDay
         {
-            get => _tradingDay ?? throw new NullValueException("Trading day is null.");
+            get => _tradingDay ?? throw new NoValueException("Trading day has no value.");
             set => _tradingDay = value;
         }
 
         public DateTime TimeStamp
         {
-            get => _timeStamp ?? throw new NullValueException("Timestamp is null.");
+            get => _timeStamp ?? throw new NoValueException("Timestamp has no value.");
             set => _timeStamp = value;
         }
 
         public ContractStatus Status
         {
-            get => _status ?? throw new NullValueException("Contract status is  null.");
+            get => _status ?? throw new NoValueException("Contract status has no value.");
             set => _status = value;
         }
 
         public double Price
         {
-            get => _price ?? throw new NullValueException("Price is null.");
+            get => _price ?? throw new NoValueException("Price has no value.");
             set => _price = value;
         }
 
-        public double? ClosePrice { get; set; }
+        public double? ClosePrice { get; set; } = null;
 
-        public DateTime? CloseTimeStamp { get; set; }
+        public DateTime? CloseTimeStamp { get; set; } = null;
 
-        public DateOnly? CloseTradingDay { get; set; }
+        public DateOnly? CloseTradingDay { get; set; } = null;
     }
 }

@@ -34,7 +34,7 @@ namespace PetriSoft.Evelyn.Model
 
         public string InstrumentID
         {
-            get => _instrumentID ?? throw new NullValueException("Instrument ID is null.");
+            get => _instrumentID ?? throw new NoValueException("Instrument ID has no value.");
             set => _instrumentID = value;
         }
 
@@ -45,13 +45,13 @@ namespace PetriSoft.Evelyn.Model
 
         public DateOnly TradingDay
         {
-            get => _tradingDay ?? throw new NullValueException("Trading day is null.");
+            get => _tradingDay ?? throw new NoValueException("Trading day has no value.");
             set => _tradingDay = value;
         }
 
         public DateTime TimeStamp
         {
-            get => _timeStamp ?? throw new NullValueException("Timestamp is null.");
+            get => _timeStamp ?? throw new NoValueException("Timestamp has no value.");
             set => _timeStamp = value;
         }
 
@@ -59,7 +59,7 @@ namespace PetriSoft.Evelyn.Model
 
         public double LastPrice
         {
-            get => _lastPrice ?? throw new NullValueException("Last price is null");
+            get => _lastPrice ?? throw new NoValueException("Last price has no value");
             set => _lastPrice = value;
         }
 
@@ -75,31 +75,31 @@ namespace PetriSoft.Evelyn.Model
 
         public long Volume
         {
-            get => _volume ?? throw new NullValueException("Volume is null.");
+            get => _volume ?? throw new NoValueException("Volume has no value.");
             set => _volume = value;
         }
 
         public long OpenInterest
         {
-            get => _openInterest ?? throw new NullValueException("Open interest is null.");
+            get => _openInterest ?? throw new NoValueException("Open interest has no value.");
             set => _openInterest = value;
         }
 
         public double PreClosePrice
         {
-            get => _preClosePrice ?? throw new NullValueException("Pre close price is null.");
+            get => _preClosePrice ?? throw new NoValueException("Pre close price has no value.");
             set => _preClosePrice = value;
         }
 
         public double PreSettlementPrice
         {
-            get => _preSettlementPrice ?? throw new NullValueException("Pre settlement price is null.");
+            get => _preSettlementPrice ?? throw new NoValueException("Pre settlement price has no value.");
             set => _preSettlementPrice = value;
         }
 
         public long PreOpenInterest
         {
-            get => _preOpenInterest ?? throw new NullValueException("Pre open interest is null.");
+            get => _preOpenInterest ?? throw new NoValueException("Pre open interest has no value.");
             set => _preOpenInterest = value;
         }
 

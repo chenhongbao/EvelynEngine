@@ -26,7 +26,7 @@ namespace PetriSoft.Evelyn.Model
 
         public double Balance
         {
-            get => _balance ?? throw new NullValueException("Balance is null.");
+            get => _balance ?? throw new NoValueException("Balance has no value.");
             set => _balance = value;
         }
     }
