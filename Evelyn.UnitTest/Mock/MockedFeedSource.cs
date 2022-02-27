@@ -14,36 +14,44 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Model;
 using Evelyn.Plugin;
+using System;
 
 namespace Evelyn.UnitTest.Mock
 {
-    internal class MockedConfigurator : IConfigurator
+    internal class MockedFeedSource : IFeedSource
     {
-        public void Create(out IBroker broker, out IFeedSource feedSource)
+        public void Subscribe(string instrumentID, IFeedHandler feedHandler)
         {
-            broker = Broker;
-            feedSource = FeedSource;
+            throw new NotImplementedException();
         }
 
-        public void Desrtoy()
+        public void Unsubscribe(string instrumentID)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public void Start()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Stop()
-        {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         #region Mocking Methods
-        internal MockedBroker Broker { get; } = new MockedBroker();
-        internal MockedFeedSource FeedSource { get; } = new MockedFeedSource();
+        internal void MockedReceive(Tick tick)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void MockedReceive(OHLC ohlc)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void MockedReceive(Instrument instrument)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void MockedReplySubscribe(string v1, Description description, bool isSubscribed, string clientID)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }

@@ -15,6 +15,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
+using System;
+using System.Collections.Generic;
 using System.Net;
 
 namespace Evelyn.UnitTest.Mock
@@ -57,5 +59,37 @@ namespace Evelyn.UnitTest.Mock
         {
             throw new System.NotImplementedException();
         }
+
+        #region Mocking Methods
+        internal void MockedSubscribe(string instrumentID, bool isSubscribed, string clientID)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void MockedNewOrder(NewOrder newOrder, string clientID)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal MockedClient GetClient(string clientID)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void MockedDelete(string orderID, string clientID)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+    }
+
+    internal class MockedClient
+    {
+        internal List<Tick> ReceivedTicks { get; } = new List<Tick>();
+        internal List<OHLC> ReceivedOHLCs { get; } = new List<OHLC>();
+        internal List<Instrument> ReceivedInstruments { get; } = new List<Instrument>();
+        internal (string, Description, bool) ReceivedSubscribe { get; private set; }
+        internal List<(Trade, Description)> ReceivedTrades { get; } = new List<(Trade, Description)>();
     }
 }
+
