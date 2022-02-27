@@ -27,6 +27,10 @@ namespace Evelyn.Model
         private long? _preOpenInterest = null;
         private double? _preClosePrice = null;
         private double? _preSettlementPrice = null;
+        private double? _askPrice = null;
+        private double? _bidPrice = null;
+        private long? _askVolume = null;
+        private long? _bidVolume = null;
 
         public Tick()
         {
@@ -103,6 +107,28 @@ namespace Evelyn.Model
             set => _preOpenInterest = value;
         }
 
-        public IReadOnlyList<TickSpread> Spreads { get; set; } = new List<TickSpread>();
+        public double AskPrice
+        {
+            get => _askPrice ?? throw new NoValueException("Ask price has no value.");
+            set => _askPrice = value;
+        }
+
+        public long AskVolume
+        {
+            get => _askVolume ?? throw new NoValueException("Ask volume has no value.");
+            set => _askVolume = value;
+        }
+
+        public double BidPrice
+        {
+            get => _bidPrice ?? throw new NoValueException("Bid price has no value.");
+            set => _bidPrice = value;
+        }
+
+        public long BidVolume
+        {
+            get => _bidVolume ?? throw new NoValueException("Bid volume has no value.");
+            set => _bidVolume = value;
+        }
     }
 }
