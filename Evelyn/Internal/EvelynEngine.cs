@@ -14,10 +14,11 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using PetriSoft.Evelyn.Plugin;
+using Evelyn.Model;
+using Evelyn.Plugin;
 using System.Net;
 
-namespace PetriSoft.Evelyn.Internal
+namespace Evelyn.Internal
 {
     internal class EvelynEngine : IEvelyn
     {
@@ -27,22 +28,57 @@ namespace PetriSoft.Evelyn.Internal
 
         public IConfigurator Configurator => throw new NotImplementedException();
 
-        public IEvelyn EnableLocalClient(LocalClient client)
+        public void Configure(IConfigurator configurator)
         {
             throw new NotImplementedException();
         }
 
-        public IEvelyn EnableManagement(bool remote = false, EndPoint? managementListening = null)
+        public IEvelyn EnableLocalClient(IAlgorithm algorithm, params string[] instrumentID)
         {
             throw new NotImplementedException();
         }
 
-        public IEvelyn EnableOHLC(IOHLCGenerator? generator = null)
+        public IEvelyn EnableLocalClient(IAlgorithm algorithm, Account account, params string[] instrumentID)
         {
             throw new NotImplementedException();
         }
 
-        public IEvelyn EnableRemoteClient(EndPoint? point = null)
+        public IEvelyn EnableLocalClient(IAlgorithm algorithm, Position position, params string[] instrumentID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEvelyn EnableLocalClient(IAlgorithm algorithm, Account account, Position position, params string[] instrumentID)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEvelyn EnableLocalManagement()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEvelyn EnableManagement()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEvelyn EnableOHLC()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEvelyn EnableOHLC(IOHLCGenerator generator)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEvelyn EnableRemoteClient()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEvelyn EnableRemoteClient(EndPoint listeningEndPoint)
         {
             throw new NotImplementedException();
         }
@@ -52,7 +88,12 @@ namespace PetriSoft.Evelyn.Internal
             throw new NotImplementedException();
         }
 
-        public void Setup(IConfigurator configurator)
+        public IEvelyn EnableRemoteManagement()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEvelyn EnableRemoteManagement(EndPoint listeningEndPoint)
         {
             throw new NotImplementedException();
         }

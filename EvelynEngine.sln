@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evelyn", "Evelyn\Evelyn.csproj", "{F805E298-993C-4BCE-AECD-5EE18B5FBD4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evelyn", "Evelyn\Evelyn.csproj", "{F805E298-993C-4BCE-AECD-5EE18B5FBD4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evelyn.UnitTest", "Evelyn.UnitTest\Evelyn.UnitTest.csproj", "{E744EF48-9EED-4E23-87B9-046DB2227880}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{F805E298-993C-4BCE-AECD-5EE18B5FBD4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F805E298-993C-4BCE-AECD-5EE18B5FBD4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F805E298-993C-4BCE-AECD-5EE18B5FBD4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E744EF48-9EED-4E23-87B9-046DB2227880}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E744EF48-9EED-4E23-87B9-046DB2227880}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E744EF48-9EED-4E23-87B9-046DB2227880}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E744EF48-9EED-4E23-87B9-046DB2227880}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
