@@ -14,6 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using PetriSoft.Evelyn.Model;
 using PetriSoft.Evelyn.Plugin;
 using System.Net;
 
@@ -26,17 +27,34 @@ namespace PetriSoft.Evelyn
             return new Internal.EvelynEngine();
         }
 
-        public void Setup(IConfigurator configurator);
+        public void Configure(IConfigurator configurator);
 
-        public IEvelyn EnableOHLC(IOHLCGenerator? generator = null);
+        public IEvelyn EnableOHLC();
 
-        public IEvelyn EnableRemoteClient(EndPoint? point = null);
+        public IEvelyn EnableOHLC(IOHLCGenerator generator);
+
+        public IEvelyn EnableRemoteClient();
+
+        public IEvelyn EnableRemoteClient(EndPoint listeningEndPoint);
 
         public IEvelyn EnableRemoteClient(IClientService clientService);
 
-        public IEvelyn EnableLocalClient(LocalClient client);
+        public IEvelyn EnableLocalClient(IAlgorithm algorithm, params string[] instrumentID);
 
-        public IEvelyn EnableManagement(bool remote = false, EndPoint? managementListening = null);
+        public IEvelyn EnableLocalClient(IAlgorithm algorithm, Account account, params string[] instrumentID);
+
+        public IEvelyn EnableLocalClient(IAlgorithm algorithm, Position position, params string[] instrumentID);
+
+        public IEvelyn EnableLocalClient(IAlgorithm algorithm, Account account, Position position, params string[] instrumentID);
+
+        public IEvelyn EnableManagement();
+
+        public IEvelyn EnableLocalManagement();
+
+        public IEvelyn EnableRemoteManagement();
+
+        public IEvelyn EnableRemoteManagement(EndPoint listeningEndPoint);
+
         public EndPoint? ClientServiceEndPoint { get; }
 
         public EndPoint? ManagementEndPoint { get; }

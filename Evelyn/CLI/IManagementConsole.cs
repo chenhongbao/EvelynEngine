@@ -25,6 +25,6 @@ namespace PetriSoft.Evelyn.CLI
         /// Set up management console.
         /// </summary>
         /// <param name="args">Program command line arguments.</param>
-        public void Setup(string[] args);
+        public void Run(string[] args);
     }
 }

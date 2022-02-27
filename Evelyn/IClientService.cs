@@ -15,11 +15,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using PetriSoft.Evelyn.Model;
+using System.Net;
 
 namespace PetriSoft.Evelyn
 {
     public interface IClientService
     {
+        public EndPoint? ServiceEndPoint { get; }
+
         public void ToClient(Tick tick, string clientID);
 
         public void ToClient(OHLC ohlc, string clientID);
