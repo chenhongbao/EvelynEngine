@@ -23,18 +23,18 @@ namespace PetriSoft.Evelyn
     {
         public EndPoint? ServiceEndPoint { get; }
 
-        public void ToClient(Tick tick, string clientID);
+        public void SendTick(Tick tick, string clientID);
 
-        public void ToClient(OHLC ohlc, string clientID);
+        public void SendOHLC(OHLC ohlc, string clientID);
 
-        public void ToClient(Instrument instrument, string clientID);
+        public void SendInstrument(Instrument instrument, string clientID);
 
-        public void ToClient(string instrumentID, Description description, bool isSubscribed, string clientID);
+        public void SendSubscribe(string instrumentID, Description description, bool isSubscribed, string clientID);
 
-        public void ToClient(Trade trade, Description description, string clientID);
+        public void SendTrade(Trade trade, Description description, string clientID);
 
-        public void FromClient(IClientOrderHandler orderHandler);
+        public void ReceiveOrder(IClientOrderHandler orderHandler);
 
-        public void FromClient(IClientSubscriptionHandler subscriptionHandler);
+        public void ReceiveSubscribe(IClientSubscriptionHandler subscriptionHandler);
     }
 }

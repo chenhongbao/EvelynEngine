@@ -18,6 +18,6 @@ namespace PetriSoft.Evelyn
 {
     public interface IClientSubscriptionHandler
     {
-        public void OnSubscribed(string instrumentID, bool isSubscribed, string clientID);
+        public void OnSubscribe(string instrumentID, bool isSubscribed, string clientID);
     }
 }
