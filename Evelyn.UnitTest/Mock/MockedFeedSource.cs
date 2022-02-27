@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using Evelyn.Model;
 using Evelyn.Plugin;
 using System;
+using System.Collections.Generic;
 
 namespace Evelyn.UnitTest.Mock
 {
@@ -48,10 +49,12 @@ namespace Evelyn.UnitTest.Mock
             throw new NotImplementedException();
         }
 
-        internal void MockedReplySubscribe(string v1, Description description, bool isSubscribed, string clientID)
+        internal void MockedReplySubscribe(string instrumentID, Description description, bool isSubscribed, string clientID)
         {
             throw new NotImplementedException();
         }
+        internal List<string> SubscribedInstruments { get; } = new List<string>();
+        internal List<string> UnsubscribedInstruments { get; } = new List<string>();
         #endregion
     }
 }

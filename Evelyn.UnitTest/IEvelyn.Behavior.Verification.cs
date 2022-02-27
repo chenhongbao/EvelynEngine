@@ -64,6 +64,9 @@ namespace Evelyn.UnitTest
              * 1. Client subscribes for instrument and feed source replies OK.
              */
             mockedClientService.MockedSubscribe("l2205", true, "MOCKED_CLIENT");
+
+            Assert.AreEqual("l2205", mockedConfiguator.FeedSource.SubscribedInstruments[0]);
+
             mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, true, "MOCKED_CLIENT");
 
             var client = mockedClientService.GetClient("MOCKED_CLIENT");
@@ -86,6 +89,13 @@ namespace Evelyn.UnitTest
             CompareCollection(MockedTicks.Where(tick => tick.InstrumentID == "l2205").ToList(), client.ReceivedTicks);
             CompareCollection(MockedOHLCs.Where(ohlc => ohlc.InstrumentID == "l2205").ToList(), client.ReceivedOHLCs);
             CompareCollection(MockedInstruments.Where(instrument => instrument.InstrumentID == "l2205").ToList(), client.ReceivedInstruments);
+
+            /*
+             * 4. Unsubscribe instrument.
+             */
+            mockedClientService.MockedSubscribe("l2205", false, "MOCKED_CLIENT");
+
+            Assert.AreEqual("l2205", mockedConfiguator.FeedSource.UnsubscribedInstruments[0]);
 
             /*
              * Engine receives order request from client, route the order to broker, then forward the responses from broker to client.
