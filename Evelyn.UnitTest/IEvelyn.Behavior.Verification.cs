@@ -19,7 +19,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Evelyn
 {
     [TestClass]
-    internal class EvelynBehaviorVerfication
+    public class EvelynBehaviorVerfication
     {
+        [TestMethod("IEvelyn calls IClientService's methods correctly.")]
+        public void CallClientService()
+        {
+
+        }
     }
 }
