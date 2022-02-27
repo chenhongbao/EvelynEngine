@@ -8,7 +8,7 @@
 
     <AssemblyName>Evelyn.UnitTest</AssemblyName>
 
-    <RootNamespace>Evelyn</RootNamespace>
+    <RootNamespace>Evelyn.UnitTest</RootNamespace>
 
     <Copyright>GNU Affero General Public License Version 3</Copyright>
 

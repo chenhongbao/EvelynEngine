@@ -15,26 +15,29 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Plugin;
-using Evelyn.UnitTest.Mock;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Evelyn.UnitTest
+namespace Evelyn.UnitTest.Mock
 {
-    [TestClass]
-    public class EvelynBehaviorVerfication
+    internal class MockedConfigurator : IConfigurator
     {
-        [TestMethod("IEvelyn calls IClientService's methods correctly.")]
-        public void CallClientService()
+        public void Create(out IBroker broker, out IFeedSource feedSource)
         {
-            IEvelyn engine = IEvelyn.New();
+            throw new System.NotImplementedException();
+        }
 
-            var mockedClientService = new MockedClientService();
-            var mockedConfiguator = new MockedConfigurator();
+        public void Desrtoy()
+        {
+            throw new System.NotImplementedException();
+        }
 
-            engine.EnableRemoteClient(mockedClientService)
-                .Configure(mockedConfiguator);
+        public void Start()
+        {
+            throw new System.NotImplementedException();
+        }
 
-            // TODO Write test codes.
+        public void Stop()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
