@@ -196,7 +196,7 @@ namespace Evelyn.UnitTest
              */
             mockedClientService.MockedDelete("MOCKED_ORDER_1", "MOCKED_CLIENT");
 
-            Assert.AreEqual("MOCKED_ORDER_1", client.ReceivedInstruments[0]);
+            Assert.AreEqual("MOCKED_ORDER_1", mockedConfiguator.Broker.ReceivedDeleteOrders[0]);
 
             mockedConfiguator.Broker.MockedTrade(
                 new Trade
