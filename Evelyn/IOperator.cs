@@ -23,9 +23,5 @@ namespace Evelyn
         public void New(NewOrder newOrder);
 
         public void Delete(string orderID);
-
-        public Account Account { get; }
-
-        public Position Position { get; }
     }
 }

@@ -70,8 +70,6 @@ namespace Evelyn.UnitTest.Mock
         internal List<(Trade, Description)> ReceivedTrades { get; } = new List<(Trade, Description)>();
         internal bool IsLoaded { get; private set; } = false;
         internal bool IsUnloaded { get; private set; } = false;
-        internal Account Account => _op?.Account ?? throw new NoValueException("Operator has no value.");
-        internal Position Position => _op?.Position ?? throw new NoValueException("Operator has no value.");
 
         internal void MockedNewOrder(NewOrder newOrder)
         {
