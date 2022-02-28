@@ -4,14 +4,13 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-    <RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
     <Authors>Chen Hongbao</Authors>
-    <Company></Company>
     <Copyright>GNU Affero General Public License Version 3</Copyright>
-    <AssemblyVersion></AssemblyVersion>
-    <FileVersion></FileVersion>
-    <Description>Evelyn is a quantitative trading engine.</Description>
+    <Description>Official Configurators for Evelyn Engine.</Description>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Evelyn\Evelyn.csproj" />
+  </ItemGroup>
 
 </Project>

@@ -6,17 +6,17 @@
 
     <IsPackable>false</IsPackable>
 
-    <AssemblyName>Evelyn.UnitTest</AssemblyName>
+    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
 
-    <RootNamespace>Evelyn.UnitTest</RootNamespace>
+    <RootNamespace>$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
 
     <Copyright>GNU Affero General Public License Version 3</Copyright>
 
-    <Description>Unit Tests for PetriSoft Evelyn Engine.</Description>
+    <Description>Unit tests for Evelyn Engine.</Description>
 
-    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <AssemblyVersion></AssemblyVersion>
 
-    <FileVersion>1.0.0</FileVersion>
+    <FileVersion></FileVersion>
 
     <Authors>Chen Hongbao</Authors>
 
