@@ -34,14 +34,61 @@ namespace Evelyn.UnitTest
         public void Initialize()
         {
             /*
-             * Initialize mocked ticks and OHLCs.
+             * Initialize mocked data.
              */
+            var baseTime = DateTime.Now;
+            var baseDay = DateOnly.FromDateTime(baseTime);
 
-            // TODO Initialize market data.
+            /*
+             * 1. Create mocked ticks.
+             */
+            for (var count = 0; count < 2; ++count)
+            {
+                MockedTicks.Add(new Tick { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddSeconds(count * 6), LastPrice = 5555, Volume = 555, OpenInterest = 55, PreClosePrice = 5555, PreSettlementPrice = 5555, PreOpenInterest = 55, AskPrice = 5555, AskVolume = 555, BidPrice = 5554, BidVolume = 554 });
+                MockedTicks.Add(new Tick { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddSeconds(count * 6 + 1), LastPrice = 5555, Volume = 555, OpenInterest = 55, PreClosePrice = 5555, PreSettlementPrice = 5555, PreOpenInterest = 55, AskPrice = 5555, AskVolume = 555, BidPrice = 5554, BidVolume = 554 });
+                MockedTicks.Add(new Tick { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddSeconds(count * 6 + 2), LastPrice = 5555, Volume = 555, OpenInterest = 55, PreClosePrice = 5555, PreSettlementPrice = 5555, PreOpenInterest = 55, AskPrice = 5555, AskVolume = 555, BidPrice = 5554, BidVolume = 554 });
+                MockedTicks.Add(new Tick { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddSeconds(count * 6 + 3), LastPrice = 5555, Volume = 555, OpenInterest = 55, PreClosePrice = 5555, PreSettlementPrice = 5555, PreOpenInterest = 55, AskPrice = 5555, AskVolume = 555, BidPrice = 5554, BidVolume = 554 });
+                MockedTicks.Add(new Tick { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddSeconds(count * 6 + 4), LastPrice = 5555, Volume = 555, OpenInterest = 55, PreClosePrice = 5555, PreSettlementPrice = 5555, PreOpenInterest = 55, AskPrice = 5555, AskVolume = 555, BidPrice = 5554, BidVolume = 554 });
+                MockedTicks.Add(new Tick { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddSeconds(count * 6 + 5), LastPrice = 5555, Volume = 555, OpenInterest = 55, PreClosePrice = 5555, PreSettlementPrice = 5555, PreOpenInterest = 55, AskPrice = 5555, AskVolume = 555, BidPrice = 5554, BidVolume = 554 });
+            }
+
+            /*
+             * 2. Create mocked OHLC.
+             */
+            for (var count = 0; count < 2; ++count)
+            {
+                MockedOHLCs.Add(new OHLC { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddMinutes(count * 6), OpenPrice = 5555, HighPrice = 5555, LowPrice = 5555, ClosePrice = 5555, OpenInterest = 55, Volume = 555, Time = TimeSpan.FromMinutes(1) });
+                MockedOHLCs.Add(new OHLC { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddMinutes(count * 6 + 1), OpenPrice = 5555, HighPrice = 5555, LowPrice = 5555, ClosePrice = 5555, OpenInterest = 55, Volume = 555, Time = TimeSpan.FromMinutes(1) });
+                MockedOHLCs.Add(new OHLC { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddMinutes(count * 6 + 2), OpenPrice = 5555, HighPrice = 5555, LowPrice = 5555, ClosePrice = 5555, OpenInterest = 55, Volume = 555, Time = TimeSpan.FromMinutes(1) });
+                MockedOHLCs.Add(new OHLC { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddMinutes(count * 6 + 3), OpenPrice = 5555, HighPrice = 5555, LowPrice = 5555, ClosePrice = 5555, OpenInterest = 55, Volume = 555, Time = TimeSpan.FromMinutes(1) });
+                MockedOHLCs.Add(new OHLC { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddMinutes(count * 6 + 4), OpenPrice = 5555, HighPrice = 5555, LowPrice = 5555, ClosePrice = 5555, OpenInterest = 55, Volume = 555, Time = TimeSpan.FromMinutes(1) });
+                MockedOHLCs.Add(new OHLC { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddMinutes(count * 6 + 5), OpenPrice = 5555, HighPrice = 5555, LowPrice = 5555, ClosePrice = 5555, OpenInterest = 55, Volume = 555, Time = TimeSpan.FromMinutes(1) });
+            }
+
+            /*
+             * 3. Create mocked instrument updates.
+             */
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(1), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionOrdering, StateTimestamp = baseTime.AddHours(1) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(2), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionBalance, StateTimestamp = baseTime.AddHours(2) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(3), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionMatch, StateTimestamp = baseTime.AddHours(3) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(4), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.BeforeTrading, StateTimestamp = baseTime.AddHours(4) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(5), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(5) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(6), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.NonTrading, StateTimestamp = baseTime.AddHours(6) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(7), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(7) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(8), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Closed, StateTimestamp = baseTime.AddHours(8) });
+
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(1), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionOrdering, StateTimestamp = baseTime.AddHours(1) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(2), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionBalance, StateTimestamp = baseTime.AddHours(2) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(3), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionMatch, StateTimestamp = baseTime.AddHours(3) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(4), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.BeforeTrading, StateTimestamp = baseTime.AddHours(4) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(5), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(5) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "p2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(6), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.NonTrading, StateTimestamp = baseTime.AddHours(6) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(7), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(7) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(8), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Closed, StateTimestamp = baseTime.AddHours(8) });
         }
 
 
-        [TestMethod("IEvelyn calls IClientService's methods correctly.")]
+        [TestMethod("IEvelyn calls IClientService's methods.")]
         public void CallClientService()
         {
             IEvelyn engine = IEvelyn.New();
