@@ -21,7 +21,6 @@ namespace Evelyn.Model
         Opening = 1,
         Open,
         Closing,
-        Closed,
-        Deleted
+        Closed
     }
 }

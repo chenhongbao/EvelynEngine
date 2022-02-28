@@ -14,35 +14,13 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-namespace Evelyn.UnitTest
+namespace Evelyn.Model
 {
-    [TestClass]
-    public class EvelynAccountPositionValidation
+    public enum Offset
     {
-        [TestMethod("Run local client with default account and position.")]
-        public void RunWithDefaultAccountPosition()
-        {
-
-        }
-
-        [TestMethod("Run local client with default account.")]
-        public void RunWithDefaultAccount()
-        {
-
-        }
-
-        [TestMethod("Run local client with default position.")]
-        public void RunWithDefaultPosition()
-        {
-
-        }
-
-        [TestMethod("Run local client with the specified account and position.")]
-        public void RunWithAccountPosition()
-        {
-
-        }
+        Open = 1,
+        Close,
+        CloseToday,
+        CloseYesterday
     }
 }

@@ -71,7 +71,7 @@ namespace Evelyn.UnitTest.Mock
             throw new NotImplementedException();
         }
 
-        internal MockedClient GetClient(string clientID)
+        internal MockedClient GetClientOrCreate(string clientID)
         {
             throw new NotImplementedException();
         }

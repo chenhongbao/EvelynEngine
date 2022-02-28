@@ -16,11 +16,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace Evelyn.Model
 {
-    public enum OrderOffset
+    public enum Direction
     {
-        Open = 1,
-        Close,
-        CloseToday,
-        CloseYesterday
+        Buy = 1,
+        Sell
     }
 }

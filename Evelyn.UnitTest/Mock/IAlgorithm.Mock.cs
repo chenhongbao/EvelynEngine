@@ -23,6 +23,7 @@ namespace Evelyn.UnitTest.Mock
 {
     internal class MockedLocalClient : IAlgorithm
     {
+        private IOperator? _op;
         public void OnFeed(Tick tick)
         {
             throw new System.NotImplementedException();
@@ -40,7 +41,9 @@ namespace Evelyn.UnitTest.Mock
 
         public void OnLoad(IOperator op)
         {
-            throw new System.NotImplementedException();
+            _op = op;
+            IsLoaded = true;
+            IsUnloaded = false;
         }
 
         public void OnSubscribed(string instrumentID, Description description, bool subscribed)
@@ -55,7 +58,8 @@ namespace Evelyn.UnitTest.Mock
 
         public void OnUnload()
         {
-            throw new System.NotImplementedException();
+            IsUnloaded = true;
+            IsLoaded = false;
         }
 
         #region Mocking Methods
@@ -66,13 +70,15 @@ namespace Evelyn.UnitTest.Mock
         internal List<(Trade, Description)> ReceivedTrades { get; } = new List<(Trade, Description)>();
         internal bool IsLoaded { get; private set; } = false;
         internal bool IsUnloaded { get; private set; } = false;
+        internal Account Account => _op?.Account ?? throw new NoValueException("Operator has no value.");
+        internal Position Position => _op?.Position ?? throw new NoValueException("Operator has no value.");
 
         internal void MockedNewOrder(NewOrder newOrder)
         {
             throw new NotImplementedException();
         }
 
-        internal void MockedDelete(string v)
+        internal void MockedDelete(string orderID)
         {
             throw new NotImplementedException();
         }

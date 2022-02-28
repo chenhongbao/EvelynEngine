@@ -22,6 +22,7 @@ namespace Evelyn.Model
         private DateOnly? _tradingDay = null;
         private DateTime? _timeStamp = null;
         private double? _price = null;
+        private Direction? _direction = null;
         private ContractStatus? _status = null;
 
         public Contract()
@@ -49,6 +50,12 @@ namespace Evelyn.Model
         {
             get => _timeStamp ?? throw new NoValueException("Timestamp has no value.");
             set => _timeStamp = value;
+        }
+
+        public Direction? Direction
+        {
+            get => _direction ?? throw new NoValueException("Contract direction has no value.");
+            set => _direction = value;
         }
 
         public ContractStatus Status

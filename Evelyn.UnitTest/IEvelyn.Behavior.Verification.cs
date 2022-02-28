@@ -39,6 +39,10 @@ namespace Evelyn.UnitTest
             var baseTime = DateTime.Now;
             var baseDay = DateOnly.FromDateTime(baseTime);
 
+            MockedTicks.Clear();
+            MockedOHLCs.Clear();
+            MockedInstruments.Clear();
+
             /*
              * 1. Create mocked ticks.
              */
@@ -88,8 +92,8 @@ namespace Evelyn.UnitTest
         }
 
 
-        [TestMethod("IEvelyn calls IClientService's methods.")]
-        public void CallClientService()
+        [TestMethod("Run feed source for client service.")]
+        public void RunFeedSourceForClientService()
         {
             IEvelyn engine = IEvelyn.New();
 
@@ -107,6 +111,8 @@ namespace Evelyn.UnitTest
              * 3. Engine selects the feeds of the subscribed instruments and forwards them to client.
              */
 
+            var client = mockedClientService.GetClientOrCreate("MOCKED_CLIENT");
+
             /*
              * 1. Client subscribes for instrument and feed source replies OK.
              */
@@ -115,8 +121,6 @@ namespace Evelyn.UnitTest
             Assert.AreEqual("l2205", mockedConfiguator.FeedSource.SubscribedInstruments[0]);
 
             mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, true);
-
-            var client = mockedClientService.GetClient("MOCKED_CLIENT");
 
             Assert.AreEqual("l2205", client.ReceivedSubscribe.Item1);
             Assert.AreEqual(0, client.ReceivedSubscribe.Item2.Code);
@@ -156,6 +160,48 @@ namespace Evelyn.UnitTest
             Assert.AreEqual(0, client.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual("OK", client.ReceivedSubscribe.Item2.Message);
             Assert.AreEqual(false, client.ReceivedSubscribe.Item3);
+        }
+
+        [TestMethod("Run order for client service.")]
+        public void RunOrderForClientService()
+        {
+            var baseTime = DateTime.Now;
+            var baseDay = DateOnly.FromDateTime(baseTime);
+
+            IEvelyn engine = IEvelyn.New();
+
+            var mockedClientService = new MockedClientService();
+            var mockedConfiguator = new MockedConfigurator();
+
+            engine.EnableRemoteClient(mockedClientService)
+                .RegisterInstrument(
+                new Instrument
+                {
+                    InstrumentID = "l2205",
+                    TradingDay = baseDay,
+                    TimeStamp = baseTime,
+                    Margin = 0.11,
+                    Commission = 1.01,
+                    Multiple = 5,
+                    MarginMethod = CalculationMethod.PerAmount,
+                    CommissionMethod = CalculationMethod.PerVolume,
+                    State = InstrumentState.Closed,
+                    StateTimestamp = baseTime
+                },
+                new Instrument
+                {
+                    InstrumentID = "pp2205",
+                    TradingDay = baseDay,
+                    TimeStamp = baseTime,
+                    Margin = 0.11,
+                    Commission = 1.01,
+                    Multiple = 5,
+                    MarginMethod = CalculationMethod.PerAmount,
+                    CommissionMethod = CalculationMethod.PerVolume,
+                    State = InstrumentState.Closed,
+                    StateTimestamp = baseTime
+                })
+                .Configure(mockedConfiguator);
 
             /*
              * Engine receives order request from client, route the order to broker, then forward the responses from broker to client.
@@ -167,6 +213,9 @@ namespace Evelyn.UnitTest
              * 5. Engine routes the deleting request to broker.
              * 6. Broker deletes the unfinished order and returns trade with deletion state.
              */
+
+            var client = mockedClientService.GetClientOrCreate("MOCKED_CLIENT");
+            var fakeClient = mockedClientService.GetClientOrCreate("MOCKED_CLIENT_FAKE");
 
             /*
              * 1. Client requests a new order with specified client ID, and engine routes the order to broker.
@@ -180,8 +229,8 @@ namespace Evelyn.UnitTest
                     OrderID = "MOCKED_ORDER_1",
                     Price = 8888,
                     Quantity = 2,
-                    Direction = OrderDirection.Buy,
-                    Offset = OrderOffset.Open,
+                    Direction = Direction.Buy,
+                    Offset = Offset.Open,
                 },
                 "MOCKED_CLIENT");
 
@@ -198,8 +247,8 @@ namespace Evelyn.UnitTest
                     OrderID = "MOCKED_ORDER_FAKE_1",
                     Price = 7777,
                     Quantity = 3,
-                    Direction = OrderDirection.Buy,
-                    Offset = OrderOffset.Open,
+                    Direction = Direction.Buy,
+                    Offset = Offset.Open,
                 },
                 "MOCKED_CLIENT_FAKE");
 
@@ -229,8 +278,8 @@ namespace Evelyn.UnitTest
                     OrderID = "MOCKED_ORDER_1",
                     Price = 8888,
                     Quantity = 2,
-                    Direction = OrderDirection.Buy,
-                    Offset = OrderOffset.Open,
+                    Direction = Direction.Buy,
+                    Offset = Offset.Open,
                     TradeID = "MOCKED_ORDER_1_TRADE_1",
                     TradePrice = 8890,
                     TradeQuantity = 1,
@@ -280,8 +329,8 @@ namespace Evelyn.UnitTest
                     OrderID = "MOCKED_ORDER_1",
                     Price = 8888,
                     Quantity = 2,
-                    Direction = OrderDirection.Buy,
-                    Offset = OrderOffset.Open,
+                    Direction = Direction.Buy,
+                    Offset = Offset.Open,
                     TradeID = "MOCKED_ORDER_1_TRADE_2",
                     TradePrice = 0, /* no actual trade happens, so price and volume are 0*/
                     TradeQuantity = 0,
@@ -318,8 +367,6 @@ namespace Evelyn.UnitTest
             /*
              * Check the fake client receives no trade.
              */
-            var fakeClient = mockedClientService.GetClient("MOCKED_CLIENT_FAKE");
-
             Assert.AreEqual(0, fakeClient.ReceivedTrades.Count);
         }
 
@@ -374,6 +421,7 @@ namespace Evelyn.UnitTest
              * 
              * The mocked client subscribes for the specified instrument so it will received the OHLC.
              */
+            var client = mockedClientService.GetClientOrCreate("MOCKED_CLIENT");
 
             mockedClientService.MockedSubscribe("l2205", true, "MOCKED_CLIENT");
             mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, true);
@@ -382,8 +430,6 @@ namespace Evelyn.UnitTest
              * Here sends the ticks.
              */
             MockedTicks.ForEach(tick => mockedConfiguator.FeedSource.MockedReceive(tick));
-
-            var client = mockedClientService.GetClient("MOCKED_CLIENT");
 
             Assert.AreEqual(1, client.ReceivedOHLCs.Count);
             Assert.AreEqual(mockedOHLCGenerator.GeneratedOHLC, client.ReceivedOHLCs[0]);
@@ -586,8 +632,8 @@ namespace Evelyn.UnitTest
                     OrderID = "MOCKED_ORDER_1",
                     Price = 8888,
                     Quantity = 2,
-                    Direction = OrderDirection.Buy,
-                    Offset = OrderOffset.Open,
+                    Direction = Direction.Buy,
+                    Offset = Offset.Open,
                 });
 
             /*
@@ -602,8 +648,8 @@ namespace Evelyn.UnitTest
                     OrderID = "MOCKED_ORDER_FAKE_1",
                     Price = 7777,
                     Quantity = 3,
-                    Direction = OrderDirection.Buy,
-                    Offset = OrderOffset.Open,
+                    Direction = Direction.Buy,
+                    Offset = Offset.Open,
                 });
 
             /*
@@ -635,8 +681,8 @@ namespace Evelyn.UnitTest
                     OrderID = "MOCKED_ORDER_1",
                     Price = 8888,
                     Quantity = 2,
-                    Direction = OrderDirection.Buy,
-                    Offset = OrderOffset.Open,
+                    Direction = Direction.Buy,
+                    Offset = Offset.Open,
                     TradeID = "MOCKED_ORDER_1_TRADE_1",
                     TradePrice = 8890,
                     TradeQuantity = 1,
@@ -691,8 +737,8 @@ namespace Evelyn.UnitTest
                     OrderID = "MOCKED_ORDER_1",
                     Price = 8888,
                     Quantity = 2,
-                    Direction = OrderDirection.Buy,
-                    Offset = OrderOffset.Open,
+                    Direction = Direction.Buy,
+                    Offset = Offset.Open,
                     TradeID = "MOCKED_ORDER_1_TRADE_2",
                     TradePrice = 0, /* no actual trade happens, so price and volume are 0*/
                     TradeQuantity = 0,

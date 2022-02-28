@@ -24,8 +24,8 @@ namespace Evelyn.Model
         private string? _orderID = null;
         private double? _price = null;
         private long? _quantity = null;
-        private OrderDirection? _direction = null;
-        private OrderOffset? _offset = null;
+        private Direction? _direction = null;
+        private Offset? _offset = null;
         private string? _tradeID = null;
         private double? _tradePrice = null;
         private long? _tradeQuantity = null;
@@ -79,13 +79,13 @@ namespace Evelyn.Model
             set => _quantity = value;
         }
 
-        public OrderDirection Direction
+        public Direction Direction
         {
             get => _direction ?? throw new NoValueException("Direction has no value");
             set => _direction = value;
         }
 
-        public OrderOffset Offset
+        public Offset Offset
         {
             get => _offset ?? throw new NoValueException("Offset has no value.");
             set => _offset = value;
