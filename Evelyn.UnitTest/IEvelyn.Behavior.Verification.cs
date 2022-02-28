@@ -369,7 +369,8 @@ namespace Evelyn.UnitTest
 
             var client = mockedClientService.GetClient("MOCKED_CLIENT");
 
-            client.ReceivedOHLCs[0].Equals(mockedOHLCGenerator.GeneratedOHLC);
+            Assert.AreEqual(1, client.ReceivedOHLCs.Count);
+            Assert.AreEqual(mockedOHLCGenerator.GeneratedOHLC, client.ReceivedOHLCs[0]);
         }
     }
 }
