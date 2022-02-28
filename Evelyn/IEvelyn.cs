@@ -39,15 +39,15 @@ namespace Evelyn
 
         public IEvelyn EnableRemoteClient(IClientService clientService);
 
-        public IEvelyn EnableLocalClient(IAlgorithm algorithm, params string[] instrumentID);
+        public IEvelyn EnableLocalClient(string name, IAlgorithm algorithm, params string[] instrumentID);
 
-        public IEvelyn EnableLocalClient(IAlgorithm algorithm, Account account, params string[] instrumentID);
+        public IEvelyn EnableLocalClient(string name, IAlgorithm algorithm, Account account, params string[] instrumentID);
 
-        public IEvelyn EnableLocalClient(IAlgorithm algorithm, Position position, params string[] instrumentID);
+        public IEvelyn EnableLocalClient(string name, IAlgorithm algorithm, Position position, params string[] instrumentID);
 
-        public IEvelyn EnableLocalClient(IAlgorithm algorithm, Account account, Position position, params string[] instrumentID);
+        public IEvelyn EnableLocalClient(string name, IAlgorithm algorithm, Account account, Position position, params string[] instrumentID);
 
-        public IEvelyn AlterLocalClient(IAlgorithm algorithm, Account? account, Position? position, params string[] instrumentID);
+        public IEvelyn AlterLocalClient(string name, Account? account, Position? position, params string[] instrumentID);
 
         public IEvelyn EnableManagement();
 

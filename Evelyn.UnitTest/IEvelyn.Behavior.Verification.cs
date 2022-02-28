@@ -400,8 +400,8 @@ namespace Evelyn.UnitTest
             var mockedConfiguator = new MockedConfigurator();
 
             engine.EnableRemoteClient(mockedClientService)
-                .EnableLocalClient(mockedClient, "l2205")
-                .EnableLocalClient(mockedClientFake, "pp2205")
+                .EnableLocalClient("MockedClient", mockedClient, "l2205")
+                .EnableLocalClient("MockedClientFake", mockedClientFake, "pp2205")
                 .Configure(mockedConfiguator);
 
             /*
@@ -461,7 +461,7 @@ namespace Evelyn.UnitTest
              * 
              * Just change the subscribed instruments, then extra instruments are requested, and missing instruments are unsubscribed.
              */
-            engine.AlterLocalClient(mockedClient, null, null, "pp2205");
+            engine.AlterLocalClient("MockedClient", null, null, "pp2205");
 
             /*
              * Check feed source receives unsubscription request.
@@ -532,8 +532,8 @@ namespace Evelyn.UnitTest
             /*
              * Prepare engine for ordering.
              */
-            engine.EnableLocalClient(mockedClient, "l2205")
-                .EnableLocalClient(mockedClientFake, "pp2205")
+            engine.EnableLocalClient("MockedClient", mockedClient, "l2205")
+                .EnableLocalClient("MockedClientFake", mockedClientFake, "pp2205")
                 .RegisterInstrument(
                 new Instrument
                 {
