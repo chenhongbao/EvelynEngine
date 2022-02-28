@@ -317,6 +317,10 @@ namespace Evelyn.UnitTest
             while (++index < c1.Count)
             {
                 var e0 = c0.ElementAt(index) ?? throw new NoValueException("Left operand has no value at index " + index + ".");
+                
+                /*
+                 * Struct's Equals method compares the value.
+                 */
                 if (index >= c0.Count && !e0.Equals(c1.ElementAt(index)))
                 {
                     return index;
@@ -332,23 +336,40 @@ namespace Evelyn.UnitTest
                 return int.MaxValue;
             }
         }
-    }
 
-    internal static class MockedExtension
-    {
-        public static bool Equals(this Tick e0, Tick e1)
+        [TestMethod("Call OHLC generator.")]
+        public void CallOHLCGenerator()
         {
-            return e0.InstrumentID == e1.InstrumentID && e0.TimeStamp == e1.TimeStamp;
-        }
+            IEvelyn engine = IEvelyn.New();
 
-        public static bool Equals(this OHLC e0, OHLC e1)
-        {
-            return e0.InstrumentID == e1.InstrumentID && e0.TimeStamp == e1.TimeStamp;
-        }
+            var mockedOHLCGenerator = new MockedOHLCGenerator();
+            var mockedClientService = new MockedClientService();
+            var mockedConfiguator = new MockedConfigurator();
 
-        public static bool Equals(this Instrument e0, Instrument e1)
-        {
-            return e0.InstrumentID == e1.InstrumentID && e0.TimeStamp == e1.TimeStamp;
+            engine.EnableOHLC(mockedOHLCGenerator)
+                .EnableRemoteClient(mockedClientService)
+                .Configure(mockedConfiguator);
+
+            /*
+             * Engine calls customized OHCLGenerator to generate OHLC data. When the interface returns null, no OHLC is available, or returns an OHLC instance.
+             * 
+             * 1. Mocked generator returns an OHLC at the first Tick.
+             * 2. Mocked generator returns null after the first OHLC.
+             * 
+             * The mocked client subscribes for the specified instrument so it will received the OHLC.
+             */
+
+            mockedClientService.MockedSubscribe("l2205", true, "MOCKED_CLIENT");
+            mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, true, "MOCKED_CLIENT");
+
+            /*
+             * Here sends the ticks.
+             */
+            MockedTicks.ForEach(tick => mockedConfiguator.FeedSource.MockedReceive(tick));
+
+            var client = mockedClientService.GetClient("MOCKED_CLIENT");
+
+            client.ReceivedOHLCs[0].Equals(mockedOHLCGenerator.GeneratedOHLC);
         }
     }
 }
