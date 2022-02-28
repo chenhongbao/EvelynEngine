@@ -15,6 +15,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
+using Evelyn.Plugin;
 using Evelyn.UnitTest.Mock;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -114,7 +115,7 @@ namespace Evelyn.UnitTest
 
             Assert.AreEqual("l2205", mockedConfiguator.FeedSource.SubscribedInstruments[0]);
 
-            mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, true, "MOCKED_CLIENT");
+            mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, true);
 
             var client = mockedClientService.GetClient("MOCKED_CLIENT");
 
@@ -142,7 +143,20 @@ namespace Evelyn.UnitTest
              */
             mockedClientService.MockedSubscribe("l2205", false, "MOCKED_CLIENT");
 
+            /*
+             * Feed source receives unsubscription request.
+             */
             Assert.AreEqual("l2205", mockedConfiguator.FeedSource.UnsubscribedInstruments[0]);
+
+            mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, false);
+
+            /*
+             * Client receives unsubscription response.
+             */
+            Assert.AreEqual("l2205", client.ReceivedSubscribe.Item1);
+            Assert.AreEqual(0, client.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual("OK", client.ReceivedSubscribe.Item2.Message);
+            Assert.AreEqual(false, client.ReceivedSubscribe.Item3);
 
             /*
              * Engine receives order request from client, route the order to broker, then forward the responses from broker to client.
@@ -317,7 +331,7 @@ namespace Evelyn.UnitTest
             while (++index < c1.Count)
             {
                 var e0 = c0.ElementAt(index) ?? throw new NoValueException("Left operand has no value at index " + index + ".");
-                
+
                 /*
                  * Struct's Equals method compares the value.
                  */
@@ -360,7 +374,7 @@ namespace Evelyn.UnitTest
              */
 
             mockedClientService.MockedSubscribe("l2205", true, "MOCKED_CLIENT");
-            mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, true, "MOCKED_CLIENT");
+            mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, true);
 
             /*
              * Here sends the ticks.
@@ -371,6 +385,134 @@ namespace Evelyn.UnitTest
 
             Assert.AreEqual(1, client.ReceivedOHLCs.Count);
             Assert.AreEqual(mockedOHLCGenerator.GeneratedOHLC, client.ReceivedOHLCs[0]);
+        }
+
+        [TestMethod("Run feed source on local client.")]
+        public void RunFeedSourceForLocalClient()
+        {
+            IEvelyn engine = IEvelyn.New();
+
+            var mockedClient = new MockedLocalClient();
+            var mockedClientFake = new MockedLocalClient();
+            var mockedClientService = new MockedClientService();
+            var mockedConfiguator = new MockedConfigurator();
+
+            engine.EnableRemoteClient(mockedClientService)
+                .EnableLocalClient(mockedClient, "l2205")
+                .EnableLocalClient(mockedClientFake, "pp2205")
+                .Configure(mockedConfiguator);
+
+            /*
+             * Engine tranfers messages between broker and client.
+             * 
+             * Client mocks requests to engine, and broker and feed source mocks market data to client.
+             * Engine assigns a unique client ID to each client internally.
+             */
+
+            /*
+             * 1. Client subscribes for instrument.
+             * 
+             * The client doesn't explicitly subscribe an instrument. When the client is registered with
+             * the engine, subscribed instrument ID is passed to engine as another parameter.
+             * 
+             * So here just check the feed source receives the subscription request.
+             */
+            Assert.AreEqual(2, mockedConfiguator.FeedSource.SubscribedInstruments.Count);
+            Assert.IsTrue(mockedConfiguator.FeedSource.SubscribedInstruments.Contains("l2205"));
+            Assert.IsTrue(mockedConfiguator.FeedSource.SubscribedInstruments.Contains("pp2205"));
+
+            /*
+             * Feed source sends the subscription responses.
+             */
+            mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK-l2205" }, true);
+            mockedConfiguator.FeedSource.MockedReplySubscribe("pp2205", new Description { Code = 0, Message = "OK-pp2205" }, true);
+
+            /*
+             * And also client receives subscription response.
+             */
+            Assert.AreEqual("l2205", mockedClient.ReceivedSubscribe.Item1);
+            Assert.AreEqual(0, mockedClient.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual("OK-l2205", mockedClient.ReceivedSubscribe.Item2.Message);
+            Assert.AreEqual(true, mockedClient.ReceivedSubscribe.Item3);
+
+            Assert.AreEqual("pp2205", mockedClientFake.ReceivedSubscribe.Item1);
+            Assert.AreEqual(0, mockedClientFake.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual("OK-pp2205", mockedClientFake.ReceivedSubscribe.Item2.Message);
+            Assert.AreEqual(true, mockedClientFake.ReceivedSubscribe.Item3);
+
+            /*
+             * 2. Client receives market data.
+             * 
+             * Just check any of the clients receives correct market data. Again, client receives market
+             * data in the order they are sent.
+             */
+            MockedTicks.ForEach(tick => mockedConfiguator.FeedSource.MockedReceive(tick));
+            MockedOHLCs.ForEach(ohlc => mockedConfiguator.FeedSource.MockedReceive(ohlc));
+            MockedInstruments.ForEach(instrument => mockedConfiguator.FeedSource.MockedReceive(instrument));
+
+            CompareCollection(MockedTicks.Where(tick => tick.InstrumentID == "l2205").ToList(), mockedClient.ReceivedTicks);
+            CompareCollection(MockedOHLCs.Where(ohlc => ohlc.InstrumentID == "l2205").ToList(), mockedClient.ReceivedOHLCs);
+            CompareCollection(MockedInstruments.Where(instrument => instrument.InstrumentID == "l2205").ToList(), mockedClient.ReceivedInstruments);
+
+            /*
+             * 3. Change subscribed instruments by calling AlterLocalClient method.
+             * 
+             * Just change the subscribed instruments, then extra instruments are requested, and missing instruments are unsubscribed.
+             */
+            engine.AlterLocalClient(mockedClient, null, null, "pp2205");
+
+            /*
+             * Check feed source receives unsubscription request.
+             */
+            Assert.AreEqual(1, mockedConfiguator.FeedSource.UnsubscribedInstruments.Count);
+            Assert.AreEqual("l2205", mockedConfiguator.FeedSource.UnsubscribedInstruments[0]);
+
+            /*
+             * Check feed source receives subscription for pp2205, from altered client.
+             */
+            Assert.AreEqual(3, mockedConfiguator.FeedSource.SubscribedInstruments.Count);
+            Assert.AreEqual("pp2205", mockedConfiguator.FeedSource.SubscribedInstruments.Last());
+
+            /*
+             * Feed source sends the unsubscription response.
+             */
+            mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, false);
+
+            /*
+             * Client receives unsubscription response.
+             */
+            Assert.AreEqual("l2205", mockedClient.ReceivedSubscribe.Item1);
+            Assert.AreEqual(0, mockedClient.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual("OK", mockedClient.ReceivedSubscribe.Item2.Message);
+            Assert.AreEqual(false, mockedClient.ReceivedSubscribe.Item3);
+
+            /*
+             * Feed source sends new subscription response for pp2205, to altered client.
+             */
+            mockedConfiguator.FeedSource.MockedReplySubscribe("pp2205", new Description { Code = 0, Message = "OK" }, true);
+
+            /*
+             * Client receives new subscription response for pp2205.
+             */
+            Assert.AreEqual("pp2205", mockedClient.ReceivedSubscribe.Item1);
+            Assert.AreEqual(0, mockedClient.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual("OK", mockedClient.ReceivedSubscribe.Item2.Message);
+            Assert.AreEqual(true, mockedClient.ReceivedSubscribe.Item3);
+
+            mockedClient.ReceivedTicks.Clear();
+            mockedClient.ReceivedOHLCs.Clear();
+            mockedClient.ReceivedInstruments.Clear();
+
+            /*
+             * Feed source sends market data again, and client shall receives only newly subscribed data.
+             */
+            MockedTicks.ForEach(tick => mockedConfiguator.FeedSource.MockedReceive(tick));
+            MockedOHLCs.ForEach(ohlc => mockedConfiguator.FeedSource.MockedReceive(ohlc));
+            MockedInstruments.ForEach(instrument => mockedConfiguator.FeedSource.MockedReceive(instrument));
+
+            CompareCollection(MockedTicks.Where(tick => tick.InstrumentID == "pp2205").ToList(), mockedClient.ReceivedTicks);
+            CompareCollection(MockedOHLCs.Where(ohlc => ohlc.InstrumentID == "pp2205").ToList(), mockedClient.ReceivedOHLCs);
+            CompareCollection(MockedInstruments.Where(instrument => instrument.InstrumentID == "pp2205").ToList(), mockedClient.ReceivedInstruments);
         }
     }
 }

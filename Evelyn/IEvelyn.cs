@@ -47,6 +47,8 @@ namespace Evelyn
 
         public IEvelyn EnableLocalClient(IAlgorithm algorithm, Account account, Position position, params string[] instrumentID);
 
+        public IEvelyn AlterLocalClient(IAlgorithm algorithm, Account? account, Position? position, params string[] instrumentID);
+
         public IEvelyn EnableManagement();
 
         public IEvelyn EnableLocalManagement();

@@ -49,7 +49,7 @@ namespace Evelyn.UnitTest.Mock
             throw new NotImplementedException();
         }
 
-        internal void MockedReplySubscribe(string instrumentID, Description description, bool isSubscribed, string clientID)
+        internal void MockedReplySubscribe(string instrumentID, Description description, bool isSubscribed)
         {
             throw new NotImplementedException();
         }
