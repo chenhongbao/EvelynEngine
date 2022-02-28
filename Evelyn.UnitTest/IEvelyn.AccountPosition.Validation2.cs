@@ -109,7 +109,7 @@ namespace Evelyn.UnitTest
                     State = InstrumentState.Closed,
                     StateTimestamp = baseTime
                 })
-                .EnableLocalClient("InitialPositionClient", Client, position, "l2205")
+                .EnableLocalClient("InitialPositionClient", Client, new Account { Balance = 100000 }, position, "l2205")
                 .Configure(Configurator);
         }
 
