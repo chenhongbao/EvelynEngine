@@ -28,6 +28,11 @@ namespace Evelyn.Internal
 
         public IConfigurator Configurator => throw new NotImplementedException();
 
+        public IEvelyn AlterLocalClient(IAlgorithm algorithm, Account? account, Position? position, params string[] instrumentID)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Configure(IConfigurator configurator)
         {
             throw new NotImplementedException();
