@@ -57,6 +57,8 @@ namespace Evelyn
 
         public IEvelyn EnableRemoteManagement(EndPoint listeningEndPoint);
 
+        public IEvelyn RegisterInstrument(params Instrument[] instruments);
+
         public EndPoint? ClientServiceEndPoint { get; }
 
         public EndPoint? ManagementEndPoint { get; }

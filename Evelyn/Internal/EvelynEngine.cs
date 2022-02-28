@@ -102,5 +102,10 @@ namespace Evelyn.Internal
         {
             throw new NotImplementedException();
         }
+
+        public IEvelyn RegisterInstrument(params Instrument[] instruments)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

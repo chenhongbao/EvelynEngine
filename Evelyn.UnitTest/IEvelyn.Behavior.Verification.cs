@@ -15,7 +15,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
-using Evelyn.Plugin;
 using Evelyn.UnitTest.Mock;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -69,23 +68,23 @@ namespace Evelyn.UnitTest
             /*
              * 3. Create mocked instrument updates.
              */
-            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(1), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionOrdering, StateTimestamp = baseTime.AddHours(1) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(2), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionBalance, StateTimestamp = baseTime.AddHours(2) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(3), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionMatch, StateTimestamp = baseTime.AddHours(3) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(4), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.BeforeTrading, StateTimestamp = baseTime.AddHours(4) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(5), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(5) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(6), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.NonTrading, StateTimestamp = baseTime.AddHours(6) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(7), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(7) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(8), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Closed, StateTimestamp = baseTime.AddHours(8) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(1), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionOrdering, StateTimestamp = baseTime.AddHours(1) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(2), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionBalance, StateTimestamp = baseTime.AddHours(2) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(3), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionMatch, StateTimestamp = baseTime.AddHours(3) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(4), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.BeforeTrading, StateTimestamp = baseTime.AddHours(4) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(5), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(5) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(6), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.NonTrading, StateTimestamp = baseTime.AddHours(6) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(7), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(7) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(8), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Closed, StateTimestamp = baseTime.AddHours(8) });
 
-            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(1), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionOrdering, StateTimestamp = baseTime.AddHours(1) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(2), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionBalance, StateTimestamp = baseTime.AddHours(2) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(3), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionMatch, StateTimestamp = baseTime.AddHours(3) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(4), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.BeforeTrading, StateTimestamp = baseTime.AddHours(4) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(5), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(5) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "p2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(6), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.NonTrading, StateTimestamp = baseTime.AddHours(6) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(7), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(7) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(8), Margin = 0.00055, Commission = 0.55, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Closed, StateTimestamp = baseTime.AddHours(8) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(1), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionOrdering, StateTimestamp = baseTime.AddHours(1) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(2), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionBalance, StateTimestamp = baseTime.AddHours(2) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(3), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionMatch, StateTimestamp = baseTime.AddHours(3) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(4), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.BeforeTrading, StateTimestamp = baseTime.AddHours(4) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(5), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(5) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "p2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(6), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.NonTrading, StateTimestamp = baseTime.AddHours(6) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(7), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(7) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(8), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Closed, StateTimestamp = baseTime.AddHours(8) });
         }
 
 
@@ -246,6 +245,9 @@ namespace Evelyn.UnitTest
                     Message = "Order is trading."
                 });
 
+            /*
+             * Client receives trade response.
+             */
             var trade = client.ReceivedTrades[0].Item1;
 
             Assert.AreEqual("l2205", trade.InstrumentID);
@@ -513,6 +515,219 @@ namespace Evelyn.UnitTest
             CompareCollection(MockedTicks.Where(tick => tick.InstrumentID == "pp2205").ToList(), mockedClient.ReceivedTicks);
             CompareCollection(MockedOHLCs.Where(ohlc => ohlc.InstrumentID == "pp2205").ToList(), mockedClient.ReceivedOHLCs);
             CompareCollection(MockedInstruments.Where(instrument => instrument.InstrumentID == "pp2205").ToList(), mockedClient.ReceivedInstruments);
+        }
+
+        [TestMethod("Run order on local client.")]
+        public void RunOrderForLocalClient()
+        {
+            var baseTime = DateTime.Now;
+            var baseDay = DateOnly.FromDateTime(baseTime);
+
+            IEvelyn engine = IEvelyn.New();
+
+            var mockedClient = new MockedLocalClient();
+            var mockedClientFake = new MockedLocalClient();
+            var mockedConfiguator = new MockedConfigurator();
+
+            /*
+             * Prepare engine for ordering.
+             */
+            engine.EnableLocalClient(mockedClient, "l2205")
+                .EnableLocalClient(mockedClientFake, "pp2205")
+                .RegisterInstrument(
+                new Instrument
+                {
+                    InstrumentID = "l2205",
+                    TradingDay = baseDay,
+                    TimeStamp = baseTime,
+                    Margin = 0.11,
+                    Commission = 1.01,
+                    Multiple = 5,
+                    MarginMethod = CalculationMethod.PerAmount,
+                    CommissionMethod = CalculationMethod.PerVolume,
+                    State = InstrumentState.Closed,
+                    StateTimestamp = baseTime
+                },
+                new Instrument
+                {
+                    InstrumentID = "pp2205",
+                    TradingDay = baseDay,
+                    TimeStamp = baseTime,
+                    Margin = 0.11,
+                    Commission = 1.01,
+                    Multiple = 5,
+                    MarginMethod = CalculationMethod.PerAmount,
+                    CommissionMethod = CalculationMethod.PerVolume,
+                    State = InstrumentState.Closed,
+                    StateTimestamp = baseTime
+                })
+                .Configure(mockedConfiguator);
+
+            /*
+             * Client requests new order, order is partly traded, and then client deletes the order.
+             * 
+             * 1. Client request new order and mocked broker receives the new order request.
+             * 2. Mocked broker sends a trade and client receives the trade response.
+             * 3. Client deletes the existing order and mocked broker receives deletion request, deletes the order and sends update with deletion status.
+             * 4. Client receives the deletion update.
+             * 
+             * The fake client receives no responses on the order.
+             */
+
+            /*
+             * 1. Clients request two orders.
+             */
+            mockedClient.MockedNewOrder(
+                new NewOrder
+                {
+                    InstrumentID = "l2205",
+                    TradingDay = DateOnly.MaxValue,
+                    TimeStamp = DateTime.MaxValue,
+                    OrderID = "MOCKED_ORDER_1",
+                    Price = 8888,
+                    Quantity = 2,
+                    Direction = OrderDirection.Buy,
+                    Offset = OrderOffset.Open,
+                });
+
+            /*
+             * Let fake client requests another new order.
+             */
+            mockedClientFake.MockedNewOrder(
+                new NewOrder
+                {
+                    InstrumentID = "l2205",
+                    TradingDay = DateOnly.MaxValue,
+                    TimeStamp = DateTime.MaxValue,
+                    OrderID = "MOCKED_ORDER_FAKE_1",
+                    Price = 7777,
+                    Quantity = 3,
+                    Direction = OrderDirection.Buy,
+                    Offset = OrderOffset.Open,
+                });
+
+            /*
+             * Check broker receives two order requests.
+             */
+            var newOrder = mockedConfiguator.Broker.ReceivedNewOrders[0];
+
+            Assert.AreEqual("l2205", newOrder.InstrumentID);
+            Assert.AreEqual("MOCKED_ORDER_1", newOrder.OrderID);
+            Assert.AreEqual(8888, newOrder.Price);
+            Assert.AreEqual(2, newOrder.Quantity);
+
+            newOrder = mockedConfiguator.Broker.ReceivedNewOrders[1];
+
+            Assert.AreEqual("l2205", newOrder.InstrumentID);
+            Assert.AreEqual("MOCKED_ORDER_FAKE_1", newOrder.OrderID);
+            Assert.AreEqual(7777, newOrder.Price);
+            Assert.AreEqual(3, newOrder.Quantity);
+
+            /*
+             * 2. Broker sends a trade response.
+             */
+            mockedConfiguator.Broker.MockedTrade(
+                new Trade
+                {
+                    InstrumentID = "l2205",
+                    TradingDay = DateOnly.MaxValue,
+                    TimeStamp = DateTime.MaxValue,
+                    OrderID = "MOCKED_ORDER_1",
+                    Price = 8888,
+                    Quantity = 2,
+                    Direction = OrderDirection.Buy,
+                    Offset = OrderOffset.Open,
+                    TradeID = "MOCKED_ORDER_1_TRADE_1",
+                    TradePrice = 8890,
+                    TradeQuantity = 1,
+                    LeaveQuantity = 1,
+                    TradeTimeStamp = DateTime.MaxValue,
+                    Status = OrderStatus.Trading,
+                    Message = "Trading"
+                },
+                new Description
+                {
+                    Code = 0,
+                    Message = "Order is trading."
+                });
+
+            /*
+             * Client receives the trade response.
+             */
+            var trade = mockedClient.ReceivedTrades[0].Item1;
+
+            Assert.AreEqual("l2205", trade.InstrumentID);
+            Assert.AreEqual("MOCKED_ORDER_1", trade.OrderID);
+            Assert.AreEqual("MOCKED_ORDER_1_TRADE_1", trade.TradeID);
+            Assert.AreEqual(2, trade.Quantity);
+            Assert.AreEqual(1, trade.TradeQuantity);
+            Assert.AreEqual(1, trade.LeaveQuantity);
+            Assert.AreEqual(8890, trade.TradePrice);
+            Assert.AreEqual(OrderStatus.Trading, trade.Status);
+
+            var description = mockedClient.ReceivedTrades[0].Item2;
+
+            Assert.AreEqual(0, description.Code);
+            Assert.AreEqual("Order is trading.", description.Message);
+
+            /*
+             * 3. Client sends a deletion request, broker receives the request and deletes the requested order, and sends
+             * back a trade update with deletion status.
+             */
+
+            mockedClient.MockedDelete("MOCKED_ORDER_1");
+
+            Assert.AreEqual("MOCKED_ORDER_1", mockedConfiguator.Broker.ReceivedDeleteOrders[0]);
+
+            /*
+             * Mocked broker sends a trade update with deletion status.
+             */
+            mockedConfiguator.Broker.MockedTrade(
+                new Trade
+                {
+                    InstrumentID = "l2205",
+                    TradingDay = DateOnly.MaxValue,
+                    TimeStamp = DateTime.MaxValue,
+                    OrderID = "MOCKED_ORDER_1",
+                    Price = 8888,
+                    Quantity = 2,
+                    Direction = OrderDirection.Buy,
+                    Offset = OrderOffset.Open,
+                    TradeID = "MOCKED_ORDER_1_TRADE_2",
+                    TradePrice = 0, /* no actual trade happens, so price and volume are 0*/
+                    TradeQuantity = 0,
+                    LeaveQuantity = 1,
+                    TradeTimeStamp = DateTime.MaxValue,
+                    Status = OrderStatus.Deleted, /* status is deleted */
+                    Message = "Deleted"
+                },
+                new Description
+                {
+                    Code = 1,
+                    Message = "Order is deleted."
+                });
+
+            /*
+             * 4. Client receives the deletion update.
+             */
+            trade = mockedClient.ReceivedTrades[1].Item1;
+
+            Assert.AreEqual("l2205", trade.InstrumentID);
+            Assert.AreEqual("MOCKED_ORDER_1", trade.OrderID);
+            Assert.AreEqual("MOCKED_ORDER_1_TRADE_2", trade.TradeID);
+            Assert.AreEqual(0, trade.TradePrice);
+            Assert.AreEqual(0, trade.TradeQuantity);
+            Assert.AreEqual(OrderStatus.Deleted, trade.Status);
+
+            description = mockedClient.ReceivedTrades[1].Item2;
+
+            Assert.AreEqual(1, description.Code);
+            Assert.AreEqual("Order is deleted.", description.Message);
+
+            /*
+             * Check the fake client receives no trade.
+             */
+            Assert.AreEqual(0, mockedClientFake.ReceivedTrades.Count);
         }
     }
 }

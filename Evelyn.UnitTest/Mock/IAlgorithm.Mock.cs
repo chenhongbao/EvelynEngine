@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
 using Evelyn.Plugin;
+using System;
 using System.Collections.Generic;
 
 namespace Evelyn.UnitTest.Mock
@@ -65,6 +66,16 @@ namespace Evelyn.UnitTest.Mock
         internal List<(Trade, Description)> ReceivedTrades { get; } = new List<(Trade, Description)>();
         internal bool IsLoaded { get; private set; } = false;
         internal bool IsUnloaded { get; private set; } = false;
+
+        internal void MockedNewOrder(NewOrder newOrder)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void MockedDelete(string v)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
     }
 }
