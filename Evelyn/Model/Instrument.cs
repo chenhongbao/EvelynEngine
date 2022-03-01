@@ -44,57 +44,57 @@ namespace Evelyn.Model
         public string Symbol { get; set; } = string.Empty;
 
 
-        public DateOnly TradingDay
+        public DateOnly? TradingDay
         {
-            get => _tradingDay ?? throw new NoValueException("Trading day has no value.");
+            get => _tradingDay;
             set => _tradingDay = value;
         }
 
-        public DateTime TimeStamp
+        public DateTime? TimeStamp
         {
-            get => _timeStamp ?? throw new NoValueException("Timestamp has no value.");
+            get => _timeStamp;
             set => _timeStamp = value;
         }
 
-        public double Margin
+        public double? Margin
         {
-            get => _margin ?? throw new NoValueException("Margin rate has no value.");
+            get => _margin;
             set => _margin = value;
         }
 
-        public double Commission
+        public double? Commission
         {
-            get => _commission ?? throw new NoValueException("Commission rate has no value.");
+            get => _commission;
             set => _commission = value;
         }
 
-        public long Multiple
+        public long? Multiple
         {
-            get => _multiple ?? throw new NoValueException("Multiple has no value.");
+            get => _multiple;
             set => _multiple = value;
         }
 
-        public CalculationMethod MarginMethod
+        public CalculationMethod? MarginMethod
         {
-            get => _marginMethod ?? throw new NoValueException("Margin type has no value.");
+            get => _marginMethod;
             set => _marginMethod = value;
         }
 
-        public CalculationMethod CommissionMethod
+        public CalculationMethod? CommissionMethod
         {
-            get => _commissionMethod ?? throw new NoValueException("Margin type has no value.");
+            get => _commissionMethod;
             set => _commissionMethod = value;
         }
 
-        public InstrumentState State
+        public InstrumentState? State
         {
-            get => _instrumentState ?? throw new NoValueException("Instrument trading state has no value.");
+            get => _instrumentState;
             set => _instrumentState = value;
         }
 
-        public DateTime StateTimestamp
+        public DateTime? StateTimestamp
         {
-            get => _stateTimestamp ?? throw new NoValueException("State timestamp has no value.");
+            get => _stateTimestamp;
             set => _stateTimestamp = value;
         }
     }

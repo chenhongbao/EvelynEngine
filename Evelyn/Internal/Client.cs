@@ -40,5 +40,7 @@ namespace Evelyn.Internal
         public IAlgorithm Algorithm => _algorithm ?? throw new NoValueException("Client algorithm has no value.");
 
         public IClientService Service => _service;
+
+        public IEnumerable<ClientOrder> Orders { get; private init; } = new List<ClientOrder>();
     }
 }

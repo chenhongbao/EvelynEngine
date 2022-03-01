@@ -26,11 +26,11 @@ namespace Evelyn.Internal
         private EngineFeedSource? _feedSource;
         private EngineFeedHandler? _feedHandler;
 
-        private EngineBroker Broker => _broker ?? throw new NoValueException("Engine broker has no value.");
+        internal EngineBroker Broker => _broker ?? throw new NoValueException("Engine broker has no value.");
 
-        private EngineFeedSource FeedSource => _feedSource ?? throw new NoValueException("Enginefeed source has no value.");
+        internal EngineFeedSource FeedSource => _feedSource ?? throw new NoValueException("Enginefeed source has no value.");
 
-        private EngineFeedHandler FeedHandler => _feedHandler ?? throw new NoValueException("Engine feed handler has no value.");
+        internal EngineFeedHandler FeedHandler => _feedHandler ?? throw new NoValueException("Engine feed handler has no value.");
 
         public List<Client> Clients => new List<Client>(_clients.Values);
 
@@ -107,6 +107,7 @@ namespace Evelyn.Internal
                 else
                 {
                     FeedSource.Subscribe(new List<string> { instrumentID }, true);
+                    client.Subscription.Subscribe(instrumentID, true);
                 }
             }
             else
@@ -121,6 +122,7 @@ namespace Evelyn.Internal
                 else
                 {
                     FeedSource.Subscribe(new List<string> { instrumentID }, false);
+                    client.Subscription.Subscribe(instrumentID, false);
                 }
             }
         }

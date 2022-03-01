@@ -14,12 +14,23 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace Evelyn.Model
+using Evelyn.Model;
+
+namespace Evelyn.Internal
 {
-    public enum TriggerType
+    internal class ClientOrder
     {
-        Immediate = 1,
-        Moment,
-        StateChange
+        private readonly NewOrder _order;
+        private readonly string _uniqueOrderID;
+
+        public ClientOrder(NewOrder newOrder, string uniqueOrderID)
+        {
+            _order = newOrder;
+            _uniqueOrderID = uniqueOrderID;
+        }
+        
+        internal NewOrder OriginalOrder => _order;
+
+        internal string UniqueOrderID => _uniqueOrderID;
     }
 }

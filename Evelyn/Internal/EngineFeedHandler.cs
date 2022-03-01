@@ -22,6 +22,8 @@ namespace Evelyn.Internal
     internal class EngineFeedHandler : IFeedHandler
     {
         private readonly EngineClientHandler _clients;
+        private readonly Dictionary<string, Instrument> _instruments = new Dictionary<string, Instrument>();
+        private readonly ISet<(Action, string, InstrumentState)> _scheduledJobs = new HashSet<(Action, string, InstrumentState)>();
 
         public EngineFeedHandler(EngineClientHandler clientHandler)
         {
@@ -50,15 +52,55 @@ namespace Evelyn.Internal
             });
         }
 
+        internal void SaveInstrument(Instrument instrument)
+        {
+            if (!_instruments.TryAdd(instrument.InstrumentID, instrument))
+            {
+                _instruments[instrument.InstrumentID] = instrument;
+            }
+        }
+
+        internal void ScheduleOrder(Action job, string instrumentID, InstrumentState state)
+        {
+            if (_instruments.TryGetValue(instrumentID, out var instrument) && instrument.State == state)
+            {
+                job();
+            }
+            else
+            {
+                _scheduledJobs.Add((job, instrumentID, state));
+            }
+        }
+
         public void OnInstrument(Instrument instrument)
         {
+            /*
+             * Save the instrument.
+             */
+            SaveInstrument(instrument);
+
             _clients.Clients.ForEach(client =>
             {
-                if (client.Subscription.Instruments.Contains(instrument.InstrumentID))
+                var instrumentID = instrument.InstrumentID;
+                if (client.Subscription.Instruments.Contains(instrumentID))
                 {
-                    client.Service.SendInstrument(instrument, client.ClientID);
+                    client.Service.SendInstrument(_instruments[instrumentID], client.ClientID);
                 }
             });
+
+            /*
+             * Check scheduled jobs and run if it meets the condition.
+             */
+            var enumerator = _scheduledJobs.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                var job = enumerator.Current;
+
+                if (job.Item2 == instrument.InstrumentID && job.Item3 == instrument.State)
+                {
+                    job.Item1();
+                }
+            }
         }
 
         public void OnSubscribed(string instrumentID, Description description, bool subscribed)

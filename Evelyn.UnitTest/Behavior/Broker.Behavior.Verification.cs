@@ -280,7 +280,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     Trigger = new TriggerCondition 
                     {
-                        When = TriggerType.InstrumentStateChange,
+                        When = TriggerType.StateChange,
                         StateChange = InstrumentState.Continous
                     }
                 });
@@ -394,7 +394,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     Trigger = new TriggerCondition
                     {
-                        When = TriggerType.InstrumentStateChange,
+                        When = TriggerType.StateChange,
                         StateChange = InstrumentState.Continous
                     }
                 });

@@ -131,7 +131,8 @@ namespace Evelyn.Internal
 
         public IEvelyn InitializeInstrument(params Instrument[] instruments)
         {
-            throw new NotImplementedException();
+            instruments.ToList().ForEach(instrument => _feedHandler.SaveInstrument(instrument));
+            return this;
         }
     }
 }

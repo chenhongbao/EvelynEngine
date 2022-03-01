@@ -17,51 +17,138 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using Evelyn.Model;
 using Evelyn.Plugin;
 using System.Net;
+using Microsoft.Extensions.Logging.Debug;
+using Microsoft.Extensions.Logging;
 
 namespace Evelyn.Internal
 {
     internal class LocalClientService : IClientService
     {
         private EngineClientHandler? _clientHandler;
+        private readonly Dictionary<string, (IAlgorithm, string[])> _savedClients = new Dictionary<string, (IAlgorithm, string[])>();
 
         internal EngineClientHandler ClientHandler => _clientHandler ?? throw new NoValueException("Client handler has no value.");
+
+        internal ILogger Logger { get; private init; } = new DebugLoggerProvider().CreateLogger(nameof(LocalClientService));
 
         public EndPoint? ServiceEndPoint => throw new NotImplementedException("Local client service doesn't have an end point.");
 
         public void Service(IClientHandler clientHandler)
         {
+            if (_clientHandler != null)
+            {
+                throw new InvalidOperationException("Client service cannot be re-configured.");
+            }
+
             _clientHandler = (EngineClientHandler)clientHandler;
+
+            /*
+             * Call OnLoad when engine is configured.
+             */
+            foreach(var clientID in _savedClients.Keys)
+            {
+                var client = _savedClients[clientID];
+                InitializeClient(clientID, client.Item1, client.Item2);
+            }
+            _savedClients.Clear();
         }
 
         public void SendInstrument(Instrument instrument, string clientID)
         {
-            ClientHandler[clientID].Algorithm.OnInstrument(instrument);
+            try
+            {
+                ClientHandler[clientID].Algorithm.OnInstrument(instrument);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning("{0}\n{1}", ex.Message, ex.StackTrace);
+            }
         }
 
         public void SendOHLC(OHLC ohlc, string clientID)
         {
-            ClientHandler[clientID].Algorithm.OnFeed(ohlc);
+            try
+            {
+                ClientHandler[clientID].Algorithm.OnFeed(ohlc);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning("{0}\n{1}", ex.Message, ex.StackTrace);
+            }
         }
 
         public void SendSubscribe(string instrumentID, Description description, bool isSubscribed, string clientID)
         {
-            ClientHandler[clientID].Algorithm.OnSubscribed(instrumentID, description, isSubscribed);
+            try
+            {
+                ClientHandler[clientID].Algorithm.OnSubscribed(instrumentID, description, isSubscribed);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning("{0}\n{1}", ex.Message, ex.StackTrace);
+            }
         }
 
         public void SendTick(Tick tick, string clientID)
         {
-            ClientHandler[clientID].Algorithm.OnFeed(tick);
+            try
+            {
+                ClientHandler[clientID].Algorithm.OnFeed(tick);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning("{0}\n{1}", ex.Message, ex.StackTrace);
+            }
         }
 
         public void SendTrade(Trade trade, Description description, string clientID)
         {
-            ClientHandler[clientID].Algorithm.OnTrade(trade, description);
+            try
+            {
+                ClientHandler[clientID].Algorithm.OnTrade(trade, description);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning("{0}\n{1}", ex.Message, ex.StackTrace);
+            }
         }
 
         internal void EnableClient(string clientID, IAlgorithm algorithm, params string[] instrumentID)
         {
+            if (_clientHandler == null)
+            {
+                /*
+                 * Save the client's information and call OnLoad later after engine is configured.
+                 */
+                if (_savedClients.ContainsKey(clientID))
+                {
+                    throw new DuplicatedClientException("Another client exists with ID " + clientID + ".");
+                }
+
+                _savedClients.Add(clientID, (algorithm, instrumentID));
+            }
+            else
+            {
+                /*
+                 * Call OnLoad if engine is configured.
+                 */
+                InitializeClient(clientID, algorithm, instrumentID); 
+            }
+        }
+
+        private void InitializeClient(string clientID, IAlgorithm algorithm, params string[] instrumentID)
+        {
             ClientHandler.OnClientConnect(clientID, algorithm, this);
             instrumentID.ToList().ForEach(instrument => ClientHandler.OnSubscribe(instrument, true, clientID));
+
+            try
+            {
+                ClientHandler[clientID].Algorithm.OnLoad(new LocalClientOperator(clientID, ClientHandler));
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning("{0}\n{1}", ex.Message, ex.StackTrace);
+            }
         }
     }
 }
