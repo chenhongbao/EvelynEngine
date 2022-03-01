@@ -42,6 +42,14 @@ namespace Evelyn.Internal
                     FeedSource.Subscribe(instrument, _feedHandler);
                     _counters.Add(instrument, 1);
                 });
+
+                /*
+                 * If an instrument has been subscribed, just increase the counter.
+                 */
+                instruments.Intersect(_counters.Keys).ToList().ForEach(instrument =>
+                {
+                    ++_counters[instrument];
+                });
             }
             else
             {
