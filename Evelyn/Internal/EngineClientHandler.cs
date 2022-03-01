@@ -24,10 +24,13 @@ namespace Evelyn.Internal
         private readonly IDictionary<string, Client> _clients = new Dictionary<string, Client>();
         private EngineBroker? _broker;
         private EngineFeedSource? _feedSource;
+        private EngineFeedHandler? _feedHandler;
 
         private EngineBroker Broker => _broker ?? throw new NoValueException("Engine broker has no value.");
 
-        private EngineFeedSource FeedSource => _feedSource ?? throw new NoValueException("EngineFeedSource feed source has no value.");
+        private EngineFeedSource FeedSource => _feedSource ?? throw new NoValueException("Enginefeed source has no value.");
+
+        private EngineFeedHandler FeedHandler => _feedHandler ?? throw new NoValueException("Engine feed handler has no value.");
 
         public List<Client> Clients => new List<Client>(_clients.Values);
 
@@ -96,20 +99,43 @@ namespace Evelyn.Internal
             {
                 currentInstruments.Add(instrumentID);
                 client.Subscription.AlterInstruments(currentInstruments, out IEnumerable<string> added, out IEnumerable<string> removed);
-                FeedSource.Subscribe(added, true);
+
+                if (added.Count() == 0)
+                {
+                    /*
+                     * If instrument has been subscribed, nothing happens, and sends a response with error.
+                     */
+                    FeedHandler.OnSubscribed(instrumentID, new Description { Code = 101, Message = "Duplicated subscription for " + instrumentID + "." }, true);
+                }
+                else
+                {
+                    FeedSource.Subscribe(added, true);
+                }
             }
             else
             {
                 currentInstruments.Remove(instrumentID);
                 client.Subscription.AlterInstruments(currentInstruments, out IEnumerable<string> added, out IEnumerable<string> removed);
-                FeedSource.Subscribe(removed, false);
+
+                if (removed.Count() == 0)
+                {
+                    /*
+                     * If instrument has been unsubscribed or never subscribed, nothing happens, and sends a response with error.
+                     */
+                    FeedHandler.OnSubscribed(instrumentID, new Description { Code = 102, Message = " No such subscription for " + instrumentID + "." }, false);
+                }
+                else
+                {
+                    FeedSource.Subscribe(removed, false);
+                }
             }
         }
 
-        internal void Configure(EngineBroker broker, EngineFeedSource feedSource)
+        internal void Configure(EngineBroker broker, EngineFeedSource feedSource, EngineFeedHandler feedHandler)
         {
             _broker = broker;
             _feedSource = feedSource;
+            _feedHandler = feedHandler;
         }
     }
 }

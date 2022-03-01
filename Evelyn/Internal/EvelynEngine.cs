@@ -73,7 +73,7 @@ namespace Evelyn.Internal
 
             _feedSource.Configure(feedSource);
             _broker.Configure(broker);
-            _clientHandler.Configure(_broker, _feedSource);
+            _clientHandler.Configure(_broker, _feedSource, _feedHandler);
 
             LocalService.Service(_clientHandler);
         }
