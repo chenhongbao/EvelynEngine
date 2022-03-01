@@ -24,19 +24,29 @@ namespace Evelyn.UnitTest.Behavior
         [TestMethod("Subscribe for an instrument many times.")]
         public void SubscribeManyTimes()
         {
-
+            /*
+             * There are many clients subscribing for the same instrument.
+             * 
+             * 1. Client A subscribes for the instrument.
+             * 2. Feed source sends market data and client A receives data.
+             * 3. Client B subscribes for the same instrument.
+             * 4. Feed source sends the market data and both clients receive data.
+             */
         }
 
         [TestMethod("Unsubscribe for an instrument many times.")]
         public void UnsubscribeManyTimes()
         {
-
-        }
-
-        [TestMethod("Unsubscribe an unknown instrument.")]
-        public void UnsubscribeUnknownInstrument()
-        {
-
+            /*
+             * There are many clients subscribing for the same instrument, and then
+             * unsubscribe it.
+             * 
+             * 1. Client A and B both subscribe for an instrument.
+             * 2. Feed source sends market data and both A and B receive the data.
+             * 3. Client A unsubscribes the instrument.
+             * 4. Client A receives no data, while client B still receives data.
+             * 5. Client B unsubscribes the instrument, and none of the clients receives data anmy more.
+             */
         }
     }
 }
