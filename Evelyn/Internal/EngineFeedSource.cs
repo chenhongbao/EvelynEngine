@@ -14,6 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Model;
 using Evelyn.Plugin;
 
 namespace Evelyn.Internal
@@ -49,6 +50,11 @@ namespace Evelyn.Internal
                 instruments.Intersect(_counters.Keys).ToList().ForEach(instrument =>
                 {
                     ++_counters[instrument];
+
+                    /*
+                     * Send a fake unsubscription response to client.
+                     */
+                    _feedHandler.OnSubscribed(instrument, new Description { Code =0, Message = "OK" }, true);
                 });
             }
             else
@@ -62,6 +68,13 @@ namespace Evelyn.Internal
                         {
                             FeedSource.Unsubscribe(instrument);
                             _counters.Remove(instrument);
+                        }
+                        else
+                        {
+                            /*
+                             * Send a fake unsubscription response to client.
+                             */
+                            _feedHandler.OnSubscribed(instrument, new Description { Code = 0, Message = "OK" }, false);
                         }
                     }
                 });

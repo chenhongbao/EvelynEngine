@@ -65,7 +65,7 @@ namespace Evelyn.UnitTest.Mock
         internal List<Tick> ReceivedTicks { get; } = new List<Tick>();
         internal List<OHLC> ReceivedOHLCs { get; } = new List<OHLC>();
         internal List<Instrument> ReceivedInstruments { get; } = new List<Instrument>();
-        internal (string, Description, bool) ReceivedSubscribe { get; private set; }
+        internal (string, Description, bool) ReceivedSubscribe { get; private set; } = (string.Empty, new Description(), false);
         internal List<(Trade, Description)> ReceivedTrades { get; } = new List<(Trade, Description)>();
         internal bool IsLoaded { get; private set; } = false;
         internal bool IsUnloaded { get; private set; } = false;

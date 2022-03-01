@@ -84,18 +84,24 @@ namespace Evelyn.Internal
                 throw new NoSuchClientException("No such clien with ID " + clientID + ".");
             }
 
-            var currentInstruments = _clients[clientID].Subscription.Instruments;
+            var client = _clients[clientID];
+            var currentInstruments = client.Subscription.Instruments;
+
+            /*
+             * Response to subscription of the instrument shall be routed to this client.
+             */
+            client.Subscription.MarkSubscriptionResponse(instrumentID, waitResponse: true);
 
             if (isSubscribed)
             {
                 currentInstruments.Add(instrumentID);
-                _clients[clientID].Subscription.AlterInstruments(currentInstruments, out IEnumerable<string> added, out IEnumerable<string> removed);
+                client.Subscription.AlterInstruments(currentInstruments, out IEnumerable<string> added, out IEnumerable<string> removed);
                 FeedSource.Subscribe(added, true);
             }
             else
             {
                 currentInstruments.Remove(instrumentID);
-                _clients[clientID].Subscription.AlterInstruments(currentInstruments, out IEnumerable<string> added, out IEnumerable<string> removed);
+                client.Subscription.AlterInstruments(currentInstruments, out IEnumerable<string> added, out IEnumerable<string> removed);
                 FeedSource.Subscribe(removed, false);
             }
         }

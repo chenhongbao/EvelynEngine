@@ -53,9 +53,16 @@ namespace Evelyn.Internal
 
         public IEvelyn AlterLocalClient(string clientID, params string[] instrumentID)
         {
+            /* 
+             * Find out the new added and removed instruments.
+             */
             _clientHandler[clientID].Subscription.AlterInstruments(instrumentID, out IEnumerable<string> added, out IEnumerable<string> removed);
-            FeedSource.Subscribe(added, true)
-                .Subscribe(removed, false);
+
+            /*
+             * Call IClientHandler methods to handle the instruments, so all kinds of subscription go through the same logic.
+             */
+            added.ToList().ForEach(instrument => _clientHandler.OnSubscribe(instrument, true, clientID));
+            removed.ToList().ForEach(instrument => _clientHandler.OnSubscribe(instrument, false, clientID));
             return this;
         }
 

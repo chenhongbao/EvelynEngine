@@ -27,6 +27,8 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * Many clients subscribe for the same instrument and feed source receives
              * subscription request only at the first subscription.
+             * 
+             * All clients receive subscription response.
              */
         }
 
@@ -36,6 +38,8 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * Many clients unsubscribe the same instrument and feed source receives
              * the unsubscription request only at the last unsubscription.
+             * 
+             * All clients receive unsubscription response.
              */
         }
 
@@ -43,7 +47,7 @@ namespace Evelyn.UnitTest.Behavior
         public void UnsubscribeManyTimeAfterRemoved()
         {
             /*
-             * Unsubscribe a removed instrument throws exception.
+             * Unsubscribe a removed instrument sends error response to client.
              */
         }
     }

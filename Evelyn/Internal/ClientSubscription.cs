@@ -19,12 +19,14 @@ namespace Evelyn.Internal
     internal class ClientSubscription
     {
         private readonly ISet<string> _instruments;
+        private readonly ISet<string> _responses;
         private readonly string _clientID;
 
         public ClientSubscription(string clientID)
         {
             _clientID = clientID;
             _instruments = new HashSet<string>();
+            _responses = new HashSet<string>();
         }
 
         public string ClientID => _clientID;
@@ -46,6 +48,23 @@ namespace Evelyn.Internal
              */
             _instruments.Clear();
             _instruments.UnionWith(alteredInstruments);
+        }
+
+        internal bool WaitSubscriptionResponse(string instrumentID)
+        {
+            return _responses.Contains(instrumentID);
+        }
+
+        internal void MarkSubscriptionResponse(string instrumentID, bool waitResponse)
+        {
+            if (waitResponse)
+            {
+                _responses.Add(instrumentID);
+            }
+            else
+            {
+                _responses.Remove(instrumentID);
+            }
         }
     }
 }

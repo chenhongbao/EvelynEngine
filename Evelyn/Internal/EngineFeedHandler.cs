@@ -65,9 +65,10 @@ namespace Evelyn.Internal
         {
             _clients.Clients.ForEach(client =>
             {
-                if (client.Subscription.Instruments.Contains(instrumentID))
+                if (client.Subscription.WaitSubscriptionResponse(instrumentID))
                 {
                     client.Service.SendSubscribe(instrumentID, description, subscribed, client.ClientID);
+                    client.Subscription.MarkSubscriptionResponse(instrumentID, waitResponse: false);
                 }
             });
         }
