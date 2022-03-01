@@ -93,7 +93,7 @@ namespace Evelyn.Internal
             throw new NotImplementedException();
         }
 
-        public IEvelyn RegisterInstrument(params Instrument[] instruments)
+        public IEvelyn InitializeInstrument(params Instrument[] instruments)
         {
             throw new NotImplementedException();
         }

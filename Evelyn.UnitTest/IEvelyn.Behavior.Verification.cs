@@ -171,10 +171,10 @@ namespace Evelyn.UnitTest
             IEvelyn engine = IEvelyn.New();
 
             var mockedClientService = new MockedClientService();
-            var mockedConfiguator = new MockedConfigurator();
+            var mockedConfigurator = new MockedConfigurator();
 
             engine.EnableRemoteClient(mockedClientService)
-                .RegisterInstrument(
+                .InitializeInstrument(
                 new Instrument
                 {
                     InstrumentID = "l2205",
@@ -185,7 +185,7 @@ namespace Evelyn.UnitTest
                     Multiple = 5,
                     MarginMethod = CalculationMethod.PerAmount,
                     CommissionMethod = CalculationMethod.PerVolume,
-                    State = InstrumentState.Closed,
+                    State = InstrumentState.Continous,
                     StateTimestamp = baseTime
                 },
                 new Instrument
@@ -198,10 +198,10 @@ namespace Evelyn.UnitTest
                     Multiple = 5,
                     MarginMethod = CalculationMethod.PerAmount,
                     CommissionMethod = CalculationMethod.PerVolume,
-                    State = InstrumentState.Closed,
+                    State = InstrumentState.Continous,
                     StateTimestamp = baseTime
                 })
-                .Configure(mockedConfiguator);
+                .Configure(mockedConfigurator);
 
             /*
              * Engine receives order request from client, route the order to broker, then forward the responses from broker to client.
@@ -252,14 +252,14 @@ namespace Evelyn.UnitTest
                 },
                 "MOCKED_CLIENT_FAKE");
 
-            var newOrder = mockedConfiguator.Broker.ReceivedNewOrders[0];
+            var newOrder = mockedConfigurator.Broker.ReceivedNewOrders[0];
 
             Assert.AreEqual("l2205", newOrder.InstrumentID);
             Assert.AreEqual("MOCKED_ORDER_1", newOrder.OrderID);
             Assert.AreEqual(8888, newOrder.Price);
             Assert.AreEqual(2, newOrder.Quantity);
 
-            newOrder = mockedConfiguator.Broker.ReceivedNewOrders[1];
+            newOrder = mockedConfigurator.Broker.ReceivedNewOrders[1];
 
             Assert.AreEqual("l2205", newOrder.InstrumentID);
             Assert.AreEqual("MOCKED_ORDER_FAKE_1", newOrder.OrderID);
@@ -269,7 +269,7 @@ namespace Evelyn.UnitTest
             /*
              * 2. Mocked broker trades 1 quantity of the given order and returns trade, and engine forwards the response to corresponding client.
              */
-            mockedConfiguator.Broker.MockedTrade(
+            mockedConfigurator.Broker.MockedTrade(
                 new Trade
                 {
                     InstrumentID = "l2205",
@@ -318,9 +318,9 @@ namespace Evelyn.UnitTest
              */
             mockedClientService.MockedDelete("MOCKED_ORDER_1", "MOCKED_CLIENT");
 
-            Assert.AreEqual("MOCKED_ORDER_1", mockedConfiguator.Broker.ReceivedDeleteOrders[0]);
+            Assert.AreEqual("MOCKED_ORDER_1", mockedConfigurator.Broker.ReceivedDeleteOrders[0]);
 
-            mockedConfiguator.Broker.MockedTrade(
+            mockedConfigurator.Broker.MockedTrade(
                 new Trade
                 {
                     InstrumentID = "l2205",
@@ -580,7 +580,7 @@ namespace Evelyn.UnitTest
              */
             engine.EnableLocalClient("MockedClient", mockedClient, "l2205")
                 .EnableLocalClient("MockedClientFake", mockedClientFake, "pp2205")
-                .RegisterInstrument(
+                .InitializeInstrument(
                 new Instrument
                 {
                     InstrumentID = "l2205",
@@ -591,7 +591,7 @@ namespace Evelyn.UnitTest
                     Multiple = 5,
                     MarginMethod = CalculationMethod.PerAmount,
                     CommissionMethod = CalculationMethod.PerVolume,
-                    State = InstrumentState.Closed,
+                    State = InstrumentState.Continous,
                     StateTimestamp = baseTime
                 },
                 new Instrument
@@ -604,7 +604,7 @@ namespace Evelyn.UnitTest
                     Multiple = 5,
                     MarginMethod = CalculationMethod.PerAmount,
                     CommissionMethod = CalculationMethod.PerVolume,
-                    State = InstrumentState.Closed,
+                    State = InstrumentState.Continous,
                     StateTimestamp = baseTime
                 })
                 .Configure(mockedConfiguator);
