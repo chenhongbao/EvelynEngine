@@ -23,14 +23,14 @@ using System.Linq;
 
 namespace Evelyn.UnitTest.Behavior
 {
-    [TestClass]
+    //[TestClass]
     public class EvelynBehaviorVerfication
     {
         internal List<Tick> MockedTicks { get; private set; } = new List<Tick>();
         internal List<OHLC> MockedOHLCs { get; private set; } = new List<OHLC>();
         internal List<Instrument> MockedInstruments { get; private set; } = new List<Instrument>();
 
-        [TestInitialize]
+        //[TestInitialize]
         public void Initialize()
         {
             /*
