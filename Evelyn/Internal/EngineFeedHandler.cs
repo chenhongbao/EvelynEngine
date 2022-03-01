@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
 using Evelyn.Plugin;
+using System.Timers;
 
 namespace Evelyn.Internal
 {
@@ -52,7 +53,7 @@ namespace Evelyn.Internal
             });
         }
 
-        internal void SaveInstrument(Instrument instrument)
+        public void SaveInstrument(Instrument instrument)
         {
             if (!_instruments.TryAdd(instrument.InstrumentID, instrument))
             {
@@ -60,7 +61,19 @@ namespace Evelyn.Internal
             }
         }
 
-        internal void ScheduleOrder(Action job, string instrumentID, InstrumentState state)
+        public void ScheduleOrder(Action action, DateTime moment)
+        {
+            /*
+             * TODO If feed source is running backtest, use ticks to count the time.
+             */
+            var timer = new System.Timers.Timer(moment.Subtract(DateTime.Now).TotalMilliseconds);
+
+            timer.Elapsed += (object? source, ElapsedEventArgs args) => action();
+            timer.AutoReset = false;
+            timer.Enabled = true;
+        }
+
+        public void ScheduleOrder(Action job, string instrumentID, InstrumentState state)
         {
             if (_instruments.TryGetValue(instrumentID, out var instrument) && instrument.State == state)
             {

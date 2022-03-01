@@ -70,7 +70,7 @@ namespace Evelyn.Internal
                     case TriggerType.Moment:
 
                         var moment = option?.Trigger.Moment ?? DateTime.Now;
-                        ScheduleOrderByMoment(() => _clientHandler.OnDeleteOrder(orderID, _clientID), moment);
+                        _clientHandler.FeedHandler.ScheduleOrder(() => _clientHandler.OnDeleteOrder(orderID, _clientID), moment);
                         break;
 
                     case TriggerType.StateChange:
@@ -94,7 +94,7 @@ namespace Evelyn.Internal
             {
                 case TriggerType.Moment:
 
-                    ScheduleOrderByMoment(() => _clientHandler.OnNewOrder(newOrder, _clientID), option?.Trigger.Moment ?? DateTime.Now);
+                    _clientHandler.FeedHandler.ScheduleOrder(() => _clientHandler.OnNewOrder(newOrder, _clientID), option?.Trigger.Moment ?? DateTime.Now);
                     break;
 
                 case TriggerType.StateChange:
@@ -109,15 +109,6 @@ namespace Evelyn.Internal
                     _clientHandler.OnNewOrder(newOrder, _clientID);
                     break;
             }
-        }
-
-        private void ScheduleOrderByMoment(Action action, DateTime moment)
-        {
-            var timer = new System.Timers.Timer(moment.Subtract(DateTime.Now).TotalMilliseconds);
-
-            timer.Elapsed += (object? source, ElapsedEventArgs args) => action();
-            timer.AutoReset = false;
-            timer.Enabled = true;
         }
 
         private bool TryFindInstrumentIDByOrderID(string orderID, out string instrumentID)
