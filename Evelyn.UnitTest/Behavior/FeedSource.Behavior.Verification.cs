@@ -25,12 +25,15 @@ namespace Evelyn.UnitTest.Behavior
         public void SubscribeManyTimes()
         {
             /*
-             * There are many clients subscribing for the same instrument.
+             * There are many clients subscribing for the same instrument and feed source
+             * only receives the request at the first subscription.
              * 
              * 1. Client A subscribes for the instrument.
-             * 2. Feed source sends market data and client A receives data.
-             * 3. Client B subscribes for the same instrument.
-             * 4. Feed source sends the market data and both clients receive data.
+             * 2. Feed source receives the subscription request.
+             * 3. Feed source sends market data and client A receives data.
+             * 4. Client B subscribes for the same instrument.
+             * 5. Feed source doesn't receive a duplicated subscription request.
+             * 6. Feed source sends the market data and both clients receive data.
              */
         }
 
@@ -41,11 +44,17 @@ namespace Evelyn.UnitTest.Behavior
              * There are many clients subscribing for the same instrument, and then
              * unsubscribe it.
              * 
+             * Feed source only receives the unsubscription request at the last
+             * unsubscription.
+             * 
              * 1. Client A and B both subscribe for an instrument.
              * 2. Feed source sends market data and both A and B receive the data.
              * 3. Client A unsubscribes the instrument.
-             * 4. Client A receives no data, while client B still receives data.
-             * 5. Client B unsubscribes the instrument, and none of the clients receives data anmy more.
+             * 4. Feed source doesn't receive an unsubsciption request.
+             * 5. Client A receives no data, while client B still receives data.
+             * 6. Client B unsubscribes the instrument.
+             * 7. Feed source receives unsubscription request.
+             * 8. Feed source sends market data, and none of the clients receives the data.
              */
         }
     }
