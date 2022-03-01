@@ -19,7 +19,7 @@ using Evelyn.UnitTest.Mock;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
-namespace Evelyn.UnitTest
+namespace Evelyn.UnitTest.Behavior
 {
     [TestClass]
     public class BrokerBehaviorVerification

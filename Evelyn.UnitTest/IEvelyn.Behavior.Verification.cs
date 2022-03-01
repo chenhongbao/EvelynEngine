@@ -21,7 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Evelyn.UnitTest
+namespace Evelyn.UnitTest.Behavior
 {
     [TestClass]
     public class EvelynBehaviorVerfication
