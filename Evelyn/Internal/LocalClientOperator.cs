@@ -70,7 +70,7 @@ namespace Evelyn.Internal
                     case TriggerType.Moment:
 
                         var moment = option?.Trigger.Moment ?? DateTime.Now;
-                        ScheduleOrder(() => _clientHandler.OnDeleteOrder(orderID, _clientID), moment);
+                        ScheduleOrderByMoment(() => _clientHandler.OnDeleteOrder(orderID, _clientID), moment);
                         break;
 
                     case TriggerType.StateChange:
@@ -99,7 +99,7 @@ namespace Evelyn.Internal
             {
                 case TriggerType.Moment:
 
-                    ScheduleOrder(() => _clientHandler.OnNewOrder(newOrder, _clientID), option?.Trigger.Moment ?? DateTime.Now);
+                    ScheduleOrderByMoment(() => _clientHandler.OnNewOrder(newOrder, _clientID), option?.Trigger.Moment ?? DateTime.Now);
                     break;
 
                 case TriggerType.StateChange:
@@ -116,7 +116,7 @@ namespace Evelyn.Internal
             }
         }
 
-        private void ScheduleOrder(Action action, DateTime moment)
+        private void ScheduleOrderByMoment(Action action, DateTime moment)
         {
             var timer = new System.Timers.Timer(moment.Subtract(DateTime.Now).TotalMilliseconds);
 
