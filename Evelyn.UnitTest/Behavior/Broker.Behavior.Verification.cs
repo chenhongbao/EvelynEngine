@@ -234,7 +234,7 @@ namespace Evelyn.UnitTest.Behavior
             Assert.AreEqual(OrderStatus.Rejected, trade.Status);
         }
 
-        [TestMethod("OpenOrderWithOption")]
+        [TestMethod("Open order with option")]
         public void OpenOrderWithOption()
         {
             /*
@@ -324,7 +324,7 @@ namespace Evelyn.UnitTest.Behavior
 
         }
 
-        [TestMethod("DeleteOrderWithOption")]
+        [TestMethod("Delete order with option")]
         public void DeleteOrderWithOption()
         {
             /*
