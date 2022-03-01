@@ -37,7 +37,7 @@ namespace Evelyn.UnitTest.Behavior
             Engine = IEvelyn.New();
             TradingDay = DateOnly.FromDateTime(baseTime);
 
-            Engine.EnableLocalClient("MOCKED_CLIENT", Client, "l2205")
+            Engine.EnableLocalClient("MOCKED_CLIENT", Client, "l2205", "pp2205")
                 .InitializeInstrument(
                  new Instrument
                  {
@@ -232,6 +232,196 @@ namespace Evelyn.UnitTest.Behavior
             Assert.AreEqual(0, trade.TradeQuantity);
             Assert.AreEqual(2, trade.LeaveQuantity);
             Assert.AreEqual(OrderStatus.Rejected, trade.Status);
+        }
+
+        [TestMethod("OpenOrderWithOption")]
+        public void OpenOrderWithOption()
+        {
+            /*
+             * Open order at instrument state change to Continous.
+             * 
+             * 1. Switch instrument state to NonTrading.
+             * 2. Request new order with option set to InstrumentStateChange and state of Continous.
+             * 3. Broker receives no request by now.
+             * 4. Switch instrument state to Continous.
+             * 5. Broker shall receive the pending request.
+             */
+            Configurator.FeedSource.MockedReceive(
+                new Instrument
+                {
+                    InstrumentID = "l2205",
+                    TradingDay = TradingDay,
+                    TimeStamp = DateTime.Now,
+                    Margin = 0.11,
+                    Commission = 1.01,
+                    Multiple = 5,
+                    MarginMethod = CalculationMethod.PerAmount,
+                    CommissionMethod = CalculationMethod.PerVolume,
+                    State = InstrumentState.NonTrading,
+                    StateTimestamp = DateTime.Now
+                });
+
+            /*
+             * Client requests new order and the requesting order is kept by engine.
+             */
+            Client.MockedNewOrder(
+                new NewOrder
+                {
+                    InstrumentID = "l2205",
+                    TradingDay = DateOnly.MaxValue,
+                    TimeStamp = DateTime.MaxValue,
+                    OrderID = "MOCKED_ORDER_1",
+                    Price = 8888,
+                    Quantity = 2,
+                    Direction = Direction.Buy,
+                    Offset = Offset.Open,
+                },
+                new OrderOption
+                {
+                    Trigger = new TriggerCondition 
+                    {
+                        When = TriggerType.InstrumentStateChange,
+                        StateChange = InstrumentState.Continous
+                    }
+                });
+
+            /*
+             * Broker receives no request by now.
+             */
+            Assert.AreEqual(0, Configurator.Broker.ReceivedNewOrders.Count);
+
+            /*
+             * Instrument state is changed to Continous.
+             */
+            Configurator.FeedSource.MockedReceive(
+                new Instrument
+                {
+                    InstrumentID = "l2205",
+                    TradingDay = TradingDay,
+                    TimeStamp = DateTime.Now,
+                    Margin = 0.11,
+                    Commission = 1.01,
+                    Multiple = 5,
+                    MarginMethod = CalculationMethod.PerAmount,
+                    CommissionMethod = CalculationMethod.PerVolume,
+                    State = InstrumentState.Continous,
+                    StateTimestamp = DateTime.Now
+                });
+
+            /*
+             * Broker shall receive the request.
+             */
+            Assert.AreEqual(1, Configurator.Broker.ReceivedNewOrders.Count);
+
+            var order = Configurator.Broker.ReceivedNewOrders[0];
+
+            Assert.AreEqual("l2205", order.InstrumentID);
+            Assert.AreEqual("MOCKED_ORDER_1", order.OrderID);
+            Assert.AreEqual(8888, order.Price);
+            Assert.AreEqual(2, order.Quantity);
+            Assert.AreEqual(Direction.Buy, order.Direction);
+            Assert.AreEqual(Offset.Open, order.Offset);
+
+        }
+
+        [TestMethod("DeleteOrderWithOption")]
+        public void DeleteOrderWithOption()
+        {
+            /*
+             * Delete an existing order with state change option.
+             * 
+             * 1. Instrument state is set to Continous.
+             * 2. Client request new order.
+             * 3. Instrument state is set to NonTrading.
+             * 4. Client deletes the previous order with option of state change.
+             * 5. Instrument state is set to Continous.
+             * 6. Broker receives the pending deletion request.
+             */
+            Configurator.FeedSource.MockedReceive(
+                new Instrument
+                {
+                    InstrumentID = "pp2205",
+                    TradingDay = TradingDay,
+                    TimeStamp = DateTime.Now,
+                    Margin = 0.11,
+                    Commission = 1.01,
+                    Multiple = 5,
+                    MarginMethod = CalculationMethod.PerAmount,
+                    CommissionMethod = CalculationMethod.PerVolume,
+                    State = InstrumentState.Continous,
+                    StateTimestamp = DateTime.Now
+                });
+
+            /*
+             * Client requests new order.
+             */
+            Client.MockedNewOrder(
+                new NewOrder
+                {
+                    InstrumentID = "pp2205",
+                    TradingDay = DateOnly.MaxValue,
+                    TimeStamp = DateTime.MaxValue,
+                    OrderID = "MOCKED_ORDER_1",
+                    Price = 8555,
+                    Quantity = 2,
+                    Direction = Direction.Buy,
+                    Offset = Offset.Open,
+                });
+
+            /*
+             * Instrument state is changed to NonTrading.
+             */
+            Configurator.FeedSource.MockedReceive(
+                new Instrument
+                {
+                    InstrumentID = "pp2205",
+                    TradingDay = TradingDay,
+                    TimeStamp = DateTime.Now,
+                    Margin = 0.11,
+                    Commission = 1.01,
+                    Multiple = 5,
+                    MarginMethod = CalculationMethod.PerAmount,
+                    CommissionMethod = CalculationMethod.PerVolume,
+                    State = InstrumentState.NonTrading,
+                    StateTimestamp = DateTime.Now
+                });
+
+            /*
+             * Client deletes the order with option.
+             */
+            Client.MockedDelete("MOCKED_ORDER_1",
+                new OrderOption
+                {
+                    Trigger = new TriggerCondition
+                    {
+                        When = TriggerType.InstrumentStateChange,
+                        StateChange = InstrumentState.Continous
+                    }
+                });
+
+            /*
+             * Instrument state is set to Continous.
+             */
+            Configurator.FeedSource.MockedReceive(
+                new Instrument
+                {
+                    InstrumentID = "pp2205",
+                    TradingDay = TradingDay,
+                    TimeStamp = DateTime.Now,
+                    Margin = 0.11,
+                    Commission = 1.01,
+                    Multiple = 5,
+                    MarginMethod = CalculationMethod.PerAmount,
+                    CommissionMethod = CalculationMethod.PerVolume,
+                    State = InstrumentState.Continous,
+                    StateTimestamp = DateTime.Now
+                });
+
+            /*
+             * Broker receives the request.
+             */
+            Assert.AreEqual(1, Configurator.Broker.ReceivedDeleteOrders.Count);
+            Assert.AreEqual("MOCKED_ORDER_1", Configurator.Broker.ReceivedDeleteOrders[0]);
         }
     }
 }

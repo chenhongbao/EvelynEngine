@@ -70,14 +70,14 @@ namespace Evelyn.UnitTest.Mock
         internal bool IsLoaded { get; private set; } = false;
         internal bool IsUnloaded { get; private set; } = false;
 
-        internal void MockedNewOrder(NewOrder newOrder)
+        internal void MockedNewOrder(NewOrder newOrder, OrderOption? option = null)
         {
-            (_op ?? throw new NoValueException("Operator has no value.")).New(newOrder);
+            (_op ?? throw new NoValueException("Operator has no value.")).New(newOrder, option);
         }
 
-        internal void MockedDelete(string orderID)
+        internal void MockedDelete(string orderID, OrderOption? option = null)
         {
-            (_op ?? throw new NoValueException("Operator has no value.")).Delete(orderID);
+            (_op ?? throw new NoValueException("Operator has no value.")).Delete(orderID, option);
         }
         #endregion
     }

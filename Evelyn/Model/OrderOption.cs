@@ -14,14 +14,14 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using Evelyn.Model;
-
-namespace Evelyn
+namespace Evelyn.Model
 {
-    public interface IOperator
+    public struct OrderOption
     {
-        public void New(NewOrder newOrder, OrderOption? option = null);
+        public OrderOption()
+        {
+        }
 
-        public void Delete(string orderID, OrderOption? option = null);
+        public TriggerCondition Trigger { get; set; } = new TriggerCondition { When = TriggerType.Immediate};
     }
 }
