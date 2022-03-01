@@ -41,8 +41,26 @@ namespace Evelyn
 
         public IEvelyn EnableLocalClient(string name, IAlgorithm algorithm, params string[] instrumentID);
 
+        /// <summary>
+        /// Alter instrument subscription for the client with the given name. If an instrument
+        /// in the given instruments' array hasn't been subscribed, it is subscribed. And if a
+        /// previous subscribed instrument doesn't exist in the given instruments' array, it is
+        /// unsubscribed.
+        /// </summary>
+        /// <param name="name">Client name.</param>
+        /// <param name="instrumentID">Subscribed instruments for client.</param>
+        /// <returns><see cref="IEvelyn"/> instance.</returns>
         public IEvelyn AlterLocalClient(string name, params string[] instrumentID);
 
+        /// <summary>
+        /// Alter instrument subscription for the given <see cref="IAlgorithm"/> client. If an
+        /// instrument in the given instruments' array hasn't been subscribed, it is subscribed.
+        /// And if a previous subscribed instrument doesn't exist in the given instruments' array, 
+        /// it is unsubscribed.
+        /// </summary>
+        /// <param name="algorithm">Client.</param>
+        /// <param name="instrumentID">Subscribed instruments for client.</param>
+        /// <returns><see cref="IEvelyn"/> instance.</returns>
         public  IEvelyn AlterLocalClient(IAlgorithm algorithm, params string[] instrumentID);
 
         public IEvelyn EnableManagement();
