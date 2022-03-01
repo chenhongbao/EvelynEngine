@@ -382,15 +382,16 @@ namespace Evelyn.UnitTest.Behavior
 
             var newOrder = mockedConfigurator.Broker.ReceivedNewOrders[0];
 
+            /*
+             * Engine rewrites the order ID, don't compare the order ID on broker side.
+             */
             Assert.AreEqual("l2205", newOrder.InstrumentID);
-            Assert.AreEqual("MOCKED_ORDER_1", newOrder.OrderID);
             Assert.AreEqual(8888, newOrder.Price);
             Assert.AreEqual(2, newOrder.Quantity);
 
             newOrder = mockedConfigurator.Broker.ReceivedNewOrders[1];
 
             Assert.AreEqual("l2205", newOrder.InstrumentID);
-            Assert.AreEqual("MOCKED_ORDER_FAKE_1", newOrder.OrderID);
             Assert.AreEqual(7777, newOrder.Price);
             Assert.AreEqual(3, newOrder.Quantity);
 
@@ -403,7 +404,7 @@ namespace Evelyn.UnitTest.Behavior
                     InstrumentID = "l2205",
                     TradingDay = DateOnly.MaxValue,
                     TimeStamp = DateTime.MaxValue,
-                    OrderID = "MOCKED_ORDER_1",
+                    OrderID = newOrder.OrderID, /* Engine rewrites the order ID. */
                     Price = 8888,
                     Quantity = 2,
                     Direction = Direction.Buy,
@@ -424,6 +425,9 @@ namespace Evelyn.UnitTest.Behavior
 
             /*
              * Client receives trade response.
+             * 
+             * Engine rewrites the order ID that presents to broker, and writes back the original
+             * order ID when sends trade back to client.
              */
             var trade = client.ReceivedTrades[0].Item1;
 
@@ -454,7 +458,7 @@ namespace Evelyn.UnitTest.Behavior
                     InstrumentID = "l2205",
                     TradingDay = DateOnly.MaxValue,
                     TimeStamp = DateTime.MaxValue,
-                    OrderID = "MOCKED_ORDER_1",
+                    OrderID = newOrder.OrderID, /* Engine rewrites the order ID. */
                     Price = 8888,
                     Quantity = 2,
                     Direction = Direction.Buy,
@@ -777,20 +781,21 @@ namespace Evelyn.UnitTest.Behavior
 
             /*
              * Check broker receives two order requests.
+             * 
+             * Engine rewrites the order ID presented to broker, so don't check
+             * the broker's order ID.
              */
             var newOrder = mockedConfiguator.Broker.ReceivedNewOrders[0];
 
             Assert.AreEqual("l2205", newOrder.InstrumentID);
-            Assert.AreEqual("MOCKED_ORDER_1", newOrder.OrderID);
             Assert.AreEqual(8888, newOrder.Price);
             Assert.AreEqual(2, newOrder.Quantity);
 
-            newOrder = mockedConfiguator.Broker.ReceivedNewOrders[1];
+            var newOrderFake = mockedConfiguator.Broker.ReceivedNewOrders[1];
 
-            Assert.AreEqual("l2205", newOrder.InstrumentID);
-            Assert.AreEqual("MOCKED_ORDER_FAKE_1", newOrder.OrderID);
-            Assert.AreEqual(7777, newOrder.Price);
-            Assert.AreEqual(3, newOrder.Quantity);
+            Assert.AreEqual("l2205", newOrderFake.InstrumentID);
+            Assert.AreEqual(7777, newOrderFake.Price);
+            Assert.AreEqual(3, newOrderFake.Quantity);
 
             /*
              * 2. Broker sends a trade response.
@@ -801,7 +806,7 @@ namespace Evelyn.UnitTest.Behavior
                     InstrumentID = "l2205",
                     TradingDay = DateOnly.MaxValue,
                     TimeStamp = DateTime.MaxValue,
-                    OrderID = "MOCKED_ORDER_1",
+                    OrderID = newOrder.OrderID, /* Engine rewrites order ID. */
                     Price = 8888,
                     Quantity = 2,
                     Direction = Direction.Buy,
@@ -846,7 +851,7 @@ namespace Evelyn.UnitTest.Behavior
 
             mockedClient.MockedDelete("MOCKED_ORDER_1");
 
-            Assert.AreEqual("MOCKED_ORDER_1", mockedConfiguator.Broker.ReceivedDeleteOrders[0]);
+            Assert.AreEqual(newOrder.OrderID, mockedConfiguator.Broker.ReceivedDeleteOrders[0]);
 
             /*
              * Mocked broker sends a trade update with deletion status.

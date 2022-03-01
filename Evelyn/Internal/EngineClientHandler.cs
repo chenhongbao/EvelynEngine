@@ -77,6 +77,10 @@ namespace Evelyn.Internal
 
         public void OnNewOrder(NewOrder newOrder, string clientID)
         {
+            /*
+             * Rewrite the order ID, and save order information into ClientOrder.
+             */
+
             throw new NotImplementedException();
         }
 

@@ -90,11 +90,6 @@ namespace Evelyn.Internal
 
         public void New(NewOrder newOrder, OrderOption? option = null)
         {
-            /*
-             * Save order and broker's order ID.
-             */
-            _clientHandler[_clientID].Orders.Add(new ClientOrder(newOrder, _clientHandler.Broker.NextOrderID()));
-
             switch (option?.Trigger.When)
             {
                 case TriggerType.Moment:

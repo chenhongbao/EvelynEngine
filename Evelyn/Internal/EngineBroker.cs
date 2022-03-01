@@ -26,13 +26,19 @@ namespace Evelyn.Internal
 
         public bool IsConfigured { get; internal set; } = false;
 
-        internal void Configure(IBroker broker)
+        public void Configure(IBroker broker)
         {
             _broker = broker;
             IsConfigured = true;
         }
 
-        internal string NextOrderID()
+        /// <summary>
+        /// Get next broker's order ID. If the given internal order ID is also valid
+        /// for a broker's order ID, return the internal order ID.
+        /// </summary>
+        /// <param name="internalOrderID">Engine's internal order ID.</param>
+        /// <returns>Valid broker's order ID.</returns>
+        public string NextOrderID(string internalOrderID)
         {
             throw new NotImplementedException();
         }

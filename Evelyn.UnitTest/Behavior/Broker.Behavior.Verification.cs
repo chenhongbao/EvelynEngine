@@ -176,14 +176,13 @@ namespace Evelyn.UnitTest.Behavior
                 });
 
             /*
-             * Broker receives 1 new order request.
+             * Broker receives 1 new order request, with the order ID that is rewritten by engine.
              */
             Assert.AreEqual(1, Configurator.Broker.ReceivedNewOrders.Count);
 
             var order = Configurator.Broker.ReceivedNewOrders[0];
 
             Assert.AreEqual("pp2205", order.InstrumentID);
-            Assert.AreEqual("MOCKED_ORDER_1", order.OrderID);
             Assert.AreEqual(8555, order.Price);
             Assert.AreEqual(2, order.Quantity);
             Assert.AreEqual(Direction.Buy, order.Direction);
@@ -198,7 +197,7 @@ namespace Evelyn.UnitTest.Behavior
                     InstrumentID = "pp2205",
                     TradingDay = DateOnly.MaxValue,
                     TimeStamp = DateTime.MaxValue,
-                    OrderID = "MOCKED_ORDER_1",
+                    OrderID = order.OrderID,
                     Price = 8555,
                     Quantity = 2,
                     Direction = Direction.Buy,
@@ -309,14 +308,13 @@ namespace Evelyn.UnitTest.Behavior
                 });
 
             /*
-             * Broker shall receive the request.
+             * Broker shall receive the request, the order ID is rewriten by engine.
              */
             Assert.AreEqual(1, Configurator.Broker.ReceivedNewOrders.Count);
 
             var order = Configurator.Broker.ReceivedNewOrders[0];
 
             Assert.AreEqual("l2205", order.InstrumentID);
-            Assert.AreEqual("MOCKED_ORDER_1", order.OrderID);
             Assert.AreEqual(8888, order.Price);
             Assert.AreEqual(2, order.Quantity);
             Assert.AreEqual(Direction.Buy, order.Direction);
@@ -400,6 +398,11 @@ namespace Evelyn.UnitTest.Behavior
                 });
 
             /*
+             * Broker doesn't receive the request because instrument state is not changed.
+             */
+            Assert.AreEqual(0, Configurator.Broker.ReceivedDeleteOrders.Count);
+
+            /*
              * Instrument state is set to Continous.
              */
             Configurator.FeedSource.MockedReceive(
@@ -421,7 +424,6 @@ namespace Evelyn.UnitTest.Behavior
              * Broker receives the request.
              */
             Assert.AreEqual(1, Configurator.Broker.ReceivedDeleteOrders.Count);
-            Assert.AreEqual("MOCKED_ORDER_1", Configurator.Broker.ReceivedDeleteOrders[0]);
         }
     }
 }
