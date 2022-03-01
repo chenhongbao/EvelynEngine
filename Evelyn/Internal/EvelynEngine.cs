@@ -31,12 +31,12 @@ namespace Evelyn.Internal
 
         public EvelynEngine()
         {
-            _localService = new LocalClientService(); 
+            _localService = new LocalClientService();
             _clientHandler = new EngineClientHandler();
             _feedHandler = new EngineFeedHandler(_clientHandler);
             _broker = new EngineBroker();
             _feedSource = new EngineFeedSource(_feedHandler);
-            
+
         }
 
         private LocalClientService LocalService => _localService;
@@ -53,16 +53,16 @@ namespace Evelyn.Internal
 
         public IEvelyn AlterLocalClient(string clientID, params string[] instrumentID)
         {
-            /* 
-             * Find out the new added and removed instruments.
-             */
-            _clientHandler[clientID].Subscription.AlterInstruments(instrumentID, out IEnumerable<string> added, out IEnumerable<string> removed);
+            var client = _clientHandler[clientID];
 
             /*
              * Call IClientHandler methods to handle the instruments, so all kinds of subscription go through the same logic.
+             * For every new subscribed instrument, susbcribe it, and for those not in the altered instruments' list, unsubscribe.
              */
-            added.ToList().ForEach(instrument => _clientHandler.OnSubscribe(instrument, true, clientID));
-            removed.ToList().ForEach(instrument => _clientHandler.OnSubscribe(instrument, false, clientID));
+            instrumentID.ToList().ForEach(instrument => _clientHandler.OnSubscribe(instrument, true, clientID));
+            client.Subscription.Instruments
+                .Where(instrument => !instrumentID.Contains(instrument)).ToList()
+                .ForEach(instrument => _clientHandler.OnSubscribe(instrument, false, clientID));
             return this;
         }
 

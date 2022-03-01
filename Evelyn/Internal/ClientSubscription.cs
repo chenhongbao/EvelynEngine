@@ -33,21 +33,16 @@ namespace Evelyn.Internal
 
         public ISet<string> Instruments => new HashSet<string>(_instruments);
 
-        public void AlterInstruments(IEnumerable<string> alteredInstruments, out IEnumerable<string> added, out IEnumerable<string> removed)
+        public void Subscribe(string instrumentID, bool isSubscribed)
         {
-            var intersect = _instruments.Intersect(alteredInstruments);
-
-            /*
-             * Set operation to get element differences.
-             */
-            added = alteredInstruments.Except(intersect).ToHashSet();
-            removed = _instruments.Except(intersect).ToHashSet();
-
-            /*
-             * An empty set union with the other set always produces the other set.
-             */
-            _instruments.Clear();
-            _instruments.UnionWith(alteredInstruments);
+            if (isSubscribed)
+            {
+                _instruments.Add(instrumentID);
+            }
+            else
+            {
+                _instruments.Remove(instrumentID);
+            }
         }
 
         internal bool WaitSubscriptionResponse(string instrumentID)

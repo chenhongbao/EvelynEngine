@@ -97,10 +97,7 @@ namespace Evelyn.Internal
 
             if (isSubscribed)
             {
-                currentInstruments.Add(instrumentID);
-                client.Subscription.AlterInstruments(currentInstruments, out IEnumerable<string> added, out IEnumerable<string> removed);
-
-                if (added.Count() == 0)
+                if (currentInstruments.Contains(instrumentID))
                 {
                     /*
                      * If instrument has been subscribed, nothing happens, and sends a response with error.
@@ -109,15 +106,12 @@ namespace Evelyn.Internal
                 }
                 else
                 {
-                    FeedSource.Subscribe(added, true);
+                    FeedSource.Subscribe(new List<string> { instrumentID }, true);
                 }
             }
             else
             {
-                currentInstruments.Remove(instrumentID);
-                client.Subscription.AlterInstruments(currentInstruments, out IEnumerable<string> added, out IEnumerable<string> removed);
-
-                if (removed.Count() == 0)
+                if (!currentInstruments.Contains(instrumentID))
                 {
                     /*
                      * If instrument has been unsubscribed or never subscribed, nothing happens, and sends a response with error.
@@ -126,7 +120,7 @@ namespace Evelyn.Internal
                 }
                 else
                 {
-                    FeedSource.Subscribe(removed, false);
+                    FeedSource.Subscribe(new List<string> { instrumentID }, false);
                 }
             }
         }
