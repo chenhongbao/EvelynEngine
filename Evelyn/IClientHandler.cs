@@ -14,10 +14,20 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Model;
+
 namespace Evelyn
 {
-    public interface IClientSubscriptionHandler
+    public interface IClientHandler
     {
+        public void OnNewOrder(NewOrder newOrder, string clientID);
+
+        public void OnDeleteOrder(string orderID, string clientID);
+
         public void OnSubscribe(string instrumentID, bool isSubscribed, string clientID);
+
+        public void OnClientConnect(string clientID, IClientService service);
+
+        public void OnClientDisconnect(string clientID);
     }
 }

@@ -14,25 +14,27 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using Evelyn.Model;
-using System.Net;
+using System.Runtime.Serialization;
 
 namespace Evelyn
 {
-    public interface IClientService
+    [Serializable]
+    public class DuplicatedClientException : Exception
     {
-        public EndPoint? ServiceEndPoint { get; }
+        public DuplicatedClientException()
+        {
+        }
 
-        public void SendTick(Tick tick, string clientID);
+        public DuplicatedClientException(string? message) : base(message)
+        {
+        }
 
-        public void SendOHLC(OHLC ohlc, string clientID);
+        public DuplicatedClientException(string? message, Exception? innerException) : base(message, innerException)
+        {
+        }
 
-        public void SendInstrument(Instrument instrument, string clientID);
-
-        public void SendSubscribe(string instrumentID, Description description, bool isSubscribed, string clientID);
-
-        public void SendTrade(Trade trade, Description description, string clientID);
-
-        public void Service(IClientHandler clientHandler);
+        protected DuplicatedClientException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
     }
 }

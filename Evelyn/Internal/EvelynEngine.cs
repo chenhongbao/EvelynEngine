@@ -22,30 +22,59 @@ namespace Evelyn.Internal
 {
     internal class EvelynEngine : IEvelyn
     {
+        private readonly LocalClientService _localService;
+        private readonly EngineBroker _broker;
+        private readonly EngineFeedSource _feedSource;
+        private readonly EngineFeedHandler _feedHandler;
+        private readonly EngineClientHandler _clientHandler;
+        private IConfigurator? _configurator;
+
+        public EvelynEngine()
+        {
+            _localService = new LocalClientService(); 
+            _clientHandler = new EngineClientHandler();
+            _feedHandler = new EngineFeedHandler(_clientHandler);
+            _broker = new EngineBroker();
+            _feedSource = new EngineFeedSource(_feedHandler);
+            
+        }
+
+        private LocalClientService LocalService => _localService;
+
+        private EngineFeedSource FeedSource => _feedSource.IsConfigured ? _feedSource : throw new NoValueException("Feed source is not initialized yet.");
+
+        private EngineBroker Broker => _broker.IsConfigured ? _broker : throw new NoValueException("Engine broker is not initialized yet.");
+
         public EndPoint? ClientServiceEndPoint => throw new NotImplementedException();
 
         public EndPoint? ManagementEndPoint => throw new NotImplementedException();
 
-        public IConfigurator Configurator => throw new NotImplementedException();
+        public IConfigurator Configurator => _configurator ?? throw new NoValueException("Engine is not configured yet.");
 
-        public IEvelyn AlterLocalClient(string name, params string[] instrumentID)
+        public IEvelyn AlterLocalClient(string clientID, params string[] instrumentID)
         {
-            throw new NotImplementedException();
-        }
-
-        public IEvelyn AlterLocalClient(IAlgorithm algorithm, params string[] instrumentID)
-        {
-            throw new NotImplementedException();
+            _clientHandler[clientID].Subscription.AlterInstruments(instrumentID, out IEnumerable<string> added, out IEnumerable<string> removed);
+            FeedSource.Subscribe(added, true)
+                .Subscribe(removed, false);
+            return this;
         }
 
         public void Configure(IConfigurator configurator)
         {
-            throw new NotImplementedException();
+            _configurator = configurator;
+            Configurator.Create(out IBroker broker, out IFeedSource feedSource);
+
+            _feedSource.Configure(feedSource);
+            _broker.Configure(broker);
+            _clientHandler.Configure(_broker, _feedSource);
+
+            LocalService.Service(_clientHandler);
         }
 
-        public IEvelyn EnableLocalClient(string name, IAlgorithm algorithm, params string[] instrumentID)
+        public IEvelyn EnableLocalClient(string clientID, IAlgorithm algorithm, params string[] instrumentID)
         {
-            throw new NotImplementedException();
+            LocalService.EnableClient(clientID, algorithm, instrumentID);
+            return this;
         }
 
         public IEvelyn EnableLocalManagement()

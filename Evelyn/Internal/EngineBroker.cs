@@ -14,14 +14,22 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using Evelyn.Model;
+using Evelyn.Plugin;
 
-namespace Evelyn
+namespace Evelyn.Internal
 {
-    public interface IClientOrderHandler
+    internal class EngineBroker
     {
-        public void OnNewOrder(NewOrder newOrder, string clientID);
+        private IBroker? _broker;
 
-        public void OnDeleteOrder(string orderID, string clientID);
+        private IBroker Broker => _broker ?? throw new NoValueException("Broker has no value.");
+
+        public bool IsConfigured { get; internal set; } = false;
+
+        internal void Configure(IBroker broker)
+        {
+            _broker = broker;
+            IsConfigured = true;
+        }
     }
 }

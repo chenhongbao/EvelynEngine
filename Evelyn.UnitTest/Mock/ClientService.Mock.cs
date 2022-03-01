@@ -23,11 +23,11 @@ namespace Evelyn.UnitTest.Mock
 {
     internal class MockedClientService : IClientService
     {
-        private IClientOrderHandler? _orderHandler;
+        private IClientHandler? _orderHandler;
         private IClientSubscriptionHandler? _subscriptionHandler;
         private IDictionary<string, MockedClient> _clients = new Dictionary<string, MockedClient>();
 
-        internal IClientOrderHandler OrderHandler
+        internal IClientHandler OrderHandler
         {
             get => _orderHandler ?? throw new NoValueException("Client order handler has no value.");
             private set => _orderHandler = value;
@@ -41,7 +41,7 @@ namespace Evelyn.UnitTest.Mock
 
         public EndPoint? ServiceEndPoint => throw new System.NotImplementedException();
 
-        public void ReceiveOrder(IClientOrderHandler orderHandler)
+        public void Service(IClientHandler orderHandler)
         {
             OrderHandler = orderHandler;
         }
