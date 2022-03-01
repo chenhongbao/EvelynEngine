@@ -16,9 +16,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
 using Evelyn.Plugin;
-using System.Net;
-using Microsoft.Extensions.Logging.Debug;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Debug;
+using System.Net;
 
 namespace Evelyn.Internal
 {
@@ -45,7 +45,7 @@ namespace Evelyn.Internal
             /*
              * Call OnLoad when engine is configured.
              */
-            foreach(var clientID in _savedClients.Keys)
+            foreach (var clientID in _savedClients.Keys)
             {
                 var client = _savedClients[clientID];
                 InitializeClient(clientID, client.Item1, client.Item2);
@@ -132,7 +132,7 @@ namespace Evelyn.Internal
                 /*
                  * Call OnLoad if engine is configured.
                  */
-                InitializeClient(clientID, algorithm, instrumentID); 
+                InitializeClient(clientID, algorithm, instrumentID);
             }
         }
 

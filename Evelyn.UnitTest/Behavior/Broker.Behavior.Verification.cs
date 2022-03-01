@@ -277,7 +277,7 @@ namespace Evelyn.UnitTest.Behavior
                 },
                 new OrderOption
                 {
-                    Trigger = new TriggerCondition 
+                    Trigger = new TriggerCondition
                     {
                         When = TriggerType.StateChange,
                         StateChange = InstrumentState.Continous

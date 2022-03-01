@@ -22,6 +22,6 @@ namespace Evelyn.Model
         {
         }
 
-        public TriggerCondition Trigger { get; set; } = new TriggerCondition { When = TriggerType.Immediate};
+        public TriggerCondition Trigger { get; set; } = new TriggerCondition { When = TriggerType.Immediate };
     }
 }

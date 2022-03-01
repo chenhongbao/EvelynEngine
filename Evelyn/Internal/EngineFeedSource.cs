@@ -54,7 +54,7 @@ namespace Evelyn.Internal
                     /*
                      * Send a fake unsubscription response to client.
                      */
-                    _feedHandler.OnSubscribed(instrument, new Description { Code =0, Message = "OK" }, true);
+                    _feedHandler.OnSubscribed(instrument, new Description { Code = 0, Message = "OK" }, true);
                 });
             }
             else

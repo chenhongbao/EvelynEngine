@@ -28,7 +28,7 @@ namespace Evelyn.Internal
             _order = newOrder;
             _borkerOrderID = brokerOrderID;
         }
-        
+
         internal NewOrder OriginalOrder => _order;
 
         internal string BrokerOrderID => _borkerOrderID;
