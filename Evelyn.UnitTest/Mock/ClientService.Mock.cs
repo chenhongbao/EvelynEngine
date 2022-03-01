@@ -23,32 +23,20 @@ namespace Evelyn.UnitTest.Mock
 {
     internal class MockedClientService : IClientService
     {
-        private IClientHandler? _orderHandler;
-        private IClientSubscriptionHandler? _subscriptionHandler;
+        private IClientHandler? _clientHandler;
         private IDictionary<string, MockedClient> _clients = new Dictionary<string, MockedClient>();
 
-        internal IClientHandler OrderHandler
+        internal IClientHandler ClientHandler
         {
-            get => _orderHandler ?? throw new NoValueException("Client order handler has no value.");
-            private set => _orderHandler = value;
-        }
-
-        internal IClientSubscriptionHandler SubscriptionHandler
-        {
-            get => _subscriptionHandler ?? throw new NoValueException("Subscription handler has no value.");
-            private set => _subscriptionHandler = value;
+            get => _clientHandler ?? throw new NoValueException("Client order handler has no value.");
+            private set => _clientHandler = value;
         }
 
         public EndPoint? ServiceEndPoint => throw new System.NotImplementedException();
 
         public void Service(IClientHandler orderHandler)
         {
-            OrderHandler = orderHandler;
-        }
-
-        public void ReceiveSubscribe(IClientSubscriptionHandler subscriptionHandler)
-        {
-            SubscriptionHandler = subscriptionHandler;
+            ClientHandler = orderHandler;
         }
 
         public void SendInstrument(Instrument instrument, string clientID)
@@ -84,12 +72,12 @@ namespace Evelyn.UnitTest.Mock
         #region Mocking Methods
         internal void MockedSubscribe(string instrumentID, bool isSubscribed, string clientID)
         {
-            SubscriptionHandler.OnSubscribe(instrumentID, isSubscribed, clientID);
+            ClientHandler.OnSubscribe(instrumentID, isSubscribed, clientID);
         }
 
         internal void MockedNewOrder(NewOrder newOrder, string clientID)
         {
-            OrderHandler.OnNewOrder(newOrder, clientID);
+            ClientHandler.OnNewOrder(newOrder, clientID);
         }
 
         internal MockedClient GetClientOrCreate(string clientID)
@@ -103,7 +91,7 @@ namespace Evelyn.UnitTest.Mock
 
         internal void MockedDelete(string orderID, string clientID)
         {
-            OrderHandler.OnDeleteOrder(orderID, clientID);
+            ClientHandler.OnDeleteOrder(orderID, clientID);
         }
         #endregion
     }
