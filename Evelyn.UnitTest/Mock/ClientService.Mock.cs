@@ -23,62 +23,87 @@ namespace Evelyn.UnitTest.Mock
 {
     internal class MockedClientService : IClientService
     {
+        private IClientOrderHandler? _orderHandler;
+        private IClientSubscriptionHandler? _subscriptionHandler;
+        private IDictionary<string, MockedClient> _clients = new Dictionary<string, MockedClient>();
+
+        internal IClientOrderHandler OrderHandler
+        {
+            get => _orderHandler ?? throw new NoValueException("Client order handler has no value.");
+            private set => _orderHandler = value;
+        }
+
+        internal IClientSubscriptionHandler SubscriptionHandler
+        {
+            get => _subscriptionHandler ?? throw new NoValueException("Subscription handler has no value.");
+            private set => _subscriptionHandler = value;
+        }
+
         public EndPoint? ServiceEndPoint => throw new System.NotImplementedException();
 
         public void ReceiveOrder(IClientOrderHandler orderHandler)
         {
-            throw new System.NotImplementedException();
+            OrderHandler = orderHandler;
         }
 
         public void ReceiveSubscribe(IClientSubscriptionHandler subscriptionHandler)
         {
-            throw new System.NotImplementedException();
+            SubscriptionHandler = subscriptionHandler;
         }
 
         public void SendInstrument(Instrument instrument, string clientID)
         {
-            throw new System.NotImplementedException();
+            GetClient(clientID).ReceivedInstruments.Add(instrument);
         }
 
         public void SendOHLC(OHLC ohlc, string clientID)
         {
-            throw new System.NotImplementedException();
+            GetClient(clientID).ReceivedOHLCs.Add(ohlc);
         }
 
         public void SendSubscribe(string instrumentID, Description description, bool isSubscribed, string clientID)
         {
-            throw new System.NotImplementedException();
+            GetClient(clientID).ReceivedSubscribe = (instrumentID, description, isSubscribed);
         }
 
         public void SendTick(Tick tick, string clientID)
         {
-            throw new System.NotImplementedException();
+            GetClient(clientID).ReceivedTicks.Add(tick);
         }
 
         public void SendTrade(Trade trade, Description description, string clientID)
         {
-            throw new System.NotImplementedException();
+            GetClient(clientID).ReceivedTrades.Add((trade, description));
+        }
+
+        private MockedClient GetClient(string clientID)
+        {
+            return _clients[clientID];
         }
 
         #region Mocking Methods
         internal void MockedSubscribe(string instrumentID, bool isSubscribed, string clientID)
         {
-            throw new NotImplementedException();
+            SubscriptionHandler.OnSubscribe(instrumentID, isSubscribed, clientID);
         }
 
         internal void MockedNewOrder(NewOrder newOrder, string clientID)
         {
-            throw new NotImplementedException();
+            OrderHandler.OnNewOrder(newOrder, clientID);
         }
 
         internal MockedClient GetClientOrCreate(string clientID)
         {
-            throw new NotImplementedException();
+            if (!_clients.ContainsKey(clientID))
+            {
+                _clients.Add(clientID, new MockedClient());
+            }
+            return _clients[clientID];
         }
 
         internal void MockedDelete(string orderID, string clientID)
         {
-            throw new NotImplementedException();
+            OrderHandler.OnDeleteOrder(orderID, clientID);
         }
         #endregion
     }
@@ -88,7 +113,7 @@ namespace Evelyn.UnitTest.Mock
         internal List<Tick> ReceivedTicks { get; } = new List<Tick>();
         internal List<OHLC> ReceivedOHLCs { get; } = new List<OHLC>();
         internal List<Instrument> ReceivedInstruments { get; } = new List<Instrument>();
-        internal (string, Description, bool) ReceivedSubscribe { get; private set; }
+        internal (string, Description, bool) ReceivedSubscribe { get; set; }
         internal List<(Trade, Description)> ReceivedTrades { get; } = new List<(Trade, Description)>();
     }
 }

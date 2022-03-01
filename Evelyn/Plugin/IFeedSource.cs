@@ -20,8 +20,17 @@ namespace Evelyn.Plugin
 {
     public interface IFeedSource
     {
+        /// <summary>
+        /// Subscribe for an instrument and receive market via the given <see cref="IFeedHandler"/>. 
+        /// An instrument can be subscribed with multiple <see cref="IFeedHandler"/>s and they all
+        /// will be called on the incoming market data.
+        /// </summary>
+        /// <param name="instrumentID">Instrument ID</param>
+        /// <param name="feedHandler">Market data handler.</param>
         public void Subscribe(string instrumentID, IFeedHandler feedHandler);
 
         public void Unsubscribe(string instrumentID);
+
+        public void Unsubscribe(string instrumentID, IFeedHandler feedHandler);
     }
 }

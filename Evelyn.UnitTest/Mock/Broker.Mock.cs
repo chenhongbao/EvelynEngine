@@ -23,20 +23,38 @@ namespace Evelyn.UnitTest.Mock
 {
     internal class MockedBroker : IBroker
     {
+        private IDictionary<string, IOrderHandler> _orderHandlers = new Dictionary<string, IOrderHandler>();
+
         public void Delete(string orderID)
         {
-            throw new System.NotImplementedException();
+            ReceivedDeleteOrders.Add(orderID);
         }
 
         public void New(NewOrder newOrder, IOrderHandler orderHandler)
         {
-            throw new System.NotImplementedException();
+            ReceivedNewOrders.Add(newOrder);
+
+            if (_orderHandlers.ContainsKey(newOrder.OrderID))
+            {
+                throw new ArgumentException("Duplicated order ID.");
+            }
+            else
+            {
+                _orderHandlers.Add(newOrder.OrderID, orderHandler);
+            }
         }
 
         #region Mocking Method
         internal void MockedTrade(Trade trade, Description description)
         {
-            throw new NotImplementedException();
+            if (_orderHandlers.TryGetValue(trade.OrderID, out IOrderHandler? handler))
+            {
+                handler.OnTrade(trade, description);
+            }
+            else
+            {
+                throw new ArgumentException("No such order " + trade.OrderID + ".");
+            }
         }
 
         internal List<NewOrder> ReceivedNewOrders { get; } = new List<NewOrder>();

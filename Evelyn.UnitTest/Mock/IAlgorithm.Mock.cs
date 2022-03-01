@@ -16,7 +16,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
 using Evelyn.Plugin;
-using System;
 using System.Collections.Generic;
 
 namespace Evelyn.UnitTest.Mock
@@ -26,17 +25,17 @@ namespace Evelyn.UnitTest.Mock
         private IOperator? _op;
         public void OnFeed(Tick tick)
         {
-            throw new System.NotImplementedException();
+            ReceivedTicks.Add(tick);
         }
 
         public void OnFeed(OHLC ohlc)
         {
-            throw new System.NotImplementedException();
+            ReceivedOHLCs.Add(ohlc);
         }
 
         public void OnInstrument(Instrument instrument)
         {
-            throw new System.NotImplementedException();
+            ReceivedInstruments.Add(instrument);
         }
 
         public void OnLoad(IOperator op)
@@ -48,12 +47,12 @@ namespace Evelyn.UnitTest.Mock
 
         public void OnSubscribed(string instrumentID, Description description, bool subscribed)
         {
-            throw new System.NotImplementedException();
+            ReceivedSubscribe = (instrumentID, description, subscribed);
         }
 
         public void OnTrade(Trade trade, Description description)
         {
-            throw new System.NotImplementedException();
+            ReceivedTrades.Add((trade, description));
         }
 
         public void OnUnload()
@@ -73,12 +72,12 @@ namespace Evelyn.UnitTest.Mock
 
         internal void MockedNewOrder(NewOrder newOrder)
         {
-            throw new NotImplementedException();
+            (_op ?? throw new NoValueException("Operator has no value.")).New(newOrder);
         }
 
         internal void MockedDelete(string orderID)
         {
-            throw new NotImplementedException();
+            (_op ?? throw new NoValueException("Operator has no value.")).Delete(orderID);
         }
         #endregion
     }

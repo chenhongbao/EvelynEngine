@@ -23,36 +23,95 @@ namespace Evelyn.UnitTest.Mock
 {
     internal class MockedFeedSource : IFeedSource
     {
+        private IDictionary<string, ISet<IFeedHandler>> _feeds = new Dictionary<string, ISet<IFeedHandler>>();
+
         public void Subscribe(string instrumentID, IFeedHandler feedHandler)
         {
-            throw new NotImplementedException();
+            SubscribedInstruments.Add(instrumentID);
+
+            if (!_feeds.ContainsKey(instrumentID))
+            {
+                _feeds.Add(instrumentID, new HashSet<IFeedHandler>());
+            }
+            _feeds[instrumentID].Add(feedHandler);
         }
 
         public void Unsubscribe(string instrumentID)
         {
-            throw new NotImplementedException();
+            UnsubscribedInstruments.Add(instrumentID);
+
+            if (_feeds.ContainsKey(instrumentID))
+            {
+                _feeds.Remove(instrumentID);
+            }
+            else
+            {
+                throw new ApplicationException("Instrument " + instrumentID + " hasn't been subscribed.");
+            }
+        }
+
+        public void Unsubscribe(string instrumentID, IFeedHandler feedHandler)
+        {
+            if (_feeds.ContainsKey(instrumentID))
+            {
+                _feeds[instrumentID].Remove(feedHandler);
+                if (_feeds[instrumentID].Count == 0)
+                {
+                    _feeds.Remove(instrumentID);
+                    UnsubscribedInstruments.Add(instrumentID);
+                }
+            }
+            else
+            {
+                throw new ApplicationException("Instrument " + instrumentID + " hasn't been subscribed.");
+            }
         }
 
         #region Mocking Methods
         internal void MockedReceive(Tick tick)
         {
-            throw new NotImplementedException();
+            if (_feeds.ContainsKey(tick.InstrumentID))
+            {
+                foreach (var handler in _feeds[tick.InstrumentID])
+                {
+                    handler.OnFeed(tick);
+                }
+            }
         }
 
         internal void MockedReceive(OHLC ohlc)
         {
-            throw new NotImplementedException();
+            if (_feeds.ContainsKey(ohlc.InstrumentID))
+            {
+                foreach (var handler in _feeds[ohlc.InstrumentID])
+                {
+                    handler.OnFeed(ohlc);
+                }
+            }
         }
 
         internal void MockedReceive(Instrument instrument)
         {
-            throw new NotImplementedException();
+            if (_feeds.ContainsKey(instrument.InstrumentID))
+            {
+                foreach (var handler in _feeds[instrument.InstrumentID])
+                {
+                    handler.OnInstrument(instrument);
+                }
+            }
         }
 
         internal void MockedReplySubscribe(string instrumentID, Description description, bool isSubscribed)
         {
-            throw new NotImplementedException();
+            if (_feeds.ContainsKey(instrumentID))
+            {
+                foreach (var handler in _feeds[instrumentID])
+                {
+                    handler.OnSubscribed(instrumentID, description, isSubscribed);
+                }
+            }
         }
+
         internal List<string> SubscribedInstruments { get; } = new List<string>();
         internal List<string> UnsubscribedInstruments { get; } = new List<string>();
         #endregion
