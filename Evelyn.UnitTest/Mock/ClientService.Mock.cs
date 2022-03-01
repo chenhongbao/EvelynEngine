@@ -84,6 +84,7 @@ namespace Evelyn.UnitTest.Mock
         {
             if (!_clients.ContainsKey(clientID))
             {
+                ClientHandler.OnClientConnect(clientID, this);
                 _clients.Add(clientID, new MockedClient());
             }
             return _clients[clientID];

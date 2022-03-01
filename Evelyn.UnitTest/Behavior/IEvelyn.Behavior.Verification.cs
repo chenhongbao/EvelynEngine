@@ -187,6 +187,109 @@ namespace Evelyn.UnitTest.Behavior
             Assert.AreEqual(0, client.ReceivedInstruments.Count);
         }
 
+        [TestMethod("Un/Subscribe instrument more than once.")]
+        public void DuplicatedSubscription()
+        {
+            IEvelyn engine = IEvelyn.New();
+
+            var mockedClientService = new MockedClientService();
+            var mockedConfiguator = new MockedConfigurator();
+
+            engine.EnableRemoteClient(mockedClientService)
+                .Configure(mockedConfiguator);
+
+            /*
+             * Over unsubscribe an instrument and receive error response.
+             * 
+             * 1. Client subscribes for the specified instrument and feed source sends subscription response.
+             * 2. Client subscribes again, feed source doesn't receive new request, and engine sends the error response.
+             * 3. Client unsubscribes the instrument and feed source sends the unsubscription response.
+             * 4. Client unsubscribes the instrument again, feed source receives no request, and engine sends the error response.
+             */
+
+            var client = mockedClientService.GetClientOrCreate("MOCKED_CLIENT");
+
+            /*
+             * 1. Client subscribes for instrument and feed source replies OK.
+             */
+            mockedClientService.MockedSubscribe("l2205", true, "MOCKED_CLIENT");
+
+            /*
+             * Feed source receives the request.
+             */
+            Assert.AreEqual(1, mockedConfiguator.FeedSource.SubscribedInstruments.Count);
+            Assert.AreEqual("l2205", mockedConfiguator.FeedSource.SubscribedInstruments[0]);
+
+            /*
+             * Feed source sends subscription response.
+             */
+            mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, true);
+
+            Assert.AreEqual("l2205", client.ReceivedSubscribe.Item1);
+            Assert.AreEqual(0, client.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual("OK", client.ReceivedSubscribe.Item2.Message);
+            Assert.AreEqual(true, client.ReceivedSubscribe.Item3);
+
+            /*
+             * 2. Client subscribes again, feed source doesn't receive request, and engine sends the error response.
+             */
+            mockedClientService.MockedSubscribe("l2205", true, "MOCKED_CLIENT");
+
+            /*
+             * Feed source doesn't receive new request.
+             */
+            Assert.AreEqual(1, mockedConfiguator.FeedSource.SubscribedInstruments.Count);
+
+            /*
+             * Engine sends the error response.
+             */
+            Assert.AreEqual("l2205", client.ReceivedSubscribe.Item1);
+            Assert.AreNotEqual(0, client.ReceivedSubscribe.Item2.Code);
+            Assert.AreNotEqual("OK", client.ReceivedSubscribe.Item2.Message);
+            Assert.AreEqual(true, client.ReceivedSubscribe.Item3);
+
+            /*
+             * 3. Client unsubscribes the instrument and feed source sends the unsubscription response.
+             */
+            mockedClientService.MockedSubscribe("l2205", false, "MOCKED_CLIENT");
+
+            /*
+             * Feed source receives unsubscription request.
+             */
+            Assert.AreEqual(1, mockedConfiguator.FeedSource.UnsubscribedInstruments.Count);
+            Assert.AreEqual("l2205", mockedConfiguator.FeedSource.UnsubscribedInstruments[0]);
+
+            mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, false);
+
+            /*
+             * Client receives unsubscription response.
+             */
+            Assert.AreEqual("l2205", client.ReceivedSubscribe.Item1);
+            Assert.AreEqual(0, client.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual("OK", client.ReceivedSubscribe.Item2.Message);
+            Assert.AreEqual(false, client.ReceivedSubscribe.Item3);
+
+            /*
+             * 4. Client unsubscribes the same instrument again, feed source doesnt' receive the unsubscription request,
+             * and engine sends the error response.
+             */
+
+            mockedClientService.MockedSubscribe("l2205", false, "MOCKED_CLIENT");
+
+            /*
+             * Feed source doesn't receive new unsubscription request.
+             */
+            Assert.AreEqual(1, mockedConfiguator.FeedSource.UnsubscribedInstruments.Count);
+
+            /*
+             * Engine sends the error response to client.
+             */
+            Assert.AreEqual("l2205", client.ReceivedSubscribe.Item1);
+            Assert.AreNotEqual(0, client.ReceivedSubscribe.Item2.Code);
+            Assert.AreNotEqual("OK", client.ReceivedSubscribe.Item2.Message);
+            Assert.AreEqual(false, client.ReceivedSubscribe.Item3);
+        }
+
         [TestMethod("Run order for client service.")]
         public void RunOrderForClientService()
         {
