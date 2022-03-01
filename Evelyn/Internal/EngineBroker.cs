@@ -31,5 +31,10 @@ namespace Evelyn.Internal
             _broker = broker;
             IsConfigured = true;
         }
+
+        internal string NextOrderID()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

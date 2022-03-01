@@ -21,16 +21,16 @@ namespace Evelyn.Internal
     internal class ClientOrder
     {
         private readonly NewOrder _order;
-        private readonly string _uniqueOrderID;
+        private readonly string _borkerOrderID;
 
-        public ClientOrder(NewOrder newOrder, string uniqueOrderID)
+        public ClientOrder(NewOrder newOrder, string brokerOrderID)
         {
             _order = newOrder;
-            _uniqueOrderID = uniqueOrderID;
+            _borkerOrderID = brokerOrderID;
         }
         
         internal NewOrder OriginalOrder => _order;
 
-        internal string UniqueOrderID => _uniqueOrderID;
+        internal string BrokerOrderID => _borkerOrderID;
     }
 }

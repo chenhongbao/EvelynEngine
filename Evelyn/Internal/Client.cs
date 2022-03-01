@@ -41,6 +41,6 @@ namespace Evelyn.Internal
 
         public IClientService Service => _service;
 
-        public IEnumerable<ClientOrder> Orders { get; private init; } = new List<ClientOrder>();
+        public List<ClientOrder> Orders { get; private init; } = new List<ClientOrder>();
     }
 }
