@@ -15,24 +15,19 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
-using System.Net;
 
-namespace Evelyn
+namespace Evelyn.Plugin
 {
-    public interface IClientService
+    public interface IClientHandler
     {
-        public EndPoint? ServiceEndPoint { get; }
+        public void OnNewOrder(NewOrder newOrder, string clientID);
 
-        public void SendTick(Tick tick, string clientID);
+        public void OnDeleteOrder(DeleteOrder deleteOrder, string clientID);
 
-        public void SendOHLC(OHLC ohlc, string clientID);
+        public void OnSubscribe(string instrumentID, bool isSubscribed, string clientID);
 
-        public void SendInstrument(Instrument instrument, string clientID);
+        public void OnClientConnect(string clientID, IClientService service);
 
-        public void SendSubscribe(string instrumentID, Description description, bool isSubscribed, string clientID);
-
-        public void SendTrade(Trade trade, Description description, string clientID);
-
-        public void Configure(IClientHandler clientHandler);
+        public void OnClientDisconnect(string clientID);
     }
 }

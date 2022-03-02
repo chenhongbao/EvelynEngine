@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
 
-namespace Evelyn
+namespace Evelyn.Plugin
 {
     public interface IOperator
     {
