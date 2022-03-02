@@ -38,7 +38,7 @@ namespace Evelyn.Model
             set => _stateChange = value;
         }
 
-        public DateTime Moment
+        public DateTime Time
         {
             get => _moment ?? throw new NoValueException("Trigger moment has no value.");
             set => _moment = value;

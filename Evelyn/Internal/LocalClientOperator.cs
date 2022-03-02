@@ -34,9 +34,9 @@ namespace Evelyn.Internal
         {
             switch (option?.Trigger.When)
             {
-                case TriggerType.Moment:
+                case TriggerType.Time:
 
-                    var moment = option?.Trigger.Moment ?? DateTime.Now;
+                    var moment = option?.Trigger.Time ?? DateTime.Now;
                     _clientHandler.FeedHandler.ScheduleOrder(() => _clientHandler.OnDeleteOrder(deleteOrder, _clientID), moment);
                     break;
 
@@ -58,9 +58,9 @@ namespace Evelyn.Internal
         {
             switch (option?.Trigger.When)
             {
-                case TriggerType.Moment:
+                case TriggerType.Time:
 
-                    _clientHandler.FeedHandler.ScheduleOrder(() => _clientHandler.OnNewOrder(newOrder, _clientID), option?.Trigger.Moment ?? DateTime.Now);
+                    _clientHandler.FeedHandler.ScheduleOrder(() => _clientHandler.OnNewOrder(newOrder, _clientID), option?.Trigger.Time ?? DateTime.Now);
                     break;
 
                 case TriggerType.StateChange:

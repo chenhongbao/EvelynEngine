@@ -106,16 +106,26 @@ namespace Evelyn.Internal
             }
         }
 
-        internal void ScheduleOrder(Action action, DateTime moment)
+        internal void ScheduleOrder(Action action, DateTime time)
         {
             /*
              * TODO If feed source is running backtest, use ticks to count the time.
              */
-            var timer = new System.Timers.Timer(moment.Subtract(DateTime.Now).TotalMilliseconds);
+            if (DateTime.Now.CompareTo(time) > 0)
+            {
+                /*
+                 * The given moment has elapsed, do the job now.
+                 */
+                action();
+            }
+            else
+            {
+                var timer = new System.Timers.Timer(time.Subtract(DateTime.Now).TotalMilliseconds);
 
-            timer.Elapsed += (object? source, ElapsedEventArgs args) => action();
-            timer.AutoReset = false;
-            timer.Enabled = true;
+                timer.Elapsed += (object? source, ElapsedEventArgs args) => action();
+                timer.AutoReset = false;
+                timer.Enabled = true;
+            }
         }
 
         internal void ScheduleOrder(Action job, string instrumentID, InstrumentState state)

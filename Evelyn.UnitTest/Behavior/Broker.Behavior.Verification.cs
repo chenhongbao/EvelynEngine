@@ -420,5 +420,112 @@ namespace Evelyn.UnitTest.Behavior
              */
             Assert.AreEqual(1, Configurator.Broker.ReceivedDeleteOrders.Count);
         }
+
+        [TestMethod("Order with option that triggers immediately.")]
+        public void OrderWithOptionTriggerNow()
+        {
+            /*
+             * Order with option that trigger right now is routed to broker, no waiting.
+             * 
+             * 1. Order with instrument state option, triggers right away.
+             * 2. Order with time option, triggers right away.
+             */
+
+            /*
+             * Instrument is at continous state.
+             */
+            Configurator.FeedSource.MockedReceive(
+                new Instrument
+                {
+                    InstrumentID = "l2205",
+                    TradingDay = TradingDay,
+                    TimeStamp = DateTime.Now,
+                    Margin = 0.11,
+                    Commission = 1.01,
+                    Multiple = 5,
+                    MarginMethod = CalculationMethod.PerAmount,
+                    CommissionMethod = CalculationMethod.PerVolume,
+                    State = InstrumentState.Continous,
+                    StateTimestamp = DateTime.Now
+                });
+
+            /*
+             * 1. Client requests new order with option that instrument is in continous state.
+             * 
+             *    And this order is sent immediately.
+             */
+            Client.MockedNewOrder(
+                new NewOrder
+                {
+                    InstrumentID = "l2205",
+                    TradingDay = DateOnly.MaxValue,
+                    TimeStamp = DateTime.MaxValue,
+                    OrderID = "MOCKED_ORDER_1",
+                    Price = 8888,
+                    Quantity = 2,
+                    Direction = Direction.Buy,
+                    Offset = Offset.Open,
+                },
+                new OrderOption
+                {
+                    Trigger = new TriggerCondition
+                    {
+                        When = TriggerType.StateChange,
+                        StateChange = InstrumentState.Continous
+                    }
+                });
+
+            /*
+             * Check broker receives the new request.
+             */
+            Assert.AreEqual(1, Configurator.Broker.ReceivedNewOrders.Count);
+
+            var order = Configurator.Broker.ReceivedNewOrders[0];
+
+            Assert.AreEqual("l2205", order.InstrumentID);
+            Assert.AreEqual(8888, order.Price);
+            Assert.AreEqual(2, order.Quantity);
+            Assert.AreEqual(Direction.Buy, order.Direction);
+            Assert.AreEqual(Offset.Open, order.Offset);
+
+            /*
+             * 2. Request a new order with time option that elapses right away.
+             * 
+             *    The order is sent immediately.
+             */
+            Client.MockedNewOrder(
+                new NewOrder
+                {
+                    InstrumentID = "l2205",
+                    TradingDay = DateOnly.MaxValue,
+                    TimeStamp = DateTime.MaxValue,
+                    OrderID = "MOCKED_ORDER_2",
+                    Price = 7777,
+                    Quantity = 3,
+                    Direction = Direction.Sell,
+                    Offset = Offset.Open,
+                },
+                new OrderOption
+                {
+                    Trigger = new TriggerCondition
+                    {
+                        When = TriggerType.Time,
+                        Time = DateTime.Now.AddSeconds(-1)
+                    }
+                });
+
+            /*
+             * Check broker receives the second request.
+             */
+            Assert.AreEqual(2, Configurator.Broker.ReceivedNewOrders.Count);
+
+            var secondOrder = Configurator.Broker.ReceivedNewOrders[1];
+
+            Assert.AreEqual("l2205", secondOrder.InstrumentID);
+            Assert.AreEqual(7777, secondOrder.Price);
+            Assert.AreEqual(3, secondOrder.Quantity);
+            Assert.AreEqual(Direction.Sell, secondOrder.Direction);
+            Assert.AreEqual(Offset.Open, secondOrder.Offset);
+        }
     }
 }

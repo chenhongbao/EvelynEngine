@@ -19,7 +19,7 @@ namespace Evelyn.Model
     public enum TriggerType
     {
         Immediate = 1,
-        Moment,
+        Time,
         StateChange
     }
 }
