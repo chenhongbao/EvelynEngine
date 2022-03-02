@@ -387,7 +387,12 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * Client deletes the order with option.
              */
-            Client.MockedDelete("MOCKED_ORDER_1",
+            Client.MockedDelete(
+                new DeleteOrder
+                {
+                    OrderID = "MOCKED_ORDER_1",
+                    InstrumentID = "pp2205"
+                },
                 new OrderOption
                 {
                     Trigger = new TriggerCondition

@@ -14,33 +14,41 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Model;
 using Evelyn.Plugin;
 
 namespace Evelyn.Internal
 {
     internal class EngineBroker
     {
+        private readonly EngineOrderHandler _orderHandler;
         private IBroker? _broker;
 
         private IBroker Broker => _broker ?? throw new NoValueException("Broker has no value.");
 
-        public bool IsConfigured { get; internal set; } = false;
+        internal EngineBroker(EngineOrderHandler orderHandler)
+        {
+            _orderHandler = orderHandler;
+        }
 
-        public void Configure(IBroker broker)
+        internal string NewOrderID => Broker.NewOrderID;
+
+        internal bool IsConfigured { get; private set; } = false;
+
+        internal void Configure(IBroker broker)
         {
             _broker = broker;
             IsConfigured = true;
         }
 
-        /// <summary>
-        /// Get next broker's order ID. If the given internal order ID is also valid
-        /// for a broker's order ID, return the internal order ID.
-        /// </summary>
-        /// <param name="internalOrderID">Engine's internal order ID.</param>
-        /// <returns>Valid broker's order ID.</returns>
-        public string NextOrderID(string internalOrderID)
+        internal void Delete(DeleteOrder deleteOrder)
         {
-            throw new NotImplementedException();
+            Broker.Delete(deleteOrder);
+        }
+
+        internal void NewOrder(NewOrder newOrder)
+        {
+            Broker.New(newOrder, _orderHandler);
         }
     }
 }

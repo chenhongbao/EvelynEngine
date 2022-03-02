@@ -16,6 +16,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
 using Evelyn.Plugin;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Debug;
 
 namespace Evelyn.Internal
 {
@@ -26,13 +28,15 @@ namespace Evelyn.Internal
         private EngineFeedSource? _feedSource;
         private EngineFeedHandler? _feedHandler;
 
+        private ILogger Logger { get; init; } = new DebugLoggerProvider().CreateLogger(nameof(EngineClientHandler));
+
         internal EngineBroker Broker => _broker ?? throw new NoValueException("Engine broker has no value.");
 
         internal EngineFeedSource FeedSource => _feedSource ?? throw new NoValueException("Enginefeed source has no value.");
 
         internal EngineFeedHandler FeedHandler => _feedHandler ?? throw new NoValueException("Engine feed handler has no value.");
 
-        public List<Client> Clients => new List<Client>(_clients.Values);
+        internal List<Client> Clients => new List<Client>(_clients.Values);
 
         internal Client this[string clientID]
         {
@@ -43,7 +47,8 @@ namespace Evelyn.Internal
         {
             if (_clients.ContainsKey(clientID))
             {
-                throw new DuplicatedClientException("Another client exists with ID " + clientID + ".");
+                Logger.LogWarning("{0}\n{1}", "Another client exists with ID " + clientID + ".", new System.Diagnostics.StackTrace().ToString());
+                return;
             }
 
             _clients.Add(clientID, new Client(service, clientID));
@@ -53,7 +58,8 @@ namespace Evelyn.Internal
         {
             if (_clients.ContainsKey(clientID))
             {
-                throw new DuplicatedClientException("Another client exists with ID " + clientID + ".");
+                Logger.LogWarning("{0}\n{1}", "Another client exists with ID " + clientID + ".", new System.Diagnostics.StackTrace().ToString());
+                return;
             }
 
             _clients.Add(clientID, new Client(service, clientID, algorithm));
@@ -63,16 +69,59 @@ namespace Evelyn.Internal
         {
             if (!_clients.ContainsKey(clientID))
             {
-                throw new NoSuchClientException("No such clien with ID " + clientID + ".");
+                Logger.LogInformation("{0}\n{1}", "No such client with ID " + clientID + ".", new System.Diagnostics.StackTrace().ToString());
+                return;
             }
 
             FeedSource.Subscribe(_clients[clientID].Subscription.Instruments, false);
             _clients.Remove(clientID);
         }
 
-        public void OnDeleteOrder(string orderID, string clientID)
+        public void OnDeleteOrder(DeleteOrder deleteOrder, string clientID)
         {
-            throw new NotImplementedException();
+            if (!_clients.ContainsKey(clientID))
+            {
+                Logger.LogInformation("{0}\n{1}", "No such client with ID " + clientID + ".", new System.Diagnostics.StackTrace().ToString());
+                return;
+            }
+
+            foreach (var order in _clients[clientID].Orders)
+            {
+                if (order.OriginalOrder.OrderID == deleteOrder.OrderID)
+                {
+                    Broker.Delete(deleteOrder);
+                    return;
+                }
+            }
+
+            /*
+             * Sends error response when no order found for the given order ID.
+             */
+            _clients[clientID].Service.SendTrade(
+                new Trade
+                {
+                    InstrumentID = String.Empty,
+                    TradingDay = DateOnly.MaxValue,
+                    TimeStamp = DateTime.MaxValue,
+                    OrderID = deleteOrder.OrderID,
+                    Price = double.MaxValue,
+                    Quantity = int.MaxValue,
+                    Direction = default(Direction),
+                    Offset = default(Offset),
+                    TradeID = String.Empty,
+                    TradePrice = double.MaxValue,
+                    TradeQuantity = int.MaxValue,
+                    LeaveQuantity = int.MaxValue,
+                    TradeTimeStamp = DateTime.MaxValue,
+                    Status = OrderStatus.Deleted,
+                    Message = "No such order."
+                },
+                new Description
+                {
+                    Code = 1,
+                    Message = "No such order with ID " + deleteOrder.OrderID + "."
+                },
+                clientID);
         }
 
         public void OnNewOrder(NewOrder newOrder, string clientID)
@@ -80,15 +129,24 @@ namespace Evelyn.Internal
             /*
              * Rewrite the order ID, and save order information into ClientOrder.
              */
+            if (!_clients.ContainsKey(clientID))
+            {
+                Logger.LogInformation("{0}\n{1}", "No such client with ID " + clientID + ".", new System.Diagnostics.StackTrace().ToString());
+                return;
+            }
 
-            throw new NotImplementedException();
+            var clientOrder = new ClientOrder(newOrder, Broker.NewOrderID);
+
+            _clients[clientID].Orders.Add(clientOrder);
+            Broker.NewOrder(clientOrder.RewriteOrder);
         }
 
         public void OnSubscribe(string instrumentID, bool isSubscribed, string clientID)
         {
             if (!_clients.ContainsKey(clientID))
             {
-                throw new NoSuchClientException("No such clien with ID " + clientID + ".");
+                Logger.LogInformation("{0}\n{1}", "No such client with ID " + clientID + ".", new System.Diagnostics.StackTrace().ToString());
+                return;
             }
 
             var client = _clients[clientID];

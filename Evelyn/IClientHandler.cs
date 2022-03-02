@@ -22,7 +22,7 @@ namespace Evelyn
     {
         public void OnNewOrder(NewOrder newOrder, string clientID);
 
-        public void OnDeleteOrder(string orderID, string clientID);
+        public void OnDeleteOrder(DeleteOrder deleteOrder, string clientID);
 
         public void OnSubscribe(string instrumentID, bool isSubscribed, string clientID);
 

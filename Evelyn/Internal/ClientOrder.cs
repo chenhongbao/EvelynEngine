@@ -23,10 +23,21 @@ namespace Evelyn.Internal
         private readonly NewOrder _order;
         private readonly string _borkerOrderID;
 
-        public ClientOrder(NewOrder newOrder, string brokerOrderID)
+        internal ClientOrder(NewOrder newOrder, string brokerOrderID)
         {
             _order = newOrder;
             _borkerOrderID = brokerOrderID;
+        }
+
+        internal NewOrder RewriteOrder
+        {
+            get
+            {
+                var copied = _order;
+
+                copied.OrderID = _borkerOrderID;
+                return copied;
+            }
         }
 
         internal NewOrder OriginalOrder => _order;

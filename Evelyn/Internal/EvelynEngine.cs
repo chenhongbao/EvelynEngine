@@ -24,26 +24,24 @@ namespace Evelyn.Internal
     {
         private readonly LocalClientService _localService;
         private readonly EngineBroker _broker;
+        private readonly EngineOrderHandler _orderHandler;
         private readonly EngineFeedSource _feedSource;
         private readonly EngineFeedHandler _feedHandler;
         private readonly EngineClientHandler _clientHandler;
         private IConfigurator? _configurator;
 
-        public EvelynEngine()
+        internal EvelynEngine()
         {
             _localService = new LocalClientService();
             _clientHandler = new EngineClientHandler();
+            _orderHandler = new EngineOrderHandler(_clientHandler);
             _feedHandler = new EngineFeedHandler(_clientHandler);
-            _broker = new EngineBroker();
+            _broker = new EngineBroker(_orderHandler);
             _feedSource = new EngineFeedSource(_feedHandler);
 
         }
 
         private LocalClientService LocalService => _localService;
-
-        private EngineFeedSource FeedSource => _feedSource.IsConfigured ? _feedSource : throw new NoValueException("Feed source is not initialized yet.");
-
-        private EngineBroker Broker => _broker.IsConfigured ? _broker : throw new NoValueException("Engine broker is not initialized yet.");
 
         public EndPoint? ClientServiceEndPoint => throw new NotImplementedException();
 

@@ -22,6 +22,8 @@ namespace Evelyn.Plugin
     {
         public void New(NewOrder newOrder, IOrderHandler orderHandler);
 
-        public void Delete(string orderID);
+        public void Delete(DeleteOrder deleteOrder);
+
+        public string NewOrderID { get; }
     }
 }

@@ -22,18 +22,18 @@ namespace Evelyn.Internal
         private readonly ISet<string> _responses;
         private readonly string _clientID;
 
-        public ClientSubscription(string clientID)
+        internal ClientSubscription(string clientID)
         {
             _clientID = clientID;
             _instruments = new HashSet<string>();
             _responses = new HashSet<string>();
         }
 
-        public string ClientID => _clientID;
+        internal string ClientID => _clientID;
 
-        public ISet<string> Instruments => new HashSet<string>(_instruments);
+        internal ISet<string> Instruments => new HashSet<string>(_instruments);
 
-        public void Subscribe(string instrumentID, bool isSubscribed)
+        internal void Subscribe(string instrumentID, bool isSubscribed)
         {
             if (isSubscribed)
             {

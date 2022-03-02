@@ -29,61 +29,27 @@ namespace Evelyn.Internal
             _clientHandler = clientHandler;
         }
 
-        public void Delete(string orderID, OrderOption? option = null)
+        public void Delete(DeleteOrder deleteOrder, OrderOption? option = null)
         {
-            if (!TryFindInstrumentIDByOrderID(orderID, out string instrumentID))
+            switch (option?.Trigger.When)
             {
-                /*
-                 * No such order, send a empty trade with error description.
-                 */
-                _clientHandler[_clientID].Service.SendTrade(
-                    new Trade
-                    {
-                        InstrumentID = String.Empty,
-                        TradingDay = DateOnly.MaxValue,
-                        TimeStamp = DateTime.MaxValue,
-                        OrderID = orderID,
-                        Price = double.MaxValue,
-                        Quantity = int.MaxValue,
-                        Direction = default(Direction),
-                        Offset = default(Offset),
-                        TradeID = String.Empty,
-                        TradePrice = double.MaxValue,
-                        TradeQuantity = int.MaxValue,
-                        LeaveQuantity = int.MaxValue,
-                        TradeTimeStamp = DateTime.MaxValue,
-                        Status = OrderStatus.Deleted,
-                        Message = "No such order."
-                    },
-                    new Description
-                    {
-                        Code = 1,
-                        Message = "No such order with ID " + orderID + "."
-                    },
-                    _clientID);
-            }
-            else
-            {
-                switch (option?.Trigger.When)
-                {
-                    case TriggerType.Moment:
+                case TriggerType.Moment:
 
-                        var moment = option?.Trigger.Moment ?? DateTime.Now;
-                        _clientHandler.FeedHandler.ScheduleOrder(() => _clientHandler.OnDeleteOrder(orderID, _clientID), moment);
-                        break;
+                    var moment = option?.Trigger.Moment ?? DateTime.Now;
+                    _clientHandler.FeedHandler.ScheduleOrder(() => _clientHandler.OnDeleteOrder(deleteOrder, _clientID), moment);
+                    break;
 
-                    case TriggerType.StateChange:
+                case TriggerType.StateChange:
 
-                        var state = option?.Trigger.StateChange ?? InstrumentState.Continous;
-                        _clientHandler.FeedHandler.ScheduleOrder(() => _clientHandler.OnDeleteOrder(orderID, _clientID), instrumentID, state);
-                        break;
+                    var state = option?.Trigger.StateChange ?? InstrumentState.Continous;
+                    _clientHandler.FeedHandler.ScheduleOrder(() => _clientHandler.OnDeleteOrder(deleteOrder, _clientID), deleteOrder.InstrumentID, state);
+                    break;
 
-                    case TriggerType.Immediate:
-                    default:
+                case TriggerType.Immediate:
+                default:
 
-                        _clientHandler.OnDeleteOrder(orderID, _clientID);
-                        break;
-                }
+                    _clientHandler.OnDeleteOrder(deleteOrder, _clientID);
+                    break;
             }
         }
 

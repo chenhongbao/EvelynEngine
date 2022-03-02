@@ -26,7 +26,7 @@ namespace Evelyn.Internal
         private readonly Dictionary<string, Instrument> _instruments = new Dictionary<string, Instrument>();
         private readonly ISet<(Action, string, InstrumentState)> _scheduledJobs = new HashSet<(Action, string, InstrumentState)>();
 
-        public EngineFeedHandler(EngineClientHandler clientHandler)
+        internal EngineFeedHandler(EngineClientHandler clientHandler)
         {
             _clients = clientHandler;
         }
@@ -53,7 +53,7 @@ namespace Evelyn.Internal
             });
         }
 
-        public void SaveInstrument(Instrument instrument)
+        internal void SaveInstrument(Instrument instrument)
         {
             if (!_instruments.TryAdd(instrument.InstrumentID, instrument))
             {
@@ -61,7 +61,7 @@ namespace Evelyn.Internal
             }
         }
 
-        public void ScheduleOrder(Action action, DateTime moment)
+        internal void ScheduleOrder(Action action, DateTime moment)
         {
             /*
              * TODO If feed source is running backtest, use ticks to count the time.
@@ -73,7 +73,7 @@ namespace Evelyn.Internal
             timer.Enabled = true;
         }
 
-        public void ScheduleOrder(Action job, string instrumentID, InstrumentState state)
+        internal void ScheduleOrder(Action job, string instrumentID, InstrumentState state)
         {
             if (_instruments.TryGetValue(instrumentID, out var instrument) && instrument.State == state)
             {

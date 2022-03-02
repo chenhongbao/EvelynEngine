@@ -25,9 +25,9 @@ namespace Evelyn.UnitTest.Mock
     {
         private IDictionary<string, IOrderHandler> _orderHandlers = new Dictionary<string, IOrderHandler>();
 
-        public void Delete(string orderID)
+        public void Delete(DeleteOrder deleteOrder)
         {
-            ReceivedDeleteOrders.Add(orderID);
+            ReceivedDeleteOrders.Add(deleteOrder.OrderID);
         }
 
         public void New(NewOrder newOrder, IOrderHandler orderHandler)
@@ -59,6 +59,8 @@ namespace Evelyn.UnitTest.Mock
 
         internal List<NewOrder> ReceivedNewOrders { get; } = new List<NewOrder>();
         internal List<string> ReceivedDeleteOrders { get; } = new List<string>();
+
+        public string NewOrderID => Guid.NewGuid().ToString("N");
         #endregion
     }
 }

@@ -75,9 +75,9 @@ namespace Evelyn.UnitTest.Mock
             (_op ?? throw new NoValueException("Operator has no value.")).New(newOrder, option);
         }
 
-        internal void MockedDelete(string orderID, OrderOption? option = null)
+        internal void MockedDelete(DeleteOrder deleteOrder, OrderOption? option = null)
         {
-            (_op ?? throw new NoValueException("Operator has no value.")).Delete(orderID, option);
+            (_op ?? throw new NoValueException("Operator has no value.")).Delete(deleteOrder, option);
         }
         #endregion
     }

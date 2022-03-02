@@ -448,7 +448,13 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * 3. Client requests deleting an existing order, engine route this request to broker, and broker deletes the order and returns trade with deletion order state.
              */
-            mockedClientService.MockedDelete("MOCKED_ORDER_1", "MOCKED_CLIENT");
+            mockedClientService.MockedDelete(
+                new DeleteOrder
+                {
+                    OrderID = "MOCKED_ORDER_1",
+                    InstrumentID = "l2205"
+                },
+                "MOCKED_CLIENT");
 
             Assert.AreEqual("MOCKED_ORDER_1", mockedConfigurator.Broker.ReceivedDeleteOrders[0]);
 
@@ -849,7 +855,11 @@ namespace Evelyn.UnitTest.Behavior
              * back a trade update with deletion status.
              */
 
-            mockedClient.MockedDelete("MOCKED_ORDER_1");
+            mockedClient.MockedDelete(new DeleteOrder
+            {
+                OrderID = "MOCKED_ORDER_1",
+                InstrumentID = "l2205"
+            });
 
             Assert.AreEqual(newOrder.OrderID, mockedConfiguator.Broker.ReceivedDeleteOrders[0]);
 

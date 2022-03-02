@@ -89,9 +89,9 @@ namespace Evelyn.UnitTest.Mock
             return _clients[clientID];
         }
 
-        internal void MockedDelete(string orderID, string clientID)
+        internal void MockedDelete(DeleteOrder deleteOrder, string clientID)
         {
-            ClientHandler.OnDeleteOrder(orderID, clientID);
+            ClientHandler.OnDeleteOrder(deleteOrder, clientID);
         }
         #endregion
     }

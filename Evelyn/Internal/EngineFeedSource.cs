@@ -27,9 +27,9 @@ namespace Evelyn.Internal
 
         private IFeedSource FeedSource => _feedSource ?? throw new NoValueException("Feed source has no value.");
 
-        public bool IsConfigured { get; internal set; } = false;
+        internal bool IsConfigured { get; private set; } = false;
 
-        public EngineFeedSource(EngineFeedHandler feedHandler)
+        internal EngineFeedSource(EngineFeedHandler feedHandler)
         {
             _feedHandler = feedHandler;
         }

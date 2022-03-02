@@ -25,7 +25,7 @@ namespace Evelyn.Internal
         private readonly IAlgorithm? _algorithm;
         private readonly ClientSubscription _subscription;
 
-        public Client(IClientService service, string clientID, IAlgorithm? algorithm = null)
+        internal Client(IClientService service, string clientID, IAlgorithm? algorithm = null)
         {
             _algorithm = algorithm;
             _clientID = clientID;
@@ -33,14 +33,14 @@ namespace Evelyn.Internal
             _subscription = new ClientSubscription(_clientID);
         }
 
-        public ClientSubscription Subscription => _subscription;
+        internal ClientSubscription Subscription => _subscription;
 
-        public string ClientID => _clientID;
+        internal string ClientID => _clientID;
 
-        public IAlgorithm Algorithm => _algorithm ?? throw new NoValueException("Client algorithm has no value.");
+        internal IAlgorithm Algorithm => _algorithm ?? throw new NoValueException("Client algorithm has no value.");
 
-        public IClientService Service => _service;
+        internal IClientService Service => _service;
 
-        public List<ClientOrder> Orders { get; private init; } = new List<ClientOrder>();
+        internal List<ClientOrder> Orders { get; private init; } = new List<ClientOrder>();
     }
 }

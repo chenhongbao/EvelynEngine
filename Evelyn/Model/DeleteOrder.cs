@@ -14,27 +14,27 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using System.Runtime.Serialization;
-
-namespace Evelyn
+namespace Evelyn.Model
 {
-    [Serializable]
-    public class NoSuchClientException : Exception
+    public struct DeleteOrder
     {
-        public NoSuchClientException()
+        private string? _orderID = null;
+        private string? _instrumentID = null;
+
+        public DeleteOrder()
         {
         }
 
-        public NoSuchClientException(string? message) : base(message)
+        public string OrderID
         {
+            get => _orderID ?? throw new NoValueException("Order ID has no value.");
+            set => _orderID = value;
         }
 
-        public NoSuchClientException(string? message, Exception? innerException) : base(message, innerException)
+        public string InstrumentID
         {
-        }
-
-        protected NoSuchClientException(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
+            get => _instrumentID ?? throw new NoValueException("Instrument ID has no value.");
+            set => _instrumentID = value;
         }
     }
 }

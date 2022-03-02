@@ -22,6 +22,6 @@ namespace Evelyn
     {
         public void New(NewOrder newOrder, OrderOption? option = null);
 
-        public void Delete(string orderID, OrderOption? option = null);
+        public void Delete(DeleteOrder deleteOrder, OrderOption? option = null);
     }
 }
