@@ -37,8 +37,8 @@ namespace Evelyn.UnitTest.Behavior
             Engine = IEvelyn.New();
             TradingDay = DateOnly.FromDateTime(baseTime);
 
-            Engine.EnableLocalClient("MOCKED_CLIENT", Client, "l2205", "pp2205")
-                .InitializeInstrument(
+            Engine.RegisterLocalClient("MOCKED_CLIENT", Client, "l2205", "pp2205")
+                .RegisterInstrument(
                  new Instrument
                  {
                      InstrumentID = "l2205",

@@ -20,6 +20,6 @@ namespace Evelyn.Plugin
 {
     public interface IOHLCGenerator
     {
-        public OHLC? Generate(Tick tick);
+        public bool Generate(Tick tick, out OHLC ohlc);
     }
 }

@@ -33,7 +33,7 @@ namespace Evelyn.UnitTest.Mock
 
         public EndPoint? ServiceEndPoint => throw new System.NotImplementedException();
 
-        public void Service(IClientHandler orderHandler)
+        public void Configure(IClientHandler orderHandler)
         {
             ClientHandler = orderHandler;
         }

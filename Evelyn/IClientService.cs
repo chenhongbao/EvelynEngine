@@ -33,6 +33,6 @@ namespace Evelyn
 
         public void SendTrade(Trade trade, Description description, string clientID);
 
-        public void Service(IClientHandler clientHandler);
+        public void Configure(IClientHandler clientHandler);
     }
 }

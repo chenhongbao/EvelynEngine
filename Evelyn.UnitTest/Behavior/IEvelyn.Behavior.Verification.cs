@@ -100,7 +100,7 @@ namespace Evelyn.UnitTest.Behavior
             var mockedClientService = new MockedClientService();
             var mockedConfiguator = new MockedConfigurator();
 
-            engine.EnableRemoteClient(mockedClientService)
+            engine.RegisterClientService(mockedClientService)
                 .Configure(mockedConfiguator);
 
             /*
@@ -195,7 +195,7 @@ namespace Evelyn.UnitTest.Behavior
             var mockedClientService = new MockedClientService();
             var mockedConfiguator = new MockedConfigurator();
 
-            engine.EnableRemoteClient(mockedClientService)
+            engine.RegisterClientService(mockedClientService)
                 .Configure(mockedConfiguator);
 
             /*
@@ -301,8 +301,8 @@ namespace Evelyn.UnitTest.Behavior
             var mockedClientService = new MockedClientService();
             var mockedConfigurator = new MockedConfigurator();
 
-            engine.EnableRemoteClient(mockedClientService)
-                .InitializeInstrument(
+            engine.RegisterClientService(mockedClientService)
+                .RegisterInstrument(
                 new Instrument
                 {
                     InstrumentID = "l2205",
@@ -547,8 +547,8 @@ namespace Evelyn.UnitTest.Behavior
             var mockedClientService = new MockedClientService();
             var mockedConfiguator = new MockedConfigurator();
 
-            engine.EnableOHLC(mockedOHLCGenerator)
-                .EnableRemoteClient(mockedClientService)
+            engine.GenerateOHLC(mockedOHLCGenerator)
+                .RegisterClientService(mockedClientService)
                 .Configure(mockedConfiguator);
 
             /*
@@ -583,9 +583,9 @@ namespace Evelyn.UnitTest.Behavior
             var mockedClientService = new MockedClientService();
             var mockedConfigurator = new MockedConfigurator();
 
-            engine.EnableRemoteClient(mockedClientService)
-                .EnableLocalClient("MockedClient", mockedClient, "l2205")
-                .EnableLocalClient("MockedClientFake", mockedClientFake, "pp2205")
+            engine.RegisterClientService(mockedClientService)
+                .RegisterLocalClient("MockedClient", mockedClient, "l2205")
+                .RegisterLocalClient("MockedClientFake", mockedClientFake, "pp2205")
                 .Configure(mockedConfigurator);
 
             /*
@@ -711,9 +711,9 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * Prepare engine for ordering.
              */
-            engine.EnableLocalClient("MockedClient", mockedClient, "l2205")
-                .EnableLocalClient("MockedClientFake", mockedClientFake, "pp2205")
-                .InitializeInstrument(
+            engine.RegisterLocalClient("MockedClient", mockedClient, "l2205")
+                .RegisterLocalClient("MockedClientFake", mockedClientFake, "pp2205")
+                .RegisterInstrument(
                 new Instrument
                 {
                     InstrumentID = "l2205",

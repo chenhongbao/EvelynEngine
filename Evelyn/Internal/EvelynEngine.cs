@@ -28,6 +28,8 @@ namespace Evelyn.Internal
         private readonly EngineFeedSource _feedSource;
         private readonly EngineFeedHandler _feedHandler;
         private readonly EngineClientHandler _clientHandler;
+        private readonly ISet<IClientService> _registeredServices = new HashSet<IClientService>();
+
         private IConfigurator? _configurator;
 
         internal EvelynEngine()
@@ -73,12 +75,13 @@ namespace Evelyn.Internal
             _broker.Configure(broker);
             _clientHandler.Configure(_broker, _feedSource, _feedHandler);
 
-            LocalService.Service(_clientHandler);
+            LocalService.Configure(_clientHandler);
+            _registeredServices.ToList().ForEach(service => service.Configure(_clientHandler));
         }
 
-        public IEvelyn EnableLocalClient(string clientID, IAlgorithm algorithm, params string[] instrumentID)
+        public IEvelyn RegisterLocalClient(string clientID, IAlgorithm algorithm, params string[] instrumentID)
         {
-            LocalService.EnableClient(clientID, algorithm, instrumentID);
+            LocalService.RegisterClient(clientID, algorithm, instrumentID);
             return this;
         }
 
@@ -88,31 +91,6 @@ namespace Evelyn.Internal
         }
 
         public IEvelyn EnableManagement()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEvelyn EnableOHLC()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEvelyn EnableOHLC(IOHLCGenerator generator)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEvelyn EnableRemoteClient()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEvelyn EnableRemoteClient(EndPoint listeningEndPoint)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEvelyn EnableRemoteClient(IClientService clientService)
         {
             throw new NotImplementedException();
         }
@@ -127,7 +105,34 @@ namespace Evelyn.Internal
             throw new NotImplementedException();
         }
 
-        public IEvelyn InitializeInstrument(params Instrument[] instruments)
+        public IEvelyn GenerateOHLC()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEvelyn GenerateOHLC(IOHLCGenerator generator)
+        {
+            _feedHandler.RegisterOHLCGenerator(generator);
+            return this;
+        }
+
+        public IEvelyn RegisterClientService()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEvelyn RegisterClientService(EndPoint listeningEndPoint)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEvelyn RegisterClientService(IClientService clientService)
+        {
+            _registeredServices.Add(clientService);
+            return this;
+        }
+
+        public IEvelyn RegisterInstrument(params Instrument[] instruments)
         {
             instruments.ToList().ForEach(instrument => _feedHandler.SaveInstrument(instrument));
             return this;

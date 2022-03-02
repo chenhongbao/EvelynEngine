@@ -23,16 +23,19 @@ namespace Evelyn.UnitTest.Mock
     internal class MockedOHLCGenerator : IOHLCGenerator
     {
         private bool _hasOHLC = false;
-        public OHLC? Generate(Tick tick)
+        public bool Generate(Tick tick, out OHLC ohlc)
         {
             if (!_hasOHLC)
             {
                 _hasOHLC = true;
-                return GeneratedOHLC;
+                ohlc = GeneratedOHLC;
+
+                return true;
             }
             else
             {
-                return null;
+                ohlc = new OHLC();
+                return false;
             }
         }
 

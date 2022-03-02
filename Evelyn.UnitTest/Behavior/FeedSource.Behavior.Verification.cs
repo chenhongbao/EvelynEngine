@@ -41,7 +41,7 @@ namespace Evelyn.UnitTest.Behavior
             Engine = IEvelyn.New();
             TradingDay = DateOnly.FromDateTime(baseTime);
 
-            Engine.InitializeInstrument(
+            Engine.RegisterInstrument(
                  new Instrument
                  {
                      InstrumentID = "l2205",
@@ -89,7 +89,7 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * 1. Client A subscribes for instrument l2205.
              */
-            Engine.EnableLocalClient("MOCKED_CLIENT_A", ClientA, "l2205");
+            Engine.RegisterLocalClient("MOCKED_CLIENT_A", ClientA, "l2205");
 
             /*
              * 2. Feed source receives the request.
@@ -121,7 +121,7 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * 4. Client B subscribes for the same instrument.
              */
-            Engine.EnableLocalClient("MOCKED_CLIENT_B", ClientB, "l2205");
+            Engine.RegisterLocalClient("MOCKED_CLIENT_B", ClientB, "l2205");
 
             /*
              * 5. Feed source doesn't receive the request, but engine will send a subscription response to client B.
@@ -182,8 +182,8 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * 1. Client A and client B subscribe for the same instrument.
              */
-            Engine.EnableLocalClient("MOCKED_CLIENT_A", ClientA, "l2205");
-            Engine.EnableLocalClient("MOCKED_CLIENT_B", ClientB, "l2205");
+            Engine.RegisterLocalClient("MOCKED_CLIENT_A", ClientA, "l2205");
+            Engine.RegisterLocalClient("MOCKED_CLIENT_B", ClientB, "l2205");
 
             /*
              * Feed source only receives 1 subscription request and sends the response.

@@ -25,6 +25,7 @@ namespace Evelyn.Internal
         private readonly EngineClientHandler _clients;
         private readonly Dictionary<string, Instrument> _instruments = new Dictionary<string, Instrument>();
         private readonly ISet<(Action, string, InstrumentState)> _scheduledJobs = new HashSet<(Action, string, InstrumentState)>();
+        private readonly ISet<IOHLCGenerator> _ohlcGenerators = new HashSet<IOHLCGenerator>();
 
         internal EngineFeedHandler(EngineClientHandler clientHandler)
         {
@@ -40,6 +41,14 @@ namespace Evelyn.Internal
                     client.Service.SendTick(tick, client.ClientID);
                 }
             });
+
+            foreach(var generator in _ohlcGenerators)
+            {
+                if (generator.Generate(tick, out OHLC ohlc))
+                {
+                    OnFeed(ohlc);
+                }
+            }
         }
 
         public void OnFeed(OHLC ohlc)
@@ -88,18 +97,10 @@ namespace Evelyn.Internal
         public void OnInstrument(Instrument instrument)
         {
             /*
-             * Save the instrument.
+             * Save and send the instrument.
              */
             SaveInstrument(instrument);
-
-            _clients.Clients.ForEach(client =>
-            {
-                var instrumentID = instrument.InstrumentID;
-                if (client.Subscription.Instruments.Contains(instrumentID))
-                {
-                    client.Service.SendInstrument(_instruments[instrumentID], client.ClientID);
-                }
-            });
+            SendInstrument(instrument);
 
             /*
              * Check scheduled jobs and run if it meets the condition.
@@ -124,6 +125,28 @@ namespace Evelyn.Internal
                 {
                     client.Service.SendSubscribe(instrumentID, description, subscribed, client.ClientID);
                     client.Subscription.MarkSubscriptionResponse(instrumentID, waitResponse: false);
+                }
+            });
+        }
+
+        internal void SendInstruments()
+        {
+            _instruments.Values.ToList().ForEach(instrument => SendInstrument(instrument));
+        }
+
+        internal void RegisterOHLCGenerator(IOHLCGenerator generator)
+        {
+            _ohlcGenerators.Add(generator);
+        }
+
+        private void SendInstrument(Instrument instrument)
+        {
+            _clients.Clients.ForEach(client =>
+            {
+                var instrumentID = instrument.InstrumentID;
+                if (client.Subscription.Instruments.Contains(instrumentID))
+                {
+                    client.Service.SendInstrument(_instruments[instrumentID], client.ClientID);
                 }
             });
         }

@@ -43,6 +43,11 @@ namespace Evelyn.Internal
             get => _clients[clientID];
         }
 
+        internal bool HasClient(string clientID)
+        {
+            return _clients.ContainsKey(clientID);
+        }
+
         public void OnClientConnect(string clientID, IClientService service)
         {
             if (_clients.ContainsKey(clientID))

@@ -33,7 +33,9 @@ namespace Evelyn.Internal
 
         public EndPoint? ServiceEndPoint => throw new NotImplementedException("Local client service doesn't have an end point.");
 
-        public void Service(IClientHandler clientHandler)
+        internal bool IsConfigured { get; private set; } = false;
+
+        public void Configure(IClientHandler clientHandler)
         {
             if (_clientHandler != null)
             {
@@ -51,6 +53,13 @@ namespace Evelyn.Internal
                 InitializeClient(clientID, client.Item1, client.Item2);
             }
             _savedClients.Clear();
+            
+            /*
+             * Send instruments to clients.
+             */
+            _clientHandler.FeedHandler.SendInstruments();
+
+            IsConfigured = true;
         }
 
         public void SendInstrument(Instrument instrument, string clientID)
@@ -113,27 +122,22 @@ namespace Evelyn.Internal
             }
         }
 
-        internal void EnableClient(string clientID, IAlgorithm algorithm, params string[] instrumentID)
+        internal void RegisterClient(string clientID, IAlgorithm algorithm, params string[] instrumentID)
         {
-            if (_clientHandler == null)
+            if (IsConfigured)
             {
-                /*
-                 * Save the client's information and call OnLoad later after engine is configured.
-                 */
-                if (_savedClients.ContainsKey(clientID))
-                {
-                    throw new DuplicatedClientException("Another client exists with ID " + clientID + ".");
-                }
+                throw new InvalidOperationException("Can't register clients after engine is configured.");
+            }
 
-                _savedClients.Add(clientID, (algorithm, instrumentID));
-            }
-            else
+            /*
+             * Save the client's information and call OnLoad later after engine is configured.
+             */
+            if (_savedClients.ContainsKey(clientID))
             {
-                /*
-                 * Call OnLoad if engine is configured.
-                 */
-                InitializeClient(clientID, algorithm, instrumentID);
+                throw new DuplicatedClientException("Another client exists with ID " + clientID + ".");
             }
+
+            _savedClients.Add(clientID, (algorithm, instrumentID));
         }
 
         private void InitializeClient(string clientID, IAlgorithm algorithm, params string[] instrumentID)
