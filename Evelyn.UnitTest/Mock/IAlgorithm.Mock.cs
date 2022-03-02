@@ -47,7 +47,14 @@ namespace Evelyn.UnitTest.Mock
 
         public void OnSubscribed(string instrumentID, Description description, bool subscribed)
         {
-            ReceivedSubscribe = (instrumentID, description, subscribed);
+            if (subscribed)
+            {
+                ReceivedSubscribe = (instrumentID, description);
+            }
+            else
+            {
+                ReceivedUnsubscribe = (instrumentID, description);
+            }
         }
 
         public void OnTrade(Trade trade, Description description)
@@ -65,7 +72,8 @@ namespace Evelyn.UnitTest.Mock
         internal List<Tick> ReceivedTicks { get; } = new List<Tick>();
         internal List<OHLC> ReceivedOHLCs { get; } = new List<OHLC>();
         internal List<Instrument> ReceivedInstruments { get; } = new List<Instrument>();
-        internal (string, Description, bool) ReceivedSubscribe { get; private set; } = (string.Empty, new Description(), false);
+        internal (string, Description) ReceivedSubscribe { get; set; } = (string.Empty, new Description());
+        internal (string, Description) ReceivedUnsubscribe { get; set; } = (string.Empty, new Description());
         internal List<(Trade, Description)> ReceivedTrades { get; } = new List<(Trade, Description)>();
         internal bool IsLoaded { get; private set; } = false;
         internal bool IsUnloaded { get; private set; } = false;

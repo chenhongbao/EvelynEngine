@@ -124,7 +124,6 @@ namespace Evelyn.UnitTest.Behavior
             Assert.AreEqual("l2205", ClientA.ReceivedSubscribe.Item1);
             Assert.AreEqual(0, ClientA.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual("OK-l2205", ClientA.ReceivedSubscribe.Item2.Message);
-            Assert.AreEqual(true, ClientA.ReceivedSubscribe.Item3);
 
             /*
              * 3. Feed source sends market data and client A receives the data.
@@ -160,12 +159,19 @@ namespace Evelyn.UnitTest.Behavior
              */
             Assert.AreEqual("l2205", ClientB.ReceivedSubscribe.Item1);
             Assert.AreEqual(0, ClientB.ReceivedSubscribe.Item2.Code);
-            Assert.AreEqual("OK-l2205", ClientB.ReceivedSubscribe.Item2.Message);
-            Assert.AreEqual(true, ClientB.ReceivedSubscribe.Item3);
+            Assert.AreEqual(String.Empty, ClientB.ReceivedSubscribe.Item2.Message);
 
             /*
              * 6. Feed source sends market data and both clients receive the data.
              */
+            ClientA.ReceivedTicks.Clear();
+            ClientA.ReceivedOHLCs.Clear();
+            ClientA.ReceivedInstruments.Clear();
+
+            ClientB.ReceivedTicks.Clear();
+            ClientB.ReceivedOHLCs.Clear();
+            ClientB.ReceivedInstruments.Clear();
+
             MockedTicks.ForEach(tick => Configurator.FeedSource.MockedReceive(tick));
             MockedOHLCs.ForEach(ohlc => Configurator.FeedSource.MockedReceive(ohlc));
             MockedInstruments.ForEach(instrument => Configurator.FeedSource.MockedReceive(instrument));
@@ -226,12 +232,10 @@ namespace Evelyn.UnitTest.Behavior
             Assert.AreEqual("l2205", ClientA.ReceivedSubscribe.Item1);
             Assert.AreEqual(0, ClientA.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual("OK-l2205", ClientA.ReceivedSubscribe.Item2.Message);
-            Assert.AreEqual(true, ClientA.ReceivedSubscribe.Item3);
 
             Assert.AreEqual("l2205", ClientB.ReceivedSubscribe.Item1);
             Assert.AreEqual(0, ClientB.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual("OK-l2205", ClientB.ReceivedSubscribe.Item2.Message);
-            Assert.AreEqual(true, ClientB.ReceivedSubscribe.Item3);
 
             /*
              * 2. Feed source sends the market data and both clients receive the data.
@@ -257,6 +261,9 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * 3. Client A unsusbcribes the instrument.
              */
+            ClientA.ReceivedSubscribe = default;
+            ClientB.ReceivedSubscribe = default;
+
             Engine.AlterLocalClient("MOCKED_CLIENT_A");
 
             /*
@@ -268,15 +275,14 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * Client A receives an unsubscription response.
              */
-            Assert.AreEqual("l2205", ClientA.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, ClientA.ReceivedSubscribe.Item2.Code);
-            Assert.AreEqual("OK", ClientA.ReceivedSubscribe.Item2.Message);
-            Assert.AreEqual(false, ClientA.ReceivedSubscribe.Item3);
+            Assert.AreEqual("l2205", ClientA.ReceivedUnsubscribe.Item1);
+            Assert.AreEqual(0, ClientA.ReceivedUnsubscribe.Item2.Code);
+            Assert.AreEqual(String.Empty, ClientA.ReceivedUnsubscribe.Item2.Message);
 
             /*
              * Client B doesn't receive the unsubscription response.
              */
-            Assert.AreEqual(string.Empty, ClientB.ReceivedSubscribe.Item1);
+            Assert.AreEqual(null, ClientB.ReceivedSubscribe.Item1);
 
             /*
              * 5. Client A no more receives data, while client B still receives data.
@@ -321,20 +327,19 @@ namespace Evelyn.UnitTest.Behavior
             Assert.AreEqual(1, Configurator.FeedSource.UnsubscribedInstruments.Count);
             Assert.AreEqual("l2205", Configurator.FeedSource.UnsubscribedInstruments[0]);
 
-            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, false);
+            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK-l2205" }, false);
 
             /*
              * Client B receives the unsubscription response.
              */
-            Assert.AreEqual("l2205", ClientB.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, ClientB.ReceivedSubscribe.Item2.Code);
-            Assert.AreEqual("OK", ClientB.ReceivedSubscribe.Item2.Message);
-            Assert.AreEqual(false, ClientB.ReceivedSubscribe.Item3);
+            Assert.AreEqual("l2205", ClientB.ReceivedUnsubscribe.Item1);
+            Assert.AreEqual(0, ClientB.ReceivedUnsubscribe.Item2.Code);
+            Assert.AreEqual("OK-l2205", ClientB.ReceivedUnsubscribe.Item2.Message);
 
             /*
              * Client A doesn't receive the response.
              */
-            Assert.AreEqual(string.Empty, ClientA.ReceivedSubscribe.Item1);
+            Assert.AreEqual(null, ClientA.ReceivedSubscribe.Item1);
 
             /*
              * 8. Feed source sends the market data and none of the clients receive the data.

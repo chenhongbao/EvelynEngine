@@ -29,7 +29,19 @@ namespace Evelyn.Internal
             _borkerOrderID = brokerOrderID;
         }
 
-        internal NewOrder RewriteOrder
+        internal DeleteOrder RewriteDeleteOrder
+        {
+            get
+            {
+                return new DeleteOrder
+                {
+                    OrderID = _borkerOrderID,
+                    InstrumentID = _order.InstrumentID
+                };
+            }
+        }
+
+        internal NewOrder RewriteNewOrder
         {
             get
             {

@@ -74,11 +74,8 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * Switch instrument state to non-continous, then request new order.
              * 
-             * Engine changes internal instrument state to 'closed', and following
-             * request of the instrument is blocked by engine.
-             * 
-             * And that means broker receives on new order request when engine's
-             * instrument internal state is closed.
+             * New order withour option is routed to broker directly by default,
+             * no matter what state instrument has.
              */
             Configurator.FeedSource.MockedReceive(
                 new Instrument
@@ -112,24 +109,17 @@ namespace Evelyn.UnitTest.Behavior
                 });
 
             /*
-             * Broker receives no new order request.
+             * Broker receives 1 new order request.
              */
-            Assert.AreEqual(0, Configurator.Broker.ReceivedNewOrders.Count);
+            Assert.AreEqual(1, Configurator.Broker.ReceivedNewOrders.Count);
 
-            /*
-             * Client receives rejected trade.
-             */
-            Assert.AreEqual(1, Client.ReceivedTrades.Count);
+            var order = Configurator.Broker.ReceivedNewOrders[0];
 
-            var trade = Client.ReceivedTrades[0].Item1;
-
-            Assert.AreEqual("l2205", trade.InstrumentID);
-            Assert.AreEqual("MOCKED_ORDER_1", trade.OrderID);
-            Assert.AreEqual(2, trade.Quantity);
-            Assert.AreEqual(0, trade.TradePrice);
-            Assert.AreEqual(0, trade.TradeQuantity);
-            Assert.AreEqual(2, trade.LeaveQuantity);
-            Assert.AreEqual(OrderStatus.Rejected, trade.Status);
+            Assert.AreEqual("l2205", order.InstrumentID);
+            Assert.AreEqual(8888, order.Price);
+            Assert.AreEqual(2, order.Quantity);
+            Assert.AreEqual(Direction.Buy, order.Direction);
+            Assert.AreEqual(Offset.Open, order.Offset);
         }
 
         [TestMethod("Request new order when broker is disconnected.")]

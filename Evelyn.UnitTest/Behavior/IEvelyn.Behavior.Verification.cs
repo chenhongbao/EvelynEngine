@@ -329,11 +329,11 @@ namespace Evelyn.UnitTest.Behavior
             Assert.AreEqual(8888, newOrder.Price);
             Assert.AreEqual(2, newOrder.Quantity);
 
-            newOrder = mockedConfigurator.Broker.ReceivedNewOrders[1];
+            var newOrderFake = mockedConfigurator.Broker.ReceivedNewOrders[1];
 
-            Assert.AreEqual("l2205", newOrder.InstrumentID);
-            Assert.AreEqual(7777, newOrder.Price);
-            Assert.AreEqual(3, newOrder.Quantity);
+            Assert.AreEqual("l2205", newOrderFake.InstrumentID);
+            Assert.AreEqual(7777, newOrderFake.Price);
+            Assert.AreEqual(3, newOrderFake.Quantity);
 
             /*
              * 2. Mocked broker trades 1 quantity of the given order and returns trade, and engine forwards the response to corresponding client.
@@ -396,7 +396,7 @@ namespace Evelyn.UnitTest.Behavior
                 },
                 "MOCKED_CLIENT");
 
-            Assert.AreEqual("MOCKED_ORDER_1", mockedConfigurator.Broker.ReceivedDeleteOrders[0]);
+            Assert.AreEqual(newOrder.OrderID, mockedConfigurator.Broker.ReceivedDeleteOrders[0]);
 
             mockedConfigurator.Broker.MockedTrade(
                 new Trade
@@ -529,12 +529,10 @@ namespace Evelyn.UnitTest.Behavior
             Assert.AreEqual("l2205", mockedClient.ReceivedSubscribe.Item1);
             Assert.AreEqual(0, mockedClient.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual("OK-l2205", mockedClient.ReceivedSubscribe.Item2.Message);
-            Assert.AreEqual(true, mockedClient.ReceivedSubscribe.Item3);
 
             Assert.AreEqual("pp2205", mockedClientFake.ReceivedSubscribe.Item1);
             Assert.AreEqual(0, mockedClientFake.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual("OK-pp2205", mockedClientFake.ReceivedSubscribe.Item2.Message);
-            Assert.AreEqual(true, mockedClientFake.ReceivedSubscribe.Item3);
 
             /*
              * 2. Client receives market data.
@@ -558,25 +556,6 @@ namespace Evelyn.UnitTest.Behavior
             engine.AlterLocalClient("MockedClient", "pp2205");
 
             /*
-             * Check feed source receives unsubscription request.
-             */
-            Assert.AreEqual(1, mockedConfigurator.FeedSource.UnsubscribedInstruments.Count);
-            Assert.AreEqual("l2205", mockedConfigurator.FeedSource.UnsubscribedInstruments[0]);
-
-            /*
-             * Feed source sends the unsubscription response.
-             */
-            mockedConfigurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, false);
-
-            /*
-             * Client receives unsubscription response.
-             */
-            Assert.AreEqual("l2205", mockedClient.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, mockedClient.ReceivedSubscribe.Item2.Code);
-            Assert.AreEqual("OK", mockedClient.ReceivedSubscribe.Item2.Message);
-            Assert.AreEqual(false, mockedClient.ReceivedSubscribe.Item3);
-
-            /*
              * Because the instrument is already subscribed, no more feed source subscription.
              */
             Assert.AreEqual(2, mockedConfigurator.FeedSource.SubscribedInstruments.Count);
@@ -587,8 +566,25 @@ namespace Evelyn.UnitTest.Behavior
              */
             Assert.AreEqual("pp2205", mockedClient.ReceivedSubscribe.Item1);
             Assert.AreEqual(0, mockedClient.ReceivedSubscribe.Item2.Code);
-            Assert.AreEqual("OK", mockedClient.ReceivedSubscribe.Item2.Message);
-            Assert.AreEqual(true, mockedClient.ReceivedSubscribe.Item3);
+            Assert.AreEqual(String.Empty, mockedClient.ReceivedSubscribe.Item2.Message);
+
+            /*
+             * Check feed source receives unsubscription request.
+             */
+            Assert.AreEqual(1, mockedConfigurator.FeedSource.UnsubscribedInstruments.Count);
+            Assert.AreEqual("l2205", mockedConfigurator.FeedSource.UnsubscribedInstruments[0]);
+
+            /*
+             * Feed source sends the unsubscription response.
+             */
+            mockedConfigurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK-l2205" }, false);
+
+            /*
+             * Client receives unsubscription response.
+             */
+            Assert.AreEqual("l2205", mockedClient.ReceivedUnsubscribe.Item1);
+            Assert.AreEqual(0, mockedClient.ReceivedUnsubscribe.Item2.Code);
+            Assert.AreEqual("OK-l2205", mockedClient.ReceivedUnsubscribe.Item2.Message);
 
             /*
              * Feed source sends market data again, and client shall receives only newly subscribed data.
@@ -782,7 +778,7 @@ namespace Evelyn.UnitTest.Behavior
                     InstrumentID = "l2205",
                     TradingDay = DateOnly.MaxValue,
                     TimeStamp = DateTime.MaxValue,
-                    OrderID = "MOCKED_ORDER_1",
+                    OrderID = newOrder.OrderID, /* Engine rewrites order ID. */
                     Price = 8888,
                     Quantity = 2,
                     Direction = Direction.Buy,

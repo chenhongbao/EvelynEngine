@@ -39,32 +39,11 @@ namespace Evelyn.UnitTest.Mock
         public void Unsubscribe(string instrumentID)
         {
             UnsubscribedInstruments.Add(instrumentID);
-
-            if (_feeds.ContainsKey(instrumentID))
-            {
-                _feeds.Remove(instrumentID);
-            }
-            else
-            {
-                throw new ApplicationException("Instrument " + instrumentID + " hasn't been subscribed.");
-            }
         }
 
         public void Unsubscribe(string instrumentID, IFeedHandler feedHandler)
         {
-            if (_feeds.ContainsKey(instrumentID))
-            {
-                _feeds[instrumentID].Remove(feedHandler);
-                if (_feeds[instrumentID].Count == 0)
-                {
-                    _feeds.Remove(instrumentID);
-                    UnsubscribedInstruments.Add(instrumentID);
-                }
-            }
-            else
-            {
-                throw new ApplicationException("Instrument " + instrumentID + " hasn't been subscribed.");
-            }
+            UnsubscribedInstruments.Add(instrumentID);
         }
 
         #region Mocking Methods

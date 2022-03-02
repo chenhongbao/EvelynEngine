@@ -94,7 +94,7 @@ namespace Evelyn.Internal
             {
                 if (order.OriginalOrder.OrderID == deleteOrder.OrderID)
                 {
-                    Broker.Delete(deleteOrder);
+                    Broker.Delete(order.RewriteDeleteOrder);
                     return;
                 }
             }
@@ -143,7 +143,7 @@ namespace Evelyn.Internal
             var clientOrder = new ClientOrder(newOrder, Broker.NewOrderID);
 
             _clients[clientID].Orders.Add(clientOrder);
-            Broker.NewOrder(clientOrder.RewriteOrder);
+            Broker.NewOrder(clientOrder.RewriteNewOrder);
         }
 
         public void OnSubscribe(string instrumentID, bool isSubscribed, string clientID)

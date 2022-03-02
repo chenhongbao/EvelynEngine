@@ -26,6 +26,7 @@ namespace Evelyn.Internal
         private readonly Dictionary<string, Instrument> _instruments = new Dictionary<string, Instrument>();
         private readonly ISet<(Action, string, InstrumentState)> _scheduledJobs = new HashSet<(Action, string, InstrumentState)>();
         private readonly ISet<IOHLCGenerator> _ohlcGenerators = new HashSet<IOHLCGenerator>();
+        private readonly ISet<(string, bool)> _subscriptionResponses = new HashSet<(string, bool)>();
 
         internal EngineFeedHandler(EngineClientHandler clientHandler)
         {
@@ -42,7 +43,7 @@ namespace Evelyn.Internal
                 }
             });
 
-            foreach(var generator in _ohlcGenerators)
+            foreach (var generator in _ohlcGenerators)
             {
                 if (generator.Generate(tick, out OHLC ohlc))
                 {
@@ -60,6 +61,41 @@ namespace Evelyn.Internal
                     client.Service.SendOHLC(ohlc, client.ClientID);
                 }
             });
+        }
+
+        internal bool HasSubscriptionResponse(string instrument, bool isSubscribed)
+        {
+            var enumerator = _subscriptionResponses.GetEnumerator();
+            while(enumerator.MoveNext())
+            {
+                var response = enumerator.Current;
+                if (response.Item1 == instrument && response.Item2 == isSubscribed)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        internal void EraseSubscriptionResponse(string instrument, bool isSubscribed)
+        {
+            (string, bool) removed = default;
+
+            var enumerator = _subscriptionResponses.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                var response = enumerator.Current;
+                if (response.Item1 == instrument && response.Item2 == isSubscribed)
+                {
+                    removed = response;
+                    break;
+                }
+            }
+
+            if (removed != default)
+            {
+                _subscriptionResponses.Remove(removed);
+            }
         }
 
         internal void SaveInstrument(Instrument instrument)
@@ -127,6 +163,11 @@ namespace Evelyn.Internal
                     client.Subscription.MarkSubscriptionResponse(instrumentID, waitResponse: false);
                 }
             });
+
+            /*
+             * Mark the response received.
+             */
+            _subscriptionResponses.Add((instrumentID, subscribed));
         }
 
         internal void SendInstruments()

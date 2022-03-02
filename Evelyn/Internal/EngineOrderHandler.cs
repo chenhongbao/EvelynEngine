@@ -40,6 +40,10 @@ namespace Evelyn.Internal
                 {
                     if (order.BrokerOrderID == trade.OrderID)
                     {
+                        /*
+                         * Rewrite the order ID back to original ID.
+                         */
+                        trade.OrderID = order.OriginalOrder.OrderID;
                         client.Service.SendTrade(trade, description, client.ClientID);
                         return;
                     }
