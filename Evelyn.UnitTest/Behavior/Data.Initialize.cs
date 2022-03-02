@@ -82,13 +82,18 @@ namespace Evelyn.UnitTest.Behavior
             MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(3), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.AuctionMatch, StateTimestamp = baseTime.AddHours(3) });
             MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(4), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.BeforeTrading, StateTimestamp = baseTime.AddHours(4) });
             MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(5), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(5) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "p2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(6), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.NonTrading, StateTimestamp = baseTime.AddHours(6) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(6), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.NonTrading, StateTimestamp = baseTime.AddHours(6) });
             MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(7), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(7) });
             MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, TimeStamp = baseTime.AddHours(8), Margin = 0.11, Commission = 1.01, Multiple = 5, MarginMethod = CalculationMethod.PerAmount, CommissionMethod = CalculationMethod.PerVolume, State = InstrumentState.Closed, StateTimestamp = baseTime.AddHours(8) });
         }
 
-        protected int CompareCollection<T>(ICollection<T> c0, ICollection<T> c1)
+        protected void CompareCollection<T>(ICollection<T> c0, ICollection<T> c1)
         {
+            if (c0.Count != c1.Count)
+            {
+                throw new ArgumentException("Arguments not the same length, " + c0.Count + " and " + c1.Count + ".");
+            }
+
             /*
              * Find the first different element in c1 compared to the element in c0 that has the same index.
              * If all elements are the same, returns int.MaxValue.
@@ -101,19 +106,10 @@ namespace Evelyn.UnitTest.Behavior
                 /*
                  * Struct's Equals method compares the value.
                  */
-                if (index >= c0.Count && !e0.Equals(c1.ElementAt(index)))
+                if (!e0.Equals(c1.ElementAt(index)))
                 {
-                    return index;
+                    throw new ArgumentException("Element not the same at index " + index + ".");
                 }
-            }
-
-            if (index < c0.Count)
-            {
-                return index;
-            }
-            else
-            {
-                return int.MaxValue;
             }
         }
     }

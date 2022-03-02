@@ -98,7 +98,7 @@ namespace Evelyn.Internal
                 _clients[clientID].Service.SendTrade(
                     new Trade
                     {
-                        InstrumentID = String.Empty,
+                        InstrumentID = deleteOrder.InstrumentID,
                         TradingDay = DateOnly.MaxValue,
                         TimeStamp = DateTime.MaxValue,
                         OrderID = deleteOrder.OrderID,

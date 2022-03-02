@@ -36,6 +36,8 @@ namespace Evelyn.UnitTest.Mock
         public void OnInstrument(Instrument instrument)
         {
             ReceivedInstruments.Add(instrument);
+
+            System.Console.Error.WriteLine("RECV: " + instrument.InstrumentID);
         }
 
         public void OnLoad(IOperator op)
