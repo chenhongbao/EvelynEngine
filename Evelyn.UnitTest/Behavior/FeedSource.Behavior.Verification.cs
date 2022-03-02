@@ -23,29 +23,36 @@ using System.Linq;
 namespace Evelyn.UnitTest.Behavior
 {
     [TestClass]
-    public class FeedSourceBehaviorVerification : EvelynBehaviorVerfication
+    public class FeedSourceBehaviorVerification : DataInitialize
     {
         internal IEvelyn Engine { get; private set; } = IEvelyn.New();
         internal MockedConfigurator Configurator { get; private set; } = new MockedConfigurator();
         internal MockedLocalClient ClientA { get; private set; } = new MockedLocalClient();
         internal MockedLocalClient ClientB { get; private set; } = new MockedLocalClient();
-        internal DateOnly TradingDay { get; private set; } = DateOnly.MaxValue;
 
         [TestInitialize]
         public new void Initialize()
         {
             base.Initialize();
 
-            var baseTime = DateTime.Now;
-
             Engine = IEvelyn.New();
-            TradingDay = DateOnly.FromDateTime(baseTime);
+            Configurator = new MockedConfigurator();
+            ClientA = new MockedLocalClient();
+            ClientB = new MockedLocalClient();
+        }
 
-            Engine.RegisterInstrument(
+        [TestMethod("Engine sends registered instruments to clients at configuration.")]
+        public void SendRegisterInstruments()
+        {
+            var baseTime = DateTime.Now;
+            var baseDay = DateOnly.FromDateTime(baseTime);
+
+            Engine.RegisterLocalClient("MOCKED_CLIENT_A", ClientA, "l2205", "pp2205")
+                .RegisterInstrument(
                  new Instrument
                  {
                      InstrumentID = "l2205",
-                     TradingDay = TradingDay,
+                     TradingDay = baseDay,
                      TimeStamp = baseTime,
                      Margin = 0.11,
                      Commission = 1.01,
@@ -58,7 +65,7 @@ namespace Evelyn.UnitTest.Behavior
                 new Instrument
                 {
                     InstrumentID = "pp2205",
-                    TradingDay = TradingDay,
+                    TradingDay = baseDay,
                     TimeStamp = baseTime,
                     Margin = 0.11,
                     Commission = 1.01,
@@ -69,6 +76,16 @@ namespace Evelyn.UnitTest.Behavior
                     StateTimestamp = baseTime
                 })
                 .Configure(Configurator);
+
+            /*
+             * Engine sends registered instruments to clients at their configuration.
+             */
+            Assert.AreEqual(2, ClientA.ReceivedInstruments.Count);
+
+            var i0 = ClientA.ReceivedInstruments[0].InstrumentID;
+            var i1 = ClientA.ReceivedInstruments[1].InstrumentID;
+
+            Assert.IsTrue((i0 == "l2205" && i1 == "pp2205") || (i1 == "l2205" && i0 == "pp2205"));
         }
 
         [TestMethod("Subscribe for an instrument many times.")]
@@ -78,9 +95,9 @@ namespace Evelyn.UnitTest.Behavior
              * There are many clients subscribing for the same instrument and feed source
              * only receives the request at the first subscription.
              * 
-             * 1. Client A subscribes for the instrument.
-             * 2. Feed source receives the subscription request.
-             * 3. Feed source sends market data and client A receives data.
+             * 1. Client A subscribes for the instrument, client B doesn't subscribe instrument.
+             * 2. Feed source receives the subscription request from client A.
+             * 3. Feed source sends market data and only client A receives data.
              * 4. Client B subscribes for the same instrument.
              * 5. Feed source doesn't receive a duplicated subscription request.
              * 6. Feed source sends the market data and both clients receive data.
@@ -89,7 +106,9 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * 1. Client A subscribes for instrument l2205.
              */
-            Engine.RegisterLocalClient("MOCKED_CLIENT_A", ClientA, "l2205");
+            Engine.RegisterLocalClient("MOCKED_CLIENT_A", ClientA, "l2205")
+                .RegisterLocalClient("MOCKED_CLIENT_B", ClientB)
+                .Configure(Configurator);
 
             /*
              * 2. Feed source receives the request.
@@ -119,9 +138,16 @@ namespace Evelyn.UnitTest.Behavior
             CompareCollection(MockedInstruments.Where(instrument => instrument.InstrumentID == "l2205").ToList(), ClientA.ReceivedInstruments);
 
             /*
+             * Client B receives no data.
+             */
+            Assert.AreEqual(0, ClientB.ReceivedTicks.Count);
+            Assert.AreEqual(0, ClientB.ReceivedOHLCs.Count);
+            Assert.AreEqual(0, ClientB.ReceivedInstruments.Count);
+
+            /*
              * 4. Client B subscribes for the same instrument.
              */
-            Engine.RegisterLocalClient("MOCKED_CLIENT_B", ClientB, "l2205");
+            Engine.AlterLocalClient("MOCKED_CLIENT_B", "l2205");
 
             /*
              * 5. Feed source doesn't receive the request, but engine will send a subscription response to client B.
@@ -182,8 +208,9 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * 1. Client A and client B subscribe for the same instrument.
              */
-            Engine.RegisterLocalClient("MOCKED_CLIENT_A", ClientA, "l2205");
-            Engine.RegisterLocalClient("MOCKED_CLIENT_B", ClientB, "l2205");
+            Engine.RegisterLocalClient("MOCKED_CLIENT_A", ClientA, "l2205")
+                .RegisterLocalClient("MOCKED_CLIENT_B", ClientB, "l2205")
+                .Configure(Configurator);
 
             /*
              * Feed source only receives 1 subscription request and sends the response.
@@ -230,7 +257,7 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * 3. Client A unsusbcribes the instrument.
              */
-            Engine.AlterLocalClient("MOCKED_CLIENT_A", "");
+            Engine.AlterLocalClient("MOCKED_CLIENT_A");
 
             /*
              * 4. Feed source doesn't receive the unsubscription request and engine sends an unsubscription 
@@ -286,7 +313,7 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * 6. Client B unsubscribes the instrument.
              */
-            Engine.AlterLocalClient("MOCKED_CLIENT_B", "");
+            Engine.AlterLocalClient("MOCKED_CLIENT_B");
 
             /*
              * 7. Feed source receives the unsubscription request and sends an unsubscription response.
