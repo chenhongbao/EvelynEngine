@@ -73,6 +73,7 @@ namespace Evelyn.Internal
                         {
                             FeedSource.Unsubscribe(instrument);
                             _counters.Remove(instrument);
+                            _feedHandler.EraseSubscriptionResponse(instrument, isSubscribed: false);
                         }
                         else
                         {

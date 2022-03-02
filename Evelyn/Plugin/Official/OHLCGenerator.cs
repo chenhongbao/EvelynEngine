@@ -58,6 +58,15 @@ namespace Evelyn.Plugin
                 _initialized = true;
             }
 
+            if (tick.TimeStamp.CompareTo(_timeStamp) < 0)
+            {
+                /*
+                 * Replay the old market data, don't update the OHLC.
+                 */
+                ohlc = default(OHLC);
+                return false;
+            }
+
             if (tick.TimeStamp.Minute == _timeStamp.Minute)
             {
                 _timeStamp = tick.TimeStamp;

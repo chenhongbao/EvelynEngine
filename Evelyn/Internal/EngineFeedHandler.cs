@@ -175,9 +175,10 @@ namespace Evelyn.Internal
             });
 
             /*
-             * Mark the response received.
+             * Mark the response received, and erase the old state.
              */
             _subscriptionResponses.Add((instrumentID, subscribed));
+            EraseSubscriptionResponse(instrumentID, isSubscribed: !subscribed);
         }
 
         internal void SendInstruments()
