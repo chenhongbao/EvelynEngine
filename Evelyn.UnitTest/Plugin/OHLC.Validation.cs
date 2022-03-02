@@ -91,6 +91,8 @@ namespace Evelyn.UnitTest.Plugin
                 .GenerateOHLC()
                 .Configure(Configurator);
 
+            Configurator.FeedSource.MockedConnect(true);
+
             /*
              * The first two minutes have OHLC, the last minute will not because
              * no more ticks, into next minute, to trigger the generation.

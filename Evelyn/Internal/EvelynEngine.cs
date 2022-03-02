@@ -34,13 +34,12 @@ namespace Evelyn.Internal
 
         internal EvelynEngine()
         {
+            _broker = new EngineBroker();
+            _feedSource = new EngineFeedSource();
             _localService = new LocalClientService();
             _clientHandler = new EngineClientHandler();
             _orderHandler = new EngineOrderHandler(_clientHandler);
             _feedHandler = new EngineFeedHandler(_clientHandler);
-            _broker = new EngineBroker(_orderHandler);
-            _feedSource = new EngineFeedSource(_feedHandler);
-
         }
 
         private LocalClientService LocalService => _localService;
@@ -71,8 +70,8 @@ namespace Evelyn.Internal
             _configurator = configurator;
             Configurator.Create(out IBroker broker, out IFeedSource feedSource);
 
-            _feedSource.Configure(feedSource);
-            _broker.Configure(broker);
+            _feedSource.Configure(feedSource, _feedHandler, new FeedSourceExchange(_feedSource));
+            _broker.Configure(broker, _orderHandler, new BrokerExchange());
             _clientHandler.Configure(_broker, _feedSource, _feedHandler);
 
             LocalService.Configure(_clientHandler);

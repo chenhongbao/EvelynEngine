@@ -90,6 +90,39 @@ namespace Evelyn.Internal
                 return;
             }
 
+            if (!Broker.IsConnected)
+            {
+                /*
+                 * If exchange is disconnected, can't delete an order so return error.
+                 */
+                _clients[clientID].Service.SendTrade(
+                    new Trade
+                    {
+                        InstrumentID = String.Empty,
+                        TradingDay = DateOnly.MaxValue,
+                        TimeStamp = DateTime.MaxValue,
+                        OrderID = deleteOrder.OrderID,
+                        Price = double.MaxValue,
+                        Quantity = int.MaxValue,
+                        Direction = default(Direction),
+                        Offset = default(Offset),
+                        TradeID = String.Empty,
+                        TradePrice = double.MaxValue,
+                        TradeQuantity = int.MaxValue,
+                        LeaveQuantity = int.MaxValue,
+                        TradeTimeStamp = DateTime.MaxValue,
+                        Status = OrderStatus.Rejected,
+                        Message = "Exchange disconnected."
+                    },
+                    new Description
+                    {
+                        Code = 1,
+                        Message = "Exchange is disconnected."
+                    },
+                    clientID);
+                return;
+            }
+
             foreach (var order in _clients[clientID].Orders)
             {
                 if (order.OriginalOrder.OrderID == deleteOrder.OrderID)
@@ -123,7 +156,7 @@ namespace Evelyn.Internal
                 },
                 new Description
                 {
-                    Code = 1,
+                    Code = 2,
                     Message = "No such order with ID " + deleteOrder.OrderID + "."
                 },
                 clientID);
@@ -140,10 +173,44 @@ namespace Evelyn.Internal
                 return;
             }
 
-            var clientOrder = new ClientOrder(newOrder, Broker.NewOrderID);
+            if (!Broker.IsConnected)
+            {
+                /*
+                 * When exchange is disconnected, can't request order so return error.
+                 */
+                _clients[clientID].Service.SendTrade(
+                    new Trade
+                    {
+                        InstrumentID = newOrder.InstrumentID,
+                        TradingDay = newOrder.TradingDay,
+                        TimeStamp = newOrder.TimeStamp,
+                        OrderID = newOrder.OrderID,
+                        Price = newOrder.Price,
+                        Quantity = newOrder.Quantity,
+                        Direction = newOrder.Direction,
+                        Offset = newOrder.Offset,
+                        TradeID = String.Empty,
+                        TradePrice = double.MaxValue,
+                        TradeQuantity = int.MaxValue,
+                        LeaveQuantity = newOrder.Quantity,
+                        TradeTimeStamp = DateTime.MaxValue,
+                        Status = OrderStatus.Rejected,
+                        Message = "Exchange disconnected."
+                    },
+                    new Description
+                    {
+                        Code = 11,
+                        Message = "Exchange is disconnected."
+                    },
+                    clientID);
+            }
+            else
+            {
+                var clientOrder = new ClientOrder(newOrder, Broker.NewOrderID);
 
-            _clients[clientID].Orders.Add(clientOrder);
-            Broker.NewOrder(clientOrder.RewriteNewOrder);
+                _clients[clientID].Orders.Add(clientOrder);
+                Broker.NewOrder(clientOrder.RewriteNewOrder);
+            }
         }
 
         public void OnSubscribe(string instrumentID, bool isSubscribed, string clientID)

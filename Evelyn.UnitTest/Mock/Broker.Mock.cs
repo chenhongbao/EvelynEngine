@@ -23,38 +23,36 @@ namespace Evelyn.UnitTest.Mock
 {
     internal class MockedBroker : IBroker
     {
-        private IDictionary<string, IOrderHandler> _orderHandlers = new Dictionary<string, IOrderHandler>();
+        private IOrderHandler? _orderHandlers;
+        private IExchangeListener? _exchangeListener;
+
+        private IOrderHandler Handler => _orderHandlers ?? throw new NoValueException("Order handler has no value.");
 
         public void Delete(DeleteOrder deleteOrder)
         {
             ReceivedDeleteOrders.Add(deleteOrder.OrderID);
         }
 
-        public void New(NewOrder newOrder, IOrderHandler orderHandler)
+        public void New(NewOrder newOrder)
         {
             ReceivedNewOrders.Add(newOrder);
+        }
 
-            if (_orderHandlers.ContainsKey(newOrder.OrderID))
-            {
-                throw new ArgumentException("Duplicated order ID.");
-            }
-            else
-            {
-                _orderHandlers.Add(newOrder.OrderID, orderHandler);
-            }
+        public void Register(IOrderHandler orderHandler, IExchangeListener exchangeListener)
+        {
+            _orderHandlers = orderHandler;
+            _exchangeListener = exchangeListener;
         }
 
         #region Mocking Method
         internal void MockedTrade(Trade trade, Description description)
         {
-            if (_orderHandlers.TryGetValue(trade.OrderID, out IOrderHandler? handler))
-            {
-                handler.OnTrade(trade, description);
-            }
-            else
-            {
-                throw new ArgumentException("No such order " + trade.OrderID + ".");
-            }
+            Handler.OnTrade(trade, description);
+        }
+
+        internal void MockedConnect(bool isConnected)
+        {
+            (_exchangeListener ?? throw new NoValueException("Exchange listener has no value.")).OnConnected(isConnected);
         }
 
         internal List<NewOrder> ReceivedNewOrders { get; } = new List<NewOrder>();

@@ -43,6 +43,8 @@ namespace Evelyn.UnitTest.Behavior
             engine.RegisterClientService(mockedClientService)
                 .Configure(mockedConfiguator);
 
+            mockedConfiguator.FeedSource.MockedConnect(true);
+
             /*
              * Engine forwards market data from feed source to client.
              * 
@@ -137,6 +139,8 @@ namespace Evelyn.UnitTest.Behavior
 
             engine.RegisterClientService(mockedClientService)
                 .Configure(mockedConfiguator);
+
+            mockedConfiguator.FeedSource.MockedConnect(true);
 
             /*
              * Over unsubscribe an instrument and receive error response.
@@ -270,6 +274,8 @@ namespace Evelyn.UnitTest.Behavior
                     StateTimestamp = baseTime
                 })
                 .Configure(mockedConfigurator);
+
+            mockedConfigurator.Broker.MockedConnect(true);
 
             /*
              * Engine receives order request from client, route the order to broker, then forward the responses from broker to client.
@@ -461,6 +467,8 @@ namespace Evelyn.UnitTest.Behavior
                 .RegisterClientService(mockedClientService)
                 .Configure(mockedConfiguator);
 
+            mockedConfiguator.FeedSource.MockedConnect(true);
+
             /*
              * Engine calls customized OHCLGenerator to generate OHLC data. When the interface returns null, no OHLC is available, or returns an OHLC instance.
              * 
@@ -497,6 +505,8 @@ namespace Evelyn.UnitTest.Behavior
                 .RegisterLocalClient("MockedClient", mockedClient, "l2205")
                 .RegisterLocalClient("MockedClientFake", mockedClientFake, "pp2205")
                 .Configure(mockedConfigurator);
+
+            mockedConfigurator.FeedSource.MockedConnect(true);
 
             /*
              * Engine tranfers messages between broker and client.
@@ -647,6 +657,8 @@ namespace Evelyn.UnitTest.Behavior
                     StateTimestamp = baseTime
                 })
                 .Configure(mockedConfiguator);
+
+            mockedConfiguator.Broker.MockedConnect(true);
 
             /*
              * Client requests new order, order is partly traded, and then client deletes the order.

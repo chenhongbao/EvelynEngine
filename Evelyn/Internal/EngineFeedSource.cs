@@ -21,17 +21,26 @@ namespace Evelyn.Internal
 {
     internal class EngineFeedSource
     {
-        private readonly EngineFeedHandler _feedHandler;
+        private EngineFeedHandler? _feedHandler;
+        private FeedSourceExchange? _feedSourceExchange;
         private IFeedSource? _feedSource;
         private IDictionary<string, int> _counters = new Dictionary<string, int>();
 
         private IFeedSource FeedSource => _feedSource ?? throw new NoValueException("Feed source has no value.");
 
+        private EngineFeedHandler FeedHandler => _feedHandler ?? throw new NoValueException("Feed handler has no value.");
+        private bool IsConnected => _feedSourceExchange?.IsConnected ?? throw new NoValueException("Feed source exchange has no value.");
+
         internal bool IsConfigured { get; private set; } = false;
 
-        internal EngineFeedSource(EngineFeedHandler feedHandler)
+        internal EngineFeedSource Subscribe()
         {
-            _feedHandler = feedHandler;
+            _counters.Keys.ToList().ForEach(instrument =>
+            {
+                FeedSource.Subscribe(instrument);
+                FeedHandler.EraseSubscriptionResponse(instrument, isSubscribed: true);
+            });
+            return this;
         }
 
         internal EngineFeedSource Subscribe(IEnumerable<string> instruments, bool isSubscribed)
@@ -49,17 +58,21 @@ namespace Evelyn.Internal
                      * Send a fake unsubscription response to client if the instrument is subscribed
                      * and response has arrived, otherwise waits for response.
                      */
-                    if (_feedHandler.HasSubscriptionResponse(instrument, isSubscribed: true))
+                    if (FeedHandler.HasSubscriptionResponse(instrument, isSubscribed: true))
                     {
-                        _feedHandler.OnSubscribed(instrument, new Description { Code = 0, Message = String.Empty }, true);
+                        FeedHandler.OnSubscribed(instrument, new Description { Code = 0, Message = String.Empty }, true);
                     }
                 });
 
                 instruments.Except(_counters.Keys).ToList().ForEach(instrument =>
                 {
-                    FeedSource.Subscribe(instrument, _feedHandler);
+                    if (IsConnected)
+                    {
+                        FeedSource.Subscribe(instrument);
+                        FeedHandler.EraseSubscriptionResponse(instrument, isSubscribed: true);
+                    }
+
                     _counters.Add(instrument, 1);
-                    _feedHandler.EraseSubscriptionResponse(instrument, isSubscribed: true);
                 });
             }
             else
@@ -71,9 +84,13 @@ namespace Evelyn.Internal
                         --_counters[instrument];
                         if (_counters[instrument] == 0)
                         {
-                            FeedSource.Unsubscribe(instrument);
+                            if (IsConnected)
+                            {
+                                FeedSource.Unsubscribe(instrument);
+                                FeedHandler.EraseSubscriptionResponse(instrument, isSubscribed: false);
+                            }
+                            
                             _counters.Remove(instrument);
-                            _feedHandler.EraseSubscriptionResponse(instrument, isSubscribed: false);
                         }
                         else
                         {
@@ -85,7 +102,7 @@ namespace Evelyn.Internal
                              * responses are correctly sent. After the real unsubscription request is sent to 
                              * feed source, the last client receives the real response.
                              */
-                            _feedHandler.OnSubscribed(instrument, new Description { Code = 0, Message = String.Empty }, false);
+                            FeedHandler.OnSubscribed(instrument, new Description { Code = 0, Message = String.Empty }, false);
                         }
                     }
                 });
@@ -94,9 +111,13 @@ namespace Evelyn.Internal
             return this;
         }
 
-        internal void Configure(IFeedSource feedSource)
+        internal void Configure(IFeedSource feedSource, EngineFeedHandler feedHandler, FeedSourceExchange exchange)
         {
+            _feedHandler = feedHandler;
+            _feedSourceExchange = exchange;
             _feedSource = feedSource;
+            _feedSource.Register(feedHandler, exchange);
+
             IsConfigured = true;
         }
     }

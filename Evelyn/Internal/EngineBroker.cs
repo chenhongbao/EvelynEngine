@@ -21,23 +21,23 @@ namespace Evelyn.Internal
 {
     internal class EngineBroker
     {
-        private readonly EngineOrderHandler _orderHandler;
         private IBroker? _broker;
+        private BrokerExchange? _brokerExchange;
 
         private IBroker Broker => _broker ?? throw new NoValueException("Broker has no value.");
-
-        internal EngineBroker(EngineOrderHandler orderHandler)
-        {
-            _orderHandler = orderHandler;
-        }
 
         internal string NewOrderID => Broker.NewOrderID;
 
         internal bool IsConfigured { get; private set; } = false;
 
-        internal void Configure(IBroker broker)
+        internal bool IsConnected => _brokerExchange?.IsConnected ?? throw new NoValueException("Borker exchange has no value.");
+
+        internal void Configure(IBroker broker, EngineOrderHandler orderHandler, BrokerExchange exchange)
         {
+            _brokerExchange = exchange;
             _broker = broker;
+            _broker.Register(orderHandler, exchange);
+
             IsConfigured = true;
         }
 
@@ -48,7 +48,7 @@ namespace Evelyn.Internal
 
         internal void NewOrder(NewOrder newOrder)
         {
-            Broker.New(newOrder, _orderHandler);
+            Broker.New(newOrder);
         }
     }
 }

@@ -14,15 +14,19 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Plugin;
 
-namespace Evelyn.Plugin
+namespace Evelyn.Internal
 {
-    public interface IFeedSource
+    internal class BrokerExchange : IExchangeListener
     {
-        public void Subscribe(string instrumentID);
+        private bool _isConnected = false;
 
-        public void Unsubscribe(string instrumentID);
+        internal bool IsConnected => _isConnected;
 
-        public void Register(IFeedHandler feedHandler, IExchangeListener exchangeListener);
+        public void OnConnected(bool isConnected)
+        {
+            _isConnected = isConnected;
+        }
     }
 }

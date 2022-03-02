@@ -77,6 +77,8 @@ namespace Evelyn.UnitTest.Behavior
                 })
                 .Configure(Configurator);
 
+            Configurator.FeedSource.MockedConnect(true);
+
             /*
              * Engine sends registered instruments to clients at their configuration.
              */
@@ -109,6 +111,8 @@ namespace Evelyn.UnitTest.Behavior
             Engine.RegisterLocalClient("MOCKED_CLIENT_A", ClientA, "l2205")
                 .RegisterLocalClient("MOCKED_CLIENT_B", ClientB)
                 .Configure(Configurator);
+
+            Configurator.FeedSource.MockedConnect(true);
 
             /*
              * 2. Feed source receives the request.
@@ -217,6 +221,8 @@ namespace Evelyn.UnitTest.Behavior
             Engine.RegisterLocalClient("MOCKED_CLIENT_A", ClientA, "l2205")
                 .RegisterLocalClient("MOCKED_CLIENT_B", ClientB, "l2205")
                 .Configure(Configurator);
+
+            Configurator.FeedSource.MockedConnect(true);
 
             /*
              * Feed source only receives 1 subscription request and sends the response.

@@ -22,17 +22,14 @@ namespace Evelyn.UnitTest.Mock
 {
     internal class MockedFeedSource : IFeedSource
     {
-        private IDictionary<string, ISet<IFeedHandler>> _feeds = new Dictionary<string, ISet<IFeedHandler>>();
+        private IFeedHandler? _feedHandler;
+        private IExchangeListener? _exchangeListener;
 
-        public void Subscribe(string instrumentID, IFeedHandler feedHandler)
+        private IFeedHandler Handler => _feedHandler ?? throw new NoValueException("Feed handler has no value.");
+
+        public void Subscribe(string instrumentID)
         {
             SubscribedInstruments.Add(instrumentID);
-
-            if (!_feeds.ContainsKey(instrumentID))
-            {
-                _feeds.Add(instrumentID, new HashSet<IFeedHandler>());
-            }
-            _feeds[instrumentID].Add(feedHandler);
         }
 
         public void Unsubscribe(string instrumentID)
@@ -45,51 +42,37 @@ namespace Evelyn.UnitTest.Mock
             UnsubscribedInstruments.Add(instrumentID);
         }
 
+        public void Register(IFeedHandler feedHandler, IExchangeListener exchangeListener)
+        {
+            _feedHandler = feedHandler;
+            _exchangeListener = exchangeListener;
+        }
+
         #region Mocking Methods
         internal void MockedReceive(Tick tick)
         {
-            if (_feeds.ContainsKey(tick.InstrumentID))
-            {
-                foreach (var handler in _feeds[tick.InstrumentID])
-                {
-                    handler.OnFeed(tick);
-                }
-            }
+            Handler.OnFeed(tick);
         }
 
         internal void MockedReceive(OHLC ohlc)
         {
-            if (_feeds.ContainsKey(ohlc.InstrumentID))
-            {
-                foreach (var handler in _feeds[ohlc.InstrumentID])
-                {
-                    handler.OnFeed(ohlc);
-                }
-            }
+            Handler.OnFeed(ohlc);
         }
 
         internal void MockedReceive(Instrument instrument)
         {
-            if (_feeds.ContainsKey(instrument.InstrumentID))
-            {
-                foreach (var handler in _feeds[instrument.InstrumentID])
-                {
-                    handler.OnInstrument(instrument);
-                }
-            }
+            Handler.OnInstrument(instrument);
         }
 
         internal void MockedReplySubscribe(string instrumentID, Description description, bool isSubscribed)
         {
-            if (_feeds.ContainsKey(instrumentID))
-            {
-                foreach (var handler in _feeds[instrumentID])
-                {
-                    handler.OnSubscribed(instrumentID, description, isSubscribed);
-                }
-            }
+            Handler.OnSubscribed(instrumentID, description, isSubscribed);
         }
 
+        internal void MockedConnect(bool isConnected)
+        {
+            (_exchangeListener ?? throw new NoValueException("Exchange listener has no value.")).OnConnected(isConnected);
+        }
         internal List<string> SubscribedInstruments { get; } = new List<string>();
         internal List<string> UnsubscribedInstruments { get; } = new List<string>();
         #endregion

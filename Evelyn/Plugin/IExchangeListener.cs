@@ -14,15 +14,20 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-
 namespace Evelyn.Plugin
 {
-    public interface IFeedSource
+    public interface IExchangeListener
     {
-        public void Subscribe(string instrumentID);
-
-        public void Unsubscribe(string instrumentID);
-
-        public void Register(IFeedHandler feedHandler, IExchangeListener exchangeListener);
+        /// <summary>
+        /// Status callback notifying the availability of exchange service.
+        /// <para>
+        /// When exchange is connected, it is assuming that functions of requesting, deleting order,
+        /// subscription and unsubscription are online. And when exchange is connected, the
+        /// above functions are offline, and it is possible that instruments must be subscribed again
+        /// to get up-to-date market data.
+        /// </para>
+        /// </summary>
+        /// <param name="isConnected"><c>true</c> if exchange is online, <c>false</c> otherwise.</param>
+        public void OnConnected(bool isConnected);
     }
 }

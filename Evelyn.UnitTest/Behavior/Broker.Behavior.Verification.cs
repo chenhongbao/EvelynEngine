@@ -66,6 +66,8 @@ namespace Evelyn.UnitTest.Behavior
                     StateTimestamp = baseTime
                 })
                 .Configure(Configurator);
+
+            Configurator.Broker.MockedConnect(true);
         }
 
         [TestMethod("Request new order when instrument is not continous.")]

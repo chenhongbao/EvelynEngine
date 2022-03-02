@@ -26,22 +26,6 @@ namespace Evelyn.Plugin
 
         public void OnInstrument(Instrument instrument);
 
-        /// <summary>
-        /// <para>
-        /// Subscription callback notifying the instrument susbcription status. If the
-        /// feed source is disconnected or log off from exchange, it receives no more 
-        /// market data, or it needs to (re)subscribe again for the same instrument to
-        /// get market data once it is reconnected or logon.
-        /// </para>
-        /// <para>
-        /// When the above situation happens, this method must be called with <c>false</c>
-        /// marking there is no more market data for the specified instrument and the
-        /// subscription request must be sent again.
-        /// </para>
-        /// </summary>
-        /// <param name="instrumentID">Instrument ID.</param>
-        /// <param name="description">Description.</param>
-        /// <param name="subscribed"><c>true</c> if the instrument is subscribed, <c>false</c> otherwise.</param>
         public void OnSubscribed(string instrumentID, Description description, bool subscribed);
     }
 }

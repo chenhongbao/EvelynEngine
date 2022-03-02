@@ -20,9 +20,11 @@ namespace Evelyn.Plugin
 {
     public interface IBroker
     {
-        public void New(NewOrder newOrder, IOrderHandler orderHandler);
+        public void New(NewOrder newOrder);
 
         public void Delete(DeleteOrder deleteOrder);
+
+        public void Register(IOrderHandler orderHandler, IExchangeListener exchangeListener);
 
         public string NewOrderID { get; }
     }
