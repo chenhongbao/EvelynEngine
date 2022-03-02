@@ -107,7 +107,8 @@ namespace Evelyn.Internal
 
         public IEvelyn GenerateOHLC()
         {
-            throw new NotImplementedException();
+            _feedHandler.RegisterOHLCGenerator(new OHLCGenerator());
+            return this;
         }
 
         public IEvelyn GenerateOHLC(IOHLCGenerator generator)
