@@ -24,5 +24,7 @@ namespace Evelyn.Plugin
         public void Unsubscribe(string instrumentID);
 
         public void Register(IFeedHandler feedHandler, IExchangeListener exchangeListener);
+
+        public DateOnly TradingDay { get; }
     }
 }

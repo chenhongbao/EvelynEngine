@@ -27,5 +27,7 @@ namespace Evelyn.Plugin
         public void Register(IOrderHandler orderHandler, IExchangeListener exchangeListener);
 
         public string NewOrderID { get; }
+
+        public DateOnly TradingDay { get; }
     }
 }

@@ -59,6 +59,8 @@ namespace Evelyn.UnitTest.Mock
         internal List<string> ReceivedDeleteOrders { get; } = new List<string>();
 
         public string NewOrderID => Guid.NewGuid().ToString("N");
+
+        public DateOnly TradingDay => throw new NotImplementedException();
         #endregion
     }
 }
