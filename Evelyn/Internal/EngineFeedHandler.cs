@@ -14,8 +14,10 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Internal.Logging;
 using Evelyn.Model;
 using Evelyn.Plugin;
+using Microsoft.Extensions.Logging;
 using System.Timers;
 
 namespace Evelyn.Internal
@@ -28,6 +30,8 @@ namespace Evelyn.Internal
         private readonly ISet<IOHLCGenerator> _ohlcGenerators = new HashSet<IOHLCGenerator>();
         private readonly ISet<(string, bool)> _subscriptionResponses = new HashSet<(string, bool)>();
 
+        private ILogger Logger { get; } = Loggers.CreateLogger(nameof(EngineFeedHandler));
+
         internal EngineFeedHandler(EngineClientHandler clientHandler)
         {
             _clients = clientHandler;
@@ -39,7 +43,7 @@ namespace Evelyn.Internal
             {
                 if (client.Subscription.Instruments.Contains(tick.InstrumentID))
                 {
-                    client.Service.SendTick(tick, client.ClientID);
+                    TryCatch(() => client.Service.SendTick(tick, client.ClientID));
                 }
             });
 
@@ -58,7 +62,7 @@ namespace Evelyn.Internal
             {
                 if (client.Subscription.Instruments.Contains(ohlc.InstrumentID))
                 {
-                    client.Service.SendOHLC(ohlc, client.ClientID);
+                    TryCatch(() => client.Service.SendOHLC(ohlc, client.ClientID));
                 }
             });
         }
@@ -66,7 +70,7 @@ namespace Evelyn.Internal
         internal bool HasSubscriptionResponse(string instrument, bool isSubscribed)
         {
             var enumerator = _subscriptionResponses.GetEnumerator();
-            while(enumerator.MoveNext())
+            while (enumerator.MoveNext())
             {
                 var response = enumerator.Current;
                 if (response.Item1 == instrument && response.Item2 == isSubscribed)
@@ -116,15 +120,27 @@ namespace Evelyn.Internal
                 /*
                  * The given moment has elapsed, do the job now.
                  */
-                action();
+                TryCatch(action);
             }
             else
             {
                 var timer = new System.Timers.Timer(time.Subtract(DateTime.Now).TotalMilliseconds);
 
-                timer.Elapsed += (object? source, ElapsedEventArgs args) => action();
+                timer.Elapsed += (object? source, ElapsedEventArgs args) => TryCatch(action);
                 timer.AutoReset = false;
                 timer.Enabled = true;
+            }
+        }
+
+        private void TryCatch(Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning("{0}\n{1}", ex.Message, ex.StackTrace?.ToString());
             }
         }
 
@@ -169,8 +185,11 @@ namespace Evelyn.Internal
             {
                 if (client.Subscription.WaitSubscriptionResponse(instrumentID))
                 {
-                    client.Service.SendSubscribe(instrumentID, description, subscribed, client.ClientID);
-                    client.Subscription.MarkSubscriptionResponse(instrumentID, waitResponse: false);
+                    TryCatch(() =>
+                    {
+                        client.Service.SendSubscribe(instrumentID, description, subscribed, client.ClientID);
+                        client.Subscription.MarkSubscriptionResponse(instrumentID, waitResponse: false);
+                    });
                 }
             });
 
@@ -198,7 +217,7 @@ namespace Evelyn.Internal
                 var instrumentID = instrument.InstrumentID;
                 if (client.Subscription.Instruments.Contains(instrumentID))
                 {
-                    client.Service.SendInstrument(_instruments[instrumentID], client.ClientID);
+                    TryCatch(() => client.Service.SendInstrument(_instruments[instrumentID], client.ClientID));
                 }
             });
         }

@@ -78,8 +78,18 @@ namespace Evelyn.Internal
                 return;
             }
 
-            FeedSource.Subscribe(_clients[clientID].Subscription.Instruments, false);
-            _clients.Remove(clientID);
+            try
+            {
+                FeedSource.Subscribe(_clients[clientID].Subscription.Instruments, false);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning("{0}\n{1}", "Unsubscribe instrument while client is disconnected and throws exception, " + ex.Message, ex.StackTrace?.ToString());
+            }
+            finally
+            {
+                _clients.Remove(clientID);
+            }
         }
 
         public void OnDeleteOrder(DeleteOrder deleteOrder, string clientID)
@@ -95,10 +105,68 @@ namespace Evelyn.Internal
                 /*
                  * If exchange is disconnected, can't delete an order so return error.
                  */
+                try
+                {
+                    _clients[clientID].Service.SendTrade(
+                        new Trade
+                        {
+                            InstrumentID = deleteOrder.InstrumentID,
+                            TradingDay = DateOnly.MaxValue,
+                            TimeStamp = DateTime.MaxValue,
+                            OrderID = deleteOrder.OrderID,
+                            Price = double.MaxValue,
+                            Quantity = int.MaxValue,
+                            Direction = default(Direction),
+                            Offset = default(Offset),
+                            TradeID = String.Empty,
+                            TradePrice = double.MaxValue,
+                            TradeQuantity = int.MaxValue,
+                            LeaveQuantity = int.MaxValue,
+                            TradeTimeStamp = DateTime.MaxValue,
+                            Status = OrderStatus.Rejected,
+                            Message = "Exchange disconnected."
+                        },
+                        new Description
+                        {
+                            Code = 1,
+                            Message = "Exchange is disconnected."
+                        },
+                        clientID);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError("{0}\n{1}", "Send trade to client when exchange is disconnected and throws exception, " + ex.Message, ex.StackTrace?.ToString());
+                }
+
+                return;
+            }
+
+            foreach (var order in _clients[clientID].Orders)
+            {
+                if (order.OriginalOrder.OrderID == deleteOrder.OrderID)
+                {
+                    try
+                    {
+                        Broker.Delete(order.RewriteDeleteOrder);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError("{0}\n{1}", "Broker deletes order and throws exception, " + ex.Message, ex.StackTrace?.ToString());
+                    }
+
+                    return;
+                }
+            }
+
+            /*
+             * Sends error response when no order found for the given order ID.
+             */
+            try
+            {
                 _clients[clientID].Service.SendTrade(
                     new Trade
                     {
-                        InstrumentID = deleteOrder.InstrumentID,
+                        InstrumentID = String.Empty,
                         TradingDay = DateOnly.MaxValue,
                         TimeStamp = DateTime.MaxValue,
                         OrderID = deleteOrder.OrderID,
@@ -111,55 +179,20 @@ namespace Evelyn.Internal
                         TradeQuantity = int.MaxValue,
                         LeaveQuantity = int.MaxValue,
                         TradeTimeStamp = DateTime.MaxValue,
-                        Status = OrderStatus.Rejected,
-                        Message = "Exchange disconnected."
+                        Status = OrderStatus.Deleted,
+                        Message = "No such order."
                     },
                     new Description
                     {
-                        Code = 1,
-                        Message = "Exchange is disconnected."
+                        Code = 2,
+                        Message = "No such order with ID " + deleteOrder.OrderID + "."
                     },
                     clientID);
-                return;
             }
-
-            foreach (var order in _clients[clientID].Orders)
+            catch (Exception ex)
             {
-                if (order.OriginalOrder.OrderID == deleteOrder.OrderID)
-                {
-                    Broker.Delete(order.RewriteDeleteOrder);
-                    return;
-                }
+                Logger.LogError("{0}\n{1}", "Send trade to client when no such order to delete and throws exception, " + ex.Message, ex.StackTrace?.ToString());
             }
-
-            /*
-             * Sends error response when no order found for the given order ID.
-             */
-            _clients[clientID].Service.SendTrade(
-                new Trade
-                {
-                    InstrumentID = String.Empty,
-                    TradingDay = DateOnly.MaxValue,
-                    TimeStamp = DateTime.MaxValue,
-                    OrderID = deleteOrder.OrderID,
-                    Price = double.MaxValue,
-                    Quantity = int.MaxValue,
-                    Direction = default(Direction),
-                    Offset = default(Offset),
-                    TradeID = String.Empty,
-                    TradePrice = double.MaxValue,
-                    TradeQuantity = int.MaxValue,
-                    LeaveQuantity = int.MaxValue,
-                    TradeTimeStamp = DateTime.MaxValue,
-                    Status = OrderStatus.Deleted,
-                    Message = "No such order."
-                },
-                new Description
-                {
-                    Code = 2,
-                    Message = "No such order with ID " + deleteOrder.OrderID + "."
-                },
-                clientID);
         }
 
         public void OnNewOrder(NewOrder newOrder, string clientID)
@@ -178,38 +211,52 @@ namespace Evelyn.Internal
                 /*
                  * When exchange is disconnected, can't request order so return error.
                  */
-                _clients[clientID].Service.SendTrade(
-                    new Trade
-                    {
-                        InstrumentID = newOrder.InstrumentID,
-                        TradingDay = newOrder.TradingDay,
-                        TimeStamp = newOrder.TimeStamp,
-                        OrderID = newOrder.OrderID,
-                        Price = newOrder.Price,
-                        Quantity = newOrder.Quantity,
-                        Direction = newOrder.Direction,
-                        Offset = newOrder.Offset,
-                        TradeID = String.Empty,
-                        TradePrice = double.MaxValue,
-                        TradeQuantity = int.MaxValue,
-                        LeaveQuantity = newOrder.Quantity,
-                        TradeTimeStamp = DateTime.MaxValue,
-                        Status = OrderStatus.Rejected,
-                        Message = "Exchange disconnected."
-                    },
-                    new Description
-                    {
-                        Code = 11,
-                        Message = "Exchange is disconnected."
-                    },
-                    clientID);
+                try
+                {
+                    _clients[clientID].Service.SendTrade(
+                        new Trade
+                        {
+                            InstrumentID = newOrder.InstrumentID,
+                            TradingDay = newOrder.TradingDay,
+                            TimeStamp = newOrder.TimeStamp,
+                            OrderID = newOrder.OrderID,
+                            Price = newOrder.Price,
+                            Quantity = newOrder.Quantity,
+                            Direction = newOrder.Direction,
+                            Offset = newOrder.Offset,
+                            TradeID = String.Empty,
+                            TradePrice = double.MaxValue,
+                            TradeQuantity = int.MaxValue,
+                            LeaveQuantity = newOrder.Quantity,
+                            TradeTimeStamp = DateTime.MaxValue,
+                            Status = OrderStatus.Rejected,
+                            Message = "Exchange disconnected."
+                        },
+                        new Description
+                        {
+                            Code = 11,
+                            Message = "Exchange is disconnected."
+                        },
+                        clientID);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError("{0}\n{1}", "Send trade to client when exchange is disconnected and throws exception, " + ex.Message, ex.StackTrace?.ToString());
+                }
             }
             else
             {
-                var clientOrder = new ClientOrder(newOrder, Broker.NewOrderID);
+                try
+                {
+                    var clientOrder = new ClientOrder(newOrder, Broker.NewOrderID);
 
-                _clients[clientID].Orders.Add(clientOrder);
-                Broker.NewOrder(clientOrder.RewriteNewOrder);
+                    _clients[clientID].Orders.Add(clientOrder);
+                    Broker.NewOrder(clientOrder.RewriteNewOrder);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError("{0}\n{1}", "Broker requests new order and throws exception, " + ex.Message, ex.StackTrace?.ToString());
+                }
             }
         }
 
@@ -236,12 +283,32 @@ namespace Evelyn.Internal
                     /*
                      * If instrument has been subscribed, nothing happens, and sends a response with error.
                      */
-                    FeedHandler.OnSubscribed(instrumentID, new Description { Code = 101, Message = "Duplicated subscription for " + instrumentID + "." }, true);
+                    try
+                    {
+                        FeedHandler.OnSubscribed(
+                            instrumentID, new Description
+                            {
+                                Code = 101,
+                                Message = "Duplicated subscription for " + instrumentID + "."
+                            },
+                            true);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError("{0}\n{1}", "Call feed handler for subscription response and throws exception, " + ex.Message, ex.StackTrace?.ToString());
+                    }
                 }
                 else
                 {
-                    FeedSource.Subscribe(new List<string> { instrumentID }, true);
-                    client.Subscription.Subscribe(instrumentID, true);
+                    try
+                    {
+                        FeedSource.Subscribe(new List<string> { instrumentID }, true);
+                        client.Subscription.Subscribe(instrumentID, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError("{0}\n{1}", "Subscribe instrument and throws exception, " + ex.Message, ex.StackTrace?.ToString());
+                    }
                 }
             }
             else
@@ -251,12 +318,26 @@ namespace Evelyn.Internal
                     /*
                      * If instrument has been unsubscribed or never subscribed, nothing happens, and sends a response with error.
                      */
-                    FeedHandler.OnSubscribed(instrumentID, new Description { Code = 102, Message = " No such subscription for " + instrumentID + "." }, false);
+                    try
+                    {
+                        FeedHandler.OnSubscribed(instrumentID, new Description { Code = 102, Message = " No such subscription for " + instrumentID + "." }, false);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError("{0}\n{1}", "Unsubscribe unknown instrument and throws exception, " + ex.Message, ex.StackTrace?.ToString());
+                    }
                 }
                 else
                 {
-                    FeedSource.Subscribe(new List<string> { instrumentID }, false);
-                    client.Subscription.Subscribe(instrumentID, false);
+                    try
+                    {
+                        FeedSource.Subscribe(new List<string> { instrumentID }, false);
+                        client.Subscription.Subscribe(instrumentID, false);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError("{0}\n{1}", "Unsubscribe instrument and throws exception, " + ex.Message, ex.StackTrace?.ToString());
+                    }
                 }
             }
         }
