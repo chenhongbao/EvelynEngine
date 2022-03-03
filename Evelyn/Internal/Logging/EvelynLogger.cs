@@ -16,9 +16,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Microsoft.Extensions.Logging;
 
-#if DEBUG
-#endif
-
 namespace Evelyn.Internal.Logging
 {
     internal class EvelynLogger : ILogger

@@ -16,9 +16,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Microsoft.Extensions.Logging;
 
-#if DEBUG
-#endif
-
 namespace Evelyn.Internal.Logging
 {
     internal class LogScope : IDisposable
@@ -27,7 +24,6 @@ namespace Evelyn.Internal.Logging
         private readonly string _messageIndent;
         private readonly TextWriter _writer;
         private readonly Stack<LogScope> _scopes;
-        private readonly DateTime _initTime = DateTime.Now;
 
         internal LogScope(string scopeName, int scopeLevels, Stack<LogScope> scopes, TextWriter writer)
         {
