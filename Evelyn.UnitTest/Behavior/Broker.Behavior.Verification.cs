@@ -43,12 +43,7 @@ namespace Evelyn.UnitTest.Behavior
                  {
                      InstrumentID = "l2205",
                      TradingDay = TradingDay,
-                     TimeStamp = baseTime,
-                     Margin = 0.11,
-                     Commission = 1.01,
                      Multiple = 5,
-                     MarginMethod = CalculationMethod.PerAmount,
-                     CommissionMethod = CalculationMethod.PerVolume,
                      State = InstrumentState.Continous,
                      StateTimestamp = baseTime
                  },
@@ -56,12 +51,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
-                    TimeStamp = baseTime,
-                    Margin = 0.11,
-                    Commission = 1.01,
                     Multiple = 5,
-                    MarginMethod = CalculationMethod.PerAmount,
-                    CommissionMethod = CalculationMethod.PerVolume,
                     State = InstrumentState.Closed,
                     StateTimestamp = baseTime
                 })
@@ -84,12 +74,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "l2205",
                     TradingDay = TradingDay,
-                    TimeStamp = DateTime.Now,
-                    Margin = 0.11,
-                    Commission = 1.01,
                     Multiple = 5,
-                    MarginMethod = CalculationMethod.PerAmount,
-                    CommissionMethod = CalculationMethod.PerVolume,
                     State = InstrumentState.Closed,
                     StateTimestamp = DateTime.Now
                 });
@@ -141,12 +126,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
-                    TimeStamp = DateTime.Now,
-                    Margin = 0.11,
-                    Commission = 1.01,
                     Multiple = 5,
-                    MarginMethod = CalculationMethod.PerAmount,
-                    CommissionMethod = CalculationMethod.PerVolume,
                     State = InstrumentState.Continous,
                     StateTimestamp = DateTime.Now
                 });
@@ -242,12 +222,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "l2205",
                     TradingDay = TradingDay,
-                    TimeStamp = DateTime.Now,
-                    Margin = 0.11,
-                    Commission = 1.01,
                     Multiple = 5,
-                    MarginMethod = CalculationMethod.PerAmount,
-                    CommissionMethod = CalculationMethod.PerVolume,
                     State = InstrumentState.NonTrading,
                     StateTimestamp = DateTime.Now
                 });
@@ -289,12 +264,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "l2205",
                     TradingDay = TradingDay,
-                    TimeStamp = DateTime.Now,
-                    Margin = 0.11,
-                    Commission = 1.01,
                     Multiple = 5,
-                    MarginMethod = CalculationMethod.PerAmount,
-                    CommissionMethod = CalculationMethod.PerVolume,
                     State = InstrumentState.Continous,
                     StateTimestamp = DateTime.Now
                 });
@@ -332,12 +302,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
-                    TimeStamp = DateTime.Now,
-                    Margin = 0.11,
-                    Commission = 1.01,
                     Multiple = 5,
-                    MarginMethod = CalculationMethod.PerAmount,
-                    CommissionMethod = CalculationMethod.PerVolume,
                     State = InstrumentState.Continous,
                     StateTimestamp = DateTime.Now
                 });
@@ -366,12 +331,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
-                    TimeStamp = DateTime.Now,
-                    Margin = 0.11,
-                    Commission = 1.01,
                     Multiple = 5,
-                    MarginMethod = CalculationMethod.PerAmount,
-                    CommissionMethod = CalculationMethod.PerVolume,
                     State = InstrumentState.NonTrading,
                     StateTimestamp = DateTime.Now
                 });
@@ -407,12 +367,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
-                    TimeStamp = DateTime.Now,
-                    Margin = 0.11,
-                    Commission = 1.01,
                     Multiple = 5,
-                    MarginMethod = CalculationMethod.PerAmount,
-                    CommissionMethod = CalculationMethod.PerVolume,
                     State = InstrumentState.Continous,
                     StateTimestamp = DateTime.Now
                 });
@@ -441,12 +396,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "l2205",
                     TradingDay = TradingDay,
-                    TimeStamp = DateTime.Now,
-                    Margin = 0.11,
-                    Commission = 1.01,
                     Multiple = 5,
-                    MarginMethod = CalculationMethod.PerAmount,
-                    CommissionMethod = CalculationMethod.PerVolume,
                     State = InstrumentState.Continous,
                     StateTimestamp = DateTime.Now
                 });

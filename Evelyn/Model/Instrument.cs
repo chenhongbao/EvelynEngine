@@ -20,12 +20,7 @@ namespace Evelyn.Model
     {
         private string? _instrumentID = null;
         private DateOnly? _tradingDay = null;
-        private DateTime? _timeStamp = null;
-        private double? _margin = null;
-        private double? _commission = null;
         private long? _multiple = null;
-        private CalculationMethod? _marginMethod = null;
-        private CalculationMethod? _commissionMethod = null;
         private InstrumentState? _instrumentState = null;
         private DateTime? _stateTimestamp = null;
 
@@ -50,40 +45,10 @@ namespace Evelyn.Model
             set => _tradingDay = value;
         }
 
-        public DateTime? TimeStamp
-        {
-            get => _timeStamp;
-            set => _timeStamp = value;
-        }
-
-        public double? Margin
-        {
-            get => _margin;
-            set => _margin = value;
-        }
-
-        public double? Commission
-        {
-            get => _commission;
-            set => _commission = value;
-        }
-
         public long? Multiple
         {
             get => _multiple;
             set => _multiple = value;
-        }
-
-        public CalculationMethod? MarginMethod
-        {
-            get => _marginMethod;
-            set => _marginMethod = value;
-        }
-
-        public CalculationMethod? CommissionMethod
-        {
-            get => _commissionMethod;
-            set => _commissionMethod = value;
         }
 
         public InstrumentState? State
