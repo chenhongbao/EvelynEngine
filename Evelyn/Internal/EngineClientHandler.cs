@@ -177,7 +177,7 @@ namespace Evelyn.Internal
                         TradePrice = double.MaxValue,
                         TradeQuantity = int.MaxValue,
                         LeaveQuantity = int.MaxValue,
-                        Status = OrderStatus.Deleted,
+                        Status = OrderStatus.Rejected,
                         Message = "No such order."
                     },
                     new Description

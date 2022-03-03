@@ -19,11 +19,12 @@ namespace Evelyn.Model
     public struct NewOrder
     {
         private string? _instrumentID = null;
+        private string? _exchangeID = null;
         private DateOnly? _tradingDay = null;
         private DateTime? _timeStamp = null;
         private string? _orderID = null;
         private double? _price = null;
-        private long? _quantity = null;
+        private int? _quantity = null;
         private Direction? _direction = null;
         private Offset? _offset = null;
 
@@ -37,7 +38,11 @@ namespace Evelyn.Model
             set => _instrumentID = value;
         }
 
-        public string ExchangeID { get; set; } = string.Empty;
+        public string ExchangeID
+        {
+            get => _exchangeID ?? throw new NullReferenceException("Exchange ID has no value.");
+            set => _exchangeID = value;
+        }
 
         public string Symbol { get; set; } = string.Empty;
 
@@ -66,7 +71,7 @@ namespace Evelyn.Model
             set => _price = value;
         }
 
-        public long Quantity
+        public int Quantity
         {
             get => _quantity ?? throw new NullReferenceException("Quantity has no value.");
             set => _quantity = value;
