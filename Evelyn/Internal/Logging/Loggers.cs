@@ -24,7 +24,7 @@ namespace Evelyn.Internal.Logging
 {
     public class Loggers
     {
-        public static char Indent { get; set; } = '\u0020';
+        public static string Indent { get; set; } = "\u0020\u0020\u0020\u0020";
 
         public static TextWriter? Writer = null;
 
