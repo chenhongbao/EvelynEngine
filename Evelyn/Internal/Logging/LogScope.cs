@@ -25,12 +25,12 @@ namespace Evelyn.Internal.Logging
     {
         private readonly int _scopeLevels;
         private readonly string _name;
-        private readonly LogWriter _writer;
+        private readonly TextWriter _writer;
         private readonly Stack<LogScope> _scopes;
         private readonly Queue<string> _logs = new Queue<string>();
         private readonly DateTime _initTime = DateTime.Now;
 
-        internal LogScope(string scopeName, int scopeLevels, Stack<LogScope> scopes, LogWriter writer)
+        internal LogScope(string scopeName, int scopeLevels, Stack<LogScope> scopes, TextWriter writer)
         {
             _name = scopeName;
             _scopeLevels = scopeLevels;

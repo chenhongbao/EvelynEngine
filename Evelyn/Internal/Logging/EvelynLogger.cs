@@ -23,12 +23,12 @@ namespace Evelyn.Internal.Logging
 {
     internal class EvelynLogger : ILogger
     {
-        private readonly LogWriter _writer;
+        private readonly TextWriter _writer;
         private readonly Stack<LogScope> _scopes;
 
-        internal EvelynLogger(string loggerName)
+        internal EvelynLogger(string loggerName, TextWriter? writer = null)
         {
-            _writer = new LogWriter(loggerName);
+            _writer = writer ?? new StreamWriter(loggerName.Replace('\\', '.').Replace('/', '.') + ".log");
             _scopes = new Stack<LogScope>();
             _scopes.Push(new LogScope(string.Empty, 0, _scopes, _writer));
         }
