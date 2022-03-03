@@ -68,23 +68,23 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * 3. Create mocked instrument updates.
              */
-            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, Multiple = 5, State = InstrumentState.AuctionOrdering, StateTimestamp = baseTime.AddHours(1) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, Multiple = 5, State = InstrumentState.AuctionBalance, StateTimestamp = baseTime.AddHours(2) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, Multiple = 5, State = InstrumentState.AuctionMatch, StateTimestamp = baseTime.AddHours(3) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, Multiple = 5, State = InstrumentState.BeforeTrading, StateTimestamp = baseTime.AddHours(4) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, Multiple = 5, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(5) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, Multiple = 5, State = InstrumentState.NonTrading, StateTimestamp = baseTime.AddHours(6) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, Multiple = 5, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(7) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, Multiple = 5, State = InstrumentState.Closed, StateTimestamp = baseTime.AddHours(8) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, State = InstrumentState.AuctionOrdering, StateTimestamp = baseTime.AddHours(1) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, State = InstrumentState.AuctionBalance, StateTimestamp = baseTime.AddHours(2) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, State = InstrumentState.AuctionMatch, StateTimestamp = baseTime.AddHours(3) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, State = InstrumentState.BeforeTrading, StateTimestamp = baseTime.AddHours(4) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(5) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, State = InstrumentState.NonTrading, StateTimestamp = baseTime.AddHours(6) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(7) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, State = InstrumentState.Closed, StateTimestamp = baseTime.AddHours(8) });
 
-            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, Multiple = 5, State = InstrumentState.AuctionOrdering, StateTimestamp = baseTime.AddHours(1) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, Multiple = 5, State = InstrumentState.AuctionBalance, StateTimestamp = baseTime.AddHours(2) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, Multiple = 5, State = InstrumentState.AuctionMatch, StateTimestamp = baseTime.AddHours(3) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, Multiple = 5, State = InstrumentState.BeforeTrading, StateTimestamp = baseTime.AddHours(4) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, Multiple = 5, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(5) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, Multiple = 5, State = InstrumentState.NonTrading, StateTimestamp = baseTime.AddHours(6) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, Multiple = 5, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(7) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, Multiple = 5, State = InstrumentState.Closed, StateTimestamp = baseTime.AddHours(8) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, State = InstrumentState.AuctionOrdering, StateTimestamp = baseTime.AddHours(1) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, State = InstrumentState.AuctionBalance, StateTimestamp = baseTime.AddHours(2) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, State = InstrumentState.AuctionMatch, StateTimestamp = baseTime.AddHours(3) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, State = InstrumentState.BeforeTrading, StateTimestamp = baseTime.AddHours(4) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(5) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, State = InstrumentState.NonTrading, StateTimestamp = baseTime.AddHours(6) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, State = InstrumentState.Continous, StateTimestamp = baseTime.AddHours(7) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, State = InstrumentState.Closed, StateTimestamp = baseTime.AddHours(8) });
         }
 
         protected void CompareCollection<T>(ICollection<T> c0, ICollection<T> c1)

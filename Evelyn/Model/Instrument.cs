@@ -20,7 +20,6 @@ namespace Evelyn.Model
     {
         private string? _instrumentID = null;
         private DateOnly? _tradingDay = null;
-        private long? _multiple = null;
         private InstrumentState? _instrumentState = null;
         private DateTime? _stateTimestamp = null;
 
@@ -43,12 +42,6 @@ namespace Evelyn.Model
         {
             get => _tradingDay;
             set => _tradingDay = value;
-        }
-
-        public long? Multiple
-        {
-            get => _multiple;
-            set => _multiple = value;
         }
 
         public InstrumentState? State

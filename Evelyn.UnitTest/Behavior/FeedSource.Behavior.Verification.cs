@@ -53,7 +53,6 @@ namespace Evelyn.UnitTest.Behavior
                  {
                      InstrumentID = "l2205",
                      TradingDay = baseDay,
-                     Multiple = 5,
                      State = InstrumentState.Continous,
                      StateTimestamp = baseTime
                  },
@@ -61,7 +60,6 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "pp2205",
                     TradingDay = baseDay,
-                    Multiple = 5,
                     State = InstrumentState.Closed,
                     StateTimestamp = baseTime
                 })
