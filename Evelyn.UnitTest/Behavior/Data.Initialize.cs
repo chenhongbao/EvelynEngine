@@ -73,7 +73,7 @@ namespace Evelyn.UnitTest.Behavior
             MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, State = InstrumentStatus.AuctionMatch, StateTimestamp = baseTime.AddHours(3) });
             MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, State = InstrumentStatus.BeforeTrading, StateTimestamp = baseTime.AddHours(4) });
             MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, State = InstrumentStatus.Continous, StateTimestamp = baseTime.AddHours(5) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, State = InstrumentStatus.NonTrading, StateTimestamp = baseTime.AddHours(6) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, State = InstrumentStatus.NoTrading, StateTimestamp = baseTime.AddHours(6) });
             MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, State = InstrumentStatus.Continous, StateTimestamp = baseTime.AddHours(7) });
             MockedInstruments.Add(new Instrument { InstrumentID = "l2205", TradingDay = baseDay, State = InstrumentStatus.Closed, StateTimestamp = baseTime.AddHours(8) });
 
@@ -82,7 +82,7 @@ namespace Evelyn.UnitTest.Behavior
             MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, State = InstrumentStatus.AuctionMatch, StateTimestamp = baseTime.AddHours(3) });
             MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, State = InstrumentStatus.BeforeTrading, StateTimestamp = baseTime.AddHours(4) });
             MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, State = InstrumentStatus.Continous, StateTimestamp = baseTime.AddHours(5) });
-            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, State = InstrumentStatus.NonTrading, StateTimestamp = baseTime.AddHours(6) });
+            MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, State = InstrumentStatus.NoTrading, StateTimestamp = baseTime.AddHours(6) });
             MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, State = InstrumentStatus.Continous, StateTimestamp = baseTime.AddHours(7) });
             MockedInstruments.Add(new Instrument { InstrumentID = "pp2205", TradingDay = baseDay, State = InstrumentStatus.Closed, StateTimestamp = baseTime.AddHours(8) });
         }

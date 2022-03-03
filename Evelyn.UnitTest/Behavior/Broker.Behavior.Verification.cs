@@ -218,7 +218,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "l2205",
                     TradingDay = TradingDay,
-                    State = InstrumentStatus.NonTrading,
+                    State = InstrumentStatus.NoTrading,
                     StateTimestamp = DateTime.Now
                 });
 
@@ -324,7 +324,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
-                    State = InstrumentStatus.NonTrading,
+                    State = InstrumentStatus.NoTrading,
                     StateTimestamp = DateTime.Now
                 });
 

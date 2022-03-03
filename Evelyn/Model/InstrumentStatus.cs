@@ -19,7 +19,7 @@ namespace Evelyn.Model
     public enum InstrumentStatus
     {
         BeforeTrading = 1,
-        NonTrading,
+        NoTrading,
         AuctionOrdering,
         AuctionBalance,
         AuctionMatch,
