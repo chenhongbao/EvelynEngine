@@ -30,11 +30,11 @@ namespace Evelyn.Internal
 
         private ILogger Logger { get; init; } = Loggers.CreateLogger(nameof(EngineClientHandler));
 
-        internal EngineBroker Broker => _broker ?? throw new NoValueException("Engine broker has no value.");
+        internal EngineBroker Broker => _broker ?? throw new NullReferenceException("Engine broker has no value.");
 
-        internal EngineFeedSource FeedSource => _feedSource ?? throw new NoValueException("Enginefeed source has no value.");
+        internal EngineFeedSource FeedSource => _feedSource ?? throw new NullReferenceException("Enginefeed source has no value.");
 
-        internal EngineFeedHandler FeedHandler => _feedHandler ?? throw new NoValueException("Engine feed handler has no value.");
+        internal EngineFeedHandler FeedHandler => _feedHandler ?? throw new NullReferenceException("Engine feed handler has no value.");
 
         internal List<Client> Clients => new List<Client>(_clients.Values);
 

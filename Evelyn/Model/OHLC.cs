@@ -35,7 +35,7 @@ namespace Evelyn.Model
 
         public string InstrumentID
         {
-            get => _instrumentID ?? throw new NoValueException("Instrument ID has no value.");
+            get => _instrumentID ?? throw new NullReferenceException("Instrument ID has no value.");
             set => _instrumentID = value;
         }
 
@@ -46,55 +46,55 @@ namespace Evelyn.Model
 
         public DateOnly TradingDay
         {
-            get => _tradingDay ?? throw new NoValueException("Trading day has no value.");
+            get => _tradingDay ?? throw new NullReferenceException("Trading day has no value.");
             set => _tradingDay = value;
         }
 
         public DateTime TimeStamp
         {
-            get => _timeStamp ?? throw new NoValueException("Timestamp has no value.");
+            get => _timeStamp ?? throw new NullReferenceException("Timestamp has no value.");
             set => _timeStamp = value;
         }
 
         public double OpenPrice
         {
-            get => _openPrice ?? throw new NoValueException("Open price has no value.");
+            get => _openPrice ?? throw new NullReferenceException("Open price has no value.");
             set => _openPrice = value;
         }
 
         public double HighPrice
         {
-            get => _highPrice ?? throw new NoValueException("High price has no value.");
+            get => _highPrice ?? throw new NullReferenceException("High price has no value.");
             set => _highPrice = value;
         }
 
         public double LowPrice
         {
-            get => _lowPrice ?? throw new NoValueException("Low price has no value.");
+            get => _lowPrice ?? throw new NullReferenceException("Low price has no value.");
             set => _lowPrice = value;
         }
 
         public double ClosePrice
         {
-            get => _closePrice ?? throw new NoValueException("Close price has no value.");
+            get => _closePrice ?? throw new NullReferenceException("Close price has no value.");
             set => _closePrice = value;
         }
 
         public long OpenInterest
         {
-            get => _openInterest ?? throw new NoValueException("Open interest has no value.");
+            get => _openInterest ?? throw new NullReferenceException("Open interest has no value.");
             set => _openInterest = value;
         }
 
         public long Volume
         {
-            get => _volume ?? throw new NoValueException("Volume has no value.");
+            get => _volume ?? throw new NullReferenceException("Volume has no value.");
             set => _volume = value;
         }
 
         public TimeSpan Time
         {
-            get => _timeSpan ?? throw new NoValueException("Time span has no value.");
+            get => _timeSpan ?? throw new NullReferenceException("Time span has no value.");
             set => _timeSpan = value;
         }
     }

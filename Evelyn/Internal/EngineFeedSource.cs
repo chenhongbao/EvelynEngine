@@ -26,10 +26,10 @@ namespace Evelyn.Internal
         private IFeedSource? _feedSource;
         private IDictionary<string, int> _counters = new Dictionary<string, int>();
 
-        private IFeedSource FeedSource => _feedSource ?? throw new NoValueException("Feed source has no value.");
+        private IFeedSource FeedSource => _feedSource ?? throw new NullReferenceException("Feed source has no value.");
 
-        private EngineFeedHandler FeedHandler => _feedHandler ?? throw new NoValueException("Feed handler has no value.");
-        private bool IsConnected => _feedSourceExchange?.IsConnected ?? throw new NoValueException("Feed source exchange has no value.");
+        private EngineFeedHandler FeedHandler => _feedHandler ?? throw new NullReferenceException("Feed handler has no value.");
+        private bool IsConnected => _feedSourceExchange?.IsConnected ?? throw new NullReferenceException("Feed source exchange has no value.");
 
         internal bool IsConfigured { get; private set; } = false;
 

@@ -35,7 +35,7 @@ namespace Evelyn.Model
 
         public string InstrumentID
         {
-            get => _instrumentID ?? throw new NoValueException("Instrument ID has no value.");
+            get => _instrumentID ?? throw new NullReferenceException("Instrument ID has no value.");
             set => _instrumentID = value;
         }
 

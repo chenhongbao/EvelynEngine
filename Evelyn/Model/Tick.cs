@@ -38,7 +38,7 @@ namespace Evelyn.Model
 
         public string InstrumentID
         {
-            get => _instrumentID ?? throw new NoValueException("Instrument ID has no value.");
+            get => _instrumentID ?? throw new NullReferenceException("Instrument ID has no value.");
             set => _instrumentID = value;
         }
 
@@ -49,13 +49,13 @@ namespace Evelyn.Model
 
         public DateOnly TradingDay
         {
-            get => _tradingDay ?? throw new NoValueException("Trading day has no value.");
+            get => _tradingDay ?? throw new NullReferenceException("Trading day has no value.");
             set => _tradingDay = value;
         }
 
         public DateTime TimeStamp
         {
-            get => _timeStamp ?? throw new NoValueException("Timestamp has no value.");
+            get => _timeStamp ?? throw new NullReferenceException("Timestamp has no value.");
             set => _timeStamp = value;
         }
 
@@ -63,7 +63,7 @@ namespace Evelyn.Model
 
         public double LastPrice
         {
-            get => _lastPrice ?? throw new NoValueException("Last price has no value");
+            get => _lastPrice ?? throw new NullReferenceException("Last price has no value");
             set => _lastPrice = value;
         }
 
@@ -79,55 +79,55 @@ namespace Evelyn.Model
 
         public long Volume
         {
-            get => _volume ?? throw new NoValueException("Volume has no value.");
+            get => _volume ?? throw new NullReferenceException("Volume has no value.");
             set => _volume = value;
         }
 
         public long OpenInterest
         {
-            get => _openInterest ?? throw new NoValueException("Open interest has no value.");
+            get => _openInterest ?? throw new NullReferenceException("Open interest has no value.");
             set => _openInterest = value;
         }
 
         public double PreClosePrice
         {
-            get => _preClosePrice ?? throw new NoValueException("Pre close price has no value.");
+            get => _preClosePrice ?? throw new NullReferenceException("Pre close price has no value.");
             set => _preClosePrice = value;
         }
 
         public double PreSettlementPrice
         {
-            get => _preSettlementPrice ?? throw new NoValueException("Pre settlement price has no value.");
+            get => _preSettlementPrice ?? throw new NullReferenceException("Pre settlement price has no value.");
             set => _preSettlementPrice = value;
         }
 
         public long PreOpenInterest
         {
-            get => _preOpenInterest ?? throw new NoValueException("Pre open interest has no value.");
+            get => _preOpenInterest ?? throw new NullReferenceException("Pre open interest has no value.");
             set => _preOpenInterest = value;
         }
 
         public double AskPrice
         {
-            get => _askPrice ?? throw new NoValueException("Ask price has no value.");
+            get => _askPrice ?? throw new NullReferenceException("Ask price has no value.");
             set => _askPrice = value;
         }
 
         public long AskVolume
         {
-            get => _askVolume ?? throw new NoValueException("Ask volume has no value.");
+            get => _askVolume ?? throw new NullReferenceException("Ask volume has no value.");
             set => _askVolume = value;
         }
 
         public double BidPrice
         {
-            get => _bidPrice ?? throw new NoValueException("Bid price has no value.");
+            get => _bidPrice ?? throw new NullReferenceException("Bid price has no value.");
             set => _bidPrice = value;
         }
 
         public long BidVolume
         {
-            get => _bidVolume ?? throw new NoValueException("Bid volume has no value.");
+            get => _bidVolume ?? throw new NullReferenceException("Bid volume has no value.");
             set => _bidVolume = value;
         }
     }

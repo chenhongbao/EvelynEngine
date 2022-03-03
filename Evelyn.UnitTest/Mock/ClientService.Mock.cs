@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
 using Evelyn.Plugin;
+using System;
 using System.Collections.Generic;
 using System.Net;
 
@@ -28,7 +29,7 @@ namespace Evelyn.UnitTest.Mock
 
         internal IClientHandler ClientHandler
         {
-            get => _clientHandler ?? throw new NoValueException("Client order handler has no value.");
+            get => _clientHandler ?? throw new NullReferenceException("Client order handler has no value.");
             private set => _clientHandler = value;
         }
 

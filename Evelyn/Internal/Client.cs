@@ -37,7 +37,7 @@ namespace Evelyn.Internal
 
         internal string ClientID => _clientID;
 
-        internal IAlgorithm Algorithm => _algorithm ?? throw new NoValueException("Client algorithm has no value.");
+        internal IAlgorithm Algorithm => _algorithm ?? throw new NullReferenceException("Client algorithm has no value.");
 
         internal IClientService Service => _service;
 

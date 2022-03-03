@@ -33,7 +33,7 @@ namespace Evelyn.Model
 
         public string InstrumentID
         {
-            get => _instrumentID ?? throw new NoValueException("Instrument ID has no value.");
+            get => _instrumentID ?? throw new NullReferenceException("Instrument ID has no value.");
             set => _instrumentID = value;
         }
 
@@ -44,43 +44,43 @@ namespace Evelyn.Model
 
         public DateOnly TradingDay
         {
-            get => _tradingDay ?? throw new NoValueException("Trading day has no value.");
+            get => _tradingDay ?? throw new NullReferenceException("Trading day has no value.");
             set => _tradingDay = value;
         }
 
         public DateTime TimeStamp
         {
-            get => _timeStamp ?? throw new NoValueException("Timestamp has no value.");
+            get => _timeStamp ?? throw new NullReferenceException("Timestamp has no value.");
             set => _timeStamp = value;
         }
 
         public string OrderID
         {
-            get => _orderID ?? throw new NoValueException("Order ID has no value.");
+            get => _orderID ?? throw new NullReferenceException("Order ID has no value.");
             set => _orderID = value;
         }
 
         public double Price
         {
-            get => _price ?? throw new NoValueException("Price has no value.");
+            get => _price ?? throw new NullReferenceException("Price has no value.");
             set => _price = value;
         }
 
         public long Quantity
         {
-            get => _quantity ?? throw new NoValueException("Quantity has no value.");
+            get => _quantity ?? throw new NullReferenceException("Quantity has no value.");
             set => _quantity = value;
         }
 
         public Direction Direction
         {
-            get => _direction ?? throw new NoValueException("Direction has no value");
+            get => _direction ?? throw new NullReferenceException("Direction has no value");
             set => _direction = value;
         }
 
         public Offset Offset
         {
-            get => _offset ?? throw new NoValueException("Offset has no value.");
+            get => _offset ?? throw new NullReferenceException("Offset has no value.");
             set => _offset = value;
         }
     }

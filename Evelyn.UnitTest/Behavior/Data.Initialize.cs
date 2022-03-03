@@ -101,7 +101,7 @@ namespace Evelyn.UnitTest.Behavior
             int index = -1;
             while (++index < c1.Count)
             {
-                var e0 = c0.ElementAt(index) ?? throw new NoValueException("Left operand has no value at index " + index + ".");
+                var e0 = c0.ElementAt(index) ?? throw new NullReferenceException("Left operand has no value at index " + index + ".");
 
                 /*
                  * Struct's Equals method compares the value.

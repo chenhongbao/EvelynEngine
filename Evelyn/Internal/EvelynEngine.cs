@@ -48,7 +48,7 @@ namespace Evelyn.Internal
 
         public EndPoint? ManagementEndPoint => throw new NotImplementedException();
 
-        public IConfigurator Configurator => _configurator ?? throw new NoValueException("Engine is not configured yet.");
+        public IConfigurator Configurator => _configurator ?? throw new NullReferenceException("Engine is not configured yet.");
 
         public IEvelyn AlterLocalClient(string clientID, params string[] instrumentID)
         {

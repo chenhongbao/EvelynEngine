@@ -26,7 +26,7 @@ namespace Evelyn.UnitTest.Mock
         private IOrderHandler? _orderHandlers;
         private IExchangeListener? _exchangeListener;
 
-        private IOrderHandler Handler => _orderHandlers ?? throw new NoValueException("Order handler has no value.");
+        private IOrderHandler Handler => _orderHandlers ?? throw new NullReferenceException("Order handler has no value.");
 
         public void Delete(DeleteOrder deleteOrder)
         {
@@ -52,7 +52,7 @@ namespace Evelyn.UnitTest.Mock
 
         internal void MockedConnect(bool isConnected)
         {
-            (_exchangeListener ?? throw new NoValueException("Exchange listener has no value.")).OnConnected(isConnected);
+            (_exchangeListener ?? throw new NullReferenceException("Exchange listener has no value.")).OnConnected(isConnected);
         }
 
         internal List<NewOrder> ReceivedNewOrders { get; } = new List<NewOrder>();

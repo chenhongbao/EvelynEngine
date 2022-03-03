@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
 using Evelyn.Plugin;
+using System;
 using System.Collections.Generic;
 
 namespace Evelyn.UnitTest.Mock
@@ -82,12 +83,12 @@ namespace Evelyn.UnitTest.Mock
 
         internal void MockedNewOrder(NewOrder newOrder, OrderOption? option = null)
         {
-            (_op ?? throw new NoValueException("Operator has no value.")).New(newOrder, option);
+            (_op ?? throw new NullReferenceException("Operator has no value.")).New(newOrder, option);
         }
 
         internal void MockedDelete(DeleteOrder deleteOrder, OrderOption? option = null)
         {
-            (_op ?? throw new NoValueException("Operator has no value.")).Delete(deleteOrder, option);
+            (_op ?? throw new NullReferenceException("Operator has no value.")).Delete(deleteOrder, option);
         }
         #endregion
     }

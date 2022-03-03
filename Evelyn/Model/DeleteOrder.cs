@@ -27,13 +27,13 @@ namespace Evelyn.Model
 
         public string OrderID
         {
-            get => _orderID ?? throw new NoValueException("Order ID has no value.");
+            get => _orderID ?? throw new NullReferenceException("Order ID has no value.");
             set => _orderID = value;
         }
 
         public string InstrumentID
         {
-            get => _instrumentID ?? throw new NoValueException("Instrument ID has no value.");
+            get => _instrumentID ?? throw new NullReferenceException("Instrument ID has no value.");
             set => _instrumentID = value;
         }
     }

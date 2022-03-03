@@ -28,19 +28,19 @@ namespace Evelyn.Model
 
         public TriggerType When
         {
-            get => _triggerType ?? throw new NoValueException("Trigger type has no value.");
+            get => _triggerType ?? throw new NullReferenceException("Trigger type has no value.");
             set => _triggerType = value;
         }
 
         public InstrumentState StateChange
         {
-            get => _stateChange ?? throw new NoValueException("Trigger instrument state has no value.");
+            get => _stateChange ?? throw new NullReferenceException("Trigger instrument state has no value.");
             set => _stateChange = value;
         }
 
         public DateTime Time
         {
-            get => _moment ?? throw new NoValueException("Trigger moment has no value.");
+            get => _moment ?? throw new NullReferenceException("Trigger moment has no value.");
             set => _moment = value;
         }
     }

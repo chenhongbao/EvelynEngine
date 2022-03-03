@@ -40,7 +40,7 @@ namespace Evelyn.Model
 
         public string InstrumentID
         {
-            get => _instrumentID ?? throw new NoValueException("Instrument ID has no value.");
+            get => _instrumentID ?? throw new NullReferenceException("Instrument ID has no value.");
             set => _instrumentID = value;
         }
 
@@ -51,85 +51,85 @@ namespace Evelyn.Model
 
         public DateOnly TradingDay
         {
-            get => _tradingDay ?? throw new NoValueException("Trading day has no value.");
+            get => _tradingDay ?? throw new NullReferenceException("Trading day has no value.");
             set => _tradingDay = value;
         }
 
         public DateTime TimeStamp
         {
-            get => _timeStamp ?? throw new NoValueException("Timestamp has no value.");
+            get => _timeStamp ?? throw new NullReferenceException("Timestamp has no value.");
             set => _timeStamp = value;
         }
 
         public string OrderID
         {
-            get => _orderID ?? throw new NoValueException("Order ID has no value.");
+            get => _orderID ?? throw new NullReferenceException("Order ID has no value.");
             set => _orderID = value;
         }
 
         public double Price
         {
-            get => _price ?? throw new NoValueException("Price has no value.");
+            get => _price ?? throw new NullReferenceException("Price has no value.");
             set => _price = value;
         }
 
         public long Quantity
         {
-            get => _quantity ?? throw new NoValueException("Quantity has no value.");
+            get => _quantity ?? throw new NullReferenceException("Quantity has no value.");
             set => _quantity = value;
         }
 
         public Direction Direction
         {
-            get => _direction ?? throw new NoValueException("Direction has no value");
+            get => _direction ?? throw new NullReferenceException("Direction has no value");
             set => _direction = value;
         }
 
         public Offset Offset
         {
-            get => _offset ?? throw new NoValueException("Offset has no value.");
+            get => _offset ?? throw new NullReferenceException("Offset has no value.");
             set => _offset = value;
         }
 
         public string TradeID
         {
-            get => _tradeID ?? throw new NoValueException("Trade ID has no value.");
+            get => _tradeID ?? throw new NullReferenceException("Trade ID has no value.");
             set => _tradeID = value;
         }
 
         public double TradePrice
         {
-            get => _tradePrice ?? throw new NoValueException("Trade price has no value.");
+            get => _tradePrice ?? throw new NullReferenceException("Trade price has no value.");
             set => _tradePrice = value;
         }
 
         public long TradeQuantity
         {
-            get => _tradeQuantity ?? throw new NoValueException("Trade quantity has no value.");
+            get => _tradeQuantity ?? throw new NullReferenceException("Trade quantity has no value.");
             set => _tradeQuantity = value;
         }
 
         public long LeaveQuantity
         {
-            get => _leaveQuantity ?? throw new NoValueException("Leave quantity has no value.");
+            get => _leaveQuantity ?? throw new NullReferenceException("Leave quantity has no value.");
             set => _leaveQuantity = value;
         }
 
         public DateTime TradeTimeStamp
         {
-            get => _tradeTimeStamp ?? throw new NoValueException("Trade time has no value.");
+            get => _tradeTimeStamp ?? throw new NullReferenceException("Trade time has no value.");
             set => _tradeTimeStamp = value;
         }
 
         public OrderStatus Status
         {
-            get => _status ?? throw new NoValueException("Trade status has no value.");
+            get => _status ?? throw new NullReferenceException("Trade status has no value.");
             set => _status = value;
         }
 
         public string Message
         {
-            get => _message ?? throw new NoValueException("Message has no value.");
+            get => _message ?? throw new NullReferenceException("Message has no value.");
             set => _message = value;
         }
     }

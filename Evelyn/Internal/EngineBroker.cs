@@ -24,13 +24,13 @@ namespace Evelyn.Internal
         private IBroker? _broker;
         private BrokerExchange? _brokerExchange;
 
-        private IBroker Broker => _broker ?? throw new NoValueException("Broker has no value.");
+        private IBroker Broker => _broker ?? throw new NullReferenceException("Broker has no value.");
 
         internal string NewOrderID => Broker.NewOrderID;
 
         internal bool IsConfigured { get; private set; } = false;
 
-        internal bool IsConnected => _brokerExchange?.IsConnected ?? throw new NoValueException("Borker exchange has no value.");
+        internal bool IsConnected => _brokerExchange?.IsConnected ?? throw new NullReferenceException("Borker exchange has no value.");
 
         internal void Configure(IBroker broker, EngineOrderHandler orderHandler, BrokerExchange exchange)
         {

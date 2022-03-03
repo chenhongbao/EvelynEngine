@@ -27,7 +27,7 @@ namespace Evelyn.Internal
         private EngineClientHandler? _clientHandler;
         private readonly Dictionary<string, (IAlgorithm, string[])> _savedClients = new Dictionary<string, (IAlgorithm, string[])>();
 
-        internal EngineClientHandler ClientHandler => _clientHandler ?? throw new NoValueException("Client handler has no value.");
+        internal EngineClientHandler ClientHandler => _clientHandler ?? throw new NullReferenceException("Client handler has no value.");
 
         internal ILogger Logger { get; private init; } = Loggers.CreateLogger(nameof(LocalClientService));
 
@@ -134,7 +134,7 @@ namespace Evelyn.Internal
              */
             if (_savedClients.ContainsKey(clientID))
             {
-                throw new DuplicatedClientException("Another client exists with ID " + clientID + ".");
+                throw new InvalidOperationException("Another client exists with ID " + clientID + ".");
             }
 
             _savedClients.Add(clientID, (algorithm, instrumentID));

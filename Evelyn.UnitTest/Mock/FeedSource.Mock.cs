@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
 using Evelyn.Plugin;
+using System;
 using System.Collections.Generic;
 
 namespace Evelyn.UnitTest.Mock
@@ -25,7 +26,7 @@ namespace Evelyn.UnitTest.Mock
         private IFeedHandler? _feedHandler;
         private IExchangeListener? _exchangeListener;
 
-        private IFeedHandler Handler => _feedHandler ?? throw new NoValueException("Feed handler has no value.");
+        private IFeedHandler Handler => _feedHandler ?? throw new NullReferenceException("Feed handler has no value.");
 
         public void Subscribe(string instrumentID)
         {
@@ -73,7 +74,7 @@ namespace Evelyn.UnitTest.Mock
 
         internal void MockedConnect(bool isConnected)
         {
-            (_exchangeListener ?? throw new NoValueException("Exchange listener has no value.")).OnConnected(isConnected);
+            (_exchangeListener ?? throw new NullReferenceException("Exchange listener has no value.")).OnConnected(isConnected);
         }
         internal List<string> SubscribedInstruments { get; } = new List<string>();
         internal List<string> UnsubscribedInstruments { get; } = new List<string>();
