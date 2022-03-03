@@ -14,10 +14,10 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Internal.Logging;
 using Evelyn.Model;
 using Evelyn.Plugin;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Debug;
 using System.Net;
 
 namespace Evelyn.Internal
@@ -29,7 +29,7 @@ namespace Evelyn.Internal
 
         internal EngineClientHandler ClientHandler => _clientHandler ?? throw new NoValueException("Client handler has no value.");
 
-        internal ILogger Logger { get; private init; } = new DebugLoggerProvider().CreateLogger(nameof(LocalClientService));
+        internal ILogger Logger { get; private init; } = Loggers.CreateLogger(nameof(LocalClientService));
 
         public EndPoint? ServiceEndPoint => throw new NotImplementedException("Local client service doesn't have an end point.");
 
