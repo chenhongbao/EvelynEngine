@@ -30,7 +30,6 @@ namespace Evelyn.Model
         private double? _tradePrice = null;
         private long? _tradeQuantity = null;
         private long? _leaveQuantity = null;
-        private DateTime? _tradeTimeStamp = null;
         private OrderStatus? _status = null;
         private string? _message = null;
 
@@ -113,12 +112,6 @@ namespace Evelyn.Model
         {
             get => _leaveQuantity ?? throw new NullReferenceException("Leave quantity has no value.");
             set => _leaveQuantity = value;
-        }
-
-        public DateTime TradeTimeStamp
-        {
-            get => _tradeTimeStamp ?? throw new NullReferenceException("Trade time has no value.");
-            set => _tradeTimeStamp = value;
         }
 
         public OrderStatus Status

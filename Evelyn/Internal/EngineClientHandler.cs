@@ -122,7 +122,6 @@ namespace Evelyn.Internal
                             TradePrice = double.MaxValue,
                             TradeQuantity = int.MaxValue,
                             LeaveQuantity = int.MaxValue,
-                            TradeTimeStamp = DateTime.MaxValue,
                             Status = OrderStatus.Rejected,
                             Message = "Exchange disconnected."
                         },
@@ -178,7 +177,6 @@ namespace Evelyn.Internal
                         TradePrice = double.MaxValue,
                         TradeQuantity = int.MaxValue,
                         LeaveQuantity = int.MaxValue,
-                        TradeTimeStamp = DateTime.MaxValue,
                         Status = OrderStatus.Deleted,
                         Message = "No such order."
                     },
@@ -228,7 +226,6 @@ namespace Evelyn.Internal
                             TradePrice = double.MaxValue,
                             TradeQuantity = int.MaxValue,
                             LeaveQuantity = newOrder.Quantity,
-                            TradeTimeStamp = DateTime.MaxValue,
                             Status = OrderStatus.Rejected,
                             Message = "Exchange disconnected."
                         },

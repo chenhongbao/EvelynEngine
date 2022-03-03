@@ -347,7 +347,6 @@ namespace Evelyn.UnitTest.Behavior
                     TradePrice = 8890,
                     TradeQuantity = 1,
                     LeaveQuantity = 1,
-                    TradeTimeStamp = DateTime.MaxValue,
                     Status = OrderStatus.Trading,
                     Message = "Trading"
                 },
@@ -407,7 +406,6 @@ namespace Evelyn.UnitTest.Behavior
                     TradePrice = 0, /* no actual trade happens, so price and volume are 0*/
                     TradeQuantity = 0,
                     LeaveQuantity = 1,
-                    TradeTimeStamp = DateTime.MaxValue,
                     Status = OrderStatus.Deleted, /* status is deleted */
                     Message = "Deleted"
                 },
@@ -715,7 +713,6 @@ namespace Evelyn.UnitTest.Behavior
                     TradePrice = 8890,
                     TradeQuantity = 1,
                     LeaveQuantity = 1,
-                    TradeTimeStamp = DateTime.MaxValue,
                     Status = OrderStatus.Trading,
                     Message = "Trading"
                 },
@@ -775,7 +772,6 @@ namespace Evelyn.UnitTest.Behavior
                     TradePrice = 0, /* no actual trade happens, so price and volume are 0*/
                     TradeQuantity = 0,
                     LeaveQuantity = 1,
-                    TradeTimeStamp = DateTime.MaxValue,
                     Status = OrderStatus.Deleted, /* status is deleted */
                     Message = "Deleted"
                 },

@@ -174,7 +174,6 @@ namespace Evelyn.UnitTest.Behavior
                     TradePrice = 0,
                     TradeQuantity = 0,
                     LeaveQuantity = 2,
-                    TradeTimeStamp = DateTime.MaxValue,
                     Status = OrderStatus.Rejected,
                     Message = "Rejected"
                 },
