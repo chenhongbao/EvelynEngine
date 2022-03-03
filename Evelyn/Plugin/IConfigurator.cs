@@ -18,12 +18,6 @@ namespace Evelyn.Plugin
 {
     public interface IConfigurator
     {
-        public void Create(out IBroker broker, out IFeedSource feedSource);
-
-        public void Start();
-
-        public void Stop();
-
-        public void Desrtoy();
+        public void Configure(out IBroker broker, out IFeedSource feedSource);
     }
 }

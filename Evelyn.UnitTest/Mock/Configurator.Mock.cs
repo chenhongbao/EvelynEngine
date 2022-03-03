@@ -20,25 +20,10 @@ namespace Evelyn.UnitTest.Mock
 {
     internal class MockedConfigurator : IConfigurator
     {
-        public void Create(out IBroker broker, out IFeedSource feedSource)
+        public void Configure(out IBroker broker, out IFeedSource feedSource)
         {
             broker = Broker;
             feedSource = FeedSource;
-        }
-
-        public void Desrtoy()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Start()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Stop()
-        {
-            throw new System.NotImplementedException();
         }
 
         #region Mocking Methods

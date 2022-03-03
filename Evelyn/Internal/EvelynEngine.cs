@@ -68,7 +68,7 @@ namespace Evelyn.Internal
         public void Configure(IConfigurator configurator)
         {
             _configurator = configurator;
-            Configurator.Create(out IBroker broker, out IFeedSource feedSource);
+            Configurator.Configure(out IBroker broker, out IFeedSource feedSource);
 
             _feedSource.Configure(feedSource, _feedHandler, new FeedSourceExchange(_feedSource));
             _broker.Configure(broker, _orderHandler, new BrokerExchange());
