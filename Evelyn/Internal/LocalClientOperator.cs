@@ -42,7 +42,7 @@ namespace Evelyn.Internal
 
                 case TriggerType.StateChange:
 
-                    var state = option?.Trigger.StateChange ?? InstrumentState.Continous;
+                    var state = option?.Trigger.StateChange ?? InstrumentStatus.Continous;
                     _clientHandler.FeedHandler.ScheduleOrder(() => _clientHandler.OnDeleteOrder(deleteOrder, _clientID), deleteOrder.InstrumentID, state);
                     break;
 
@@ -65,7 +65,7 @@ namespace Evelyn.Internal
 
                 case TriggerType.StateChange:
 
-                    var state = option?.Trigger.StateChange ?? InstrumentState.Continous;
+                    var state = option?.Trigger.StateChange ?? InstrumentStatus.Continous;
                     _clientHandler.FeedHandler.ScheduleOrder(() => _clientHandler.OnNewOrder(newOrder, _clientID), newOrder.InstrumentID, state);
                     break;
 

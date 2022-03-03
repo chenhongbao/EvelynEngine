@@ -43,14 +43,14 @@ namespace Evelyn.UnitTest.Behavior
                  {
                      InstrumentID = "l2205",
                      TradingDay = TradingDay,
-                     State = InstrumentState.Continous,
+                     State = InstrumentStatus.Continous,
                      StateTimestamp = baseTime
                  },
                 new Instrument
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
-                    State = InstrumentState.Closed,
+                    State = InstrumentStatus.Closed,
                     StateTimestamp = baseTime
                 })
                 .Configure(Configurator);
@@ -72,7 +72,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "l2205",
                     TradingDay = TradingDay,
-                    State = InstrumentState.Closed,
+                    State = InstrumentStatus.Closed,
                     StateTimestamp = DateTime.Now
                 });
 
@@ -123,7 +123,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
-                    State = InstrumentState.Continous,
+                    State = InstrumentStatus.Continous,
                     StateTimestamp = DateTime.Now
                 });
 
@@ -218,7 +218,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "l2205",
                     TradingDay = TradingDay,
-                    State = InstrumentState.NonTrading,
+                    State = InstrumentStatus.NonTrading,
                     StateTimestamp = DateTime.Now
                 });
 
@@ -242,7 +242,7 @@ namespace Evelyn.UnitTest.Behavior
                     Trigger = new TriggerCondition
                     {
                         When = TriggerType.StateChange,
-                        StateChange = InstrumentState.Continous
+                        StateChange = InstrumentStatus.Continous
                     }
                 });
 
@@ -259,7 +259,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "l2205",
                     TradingDay = TradingDay,
-                    State = InstrumentState.Continous,
+                    State = InstrumentStatus.Continous,
                     StateTimestamp = DateTime.Now
                 });
 
@@ -296,7 +296,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
-                    State = InstrumentState.Continous,
+                    State = InstrumentStatus.Continous,
                     StateTimestamp = DateTime.Now
                 });
 
@@ -324,7 +324,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
-                    State = InstrumentState.NonTrading,
+                    State = InstrumentStatus.NonTrading,
                     StateTimestamp = DateTime.Now
                 });
 
@@ -342,7 +342,7 @@ namespace Evelyn.UnitTest.Behavior
                     Trigger = new TriggerCondition
                     {
                         When = TriggerType.StateChange,
-                        StateChange = InstrumentState.Continous
+                        StateChange = InstrumentStatus.Continous
                     }
                 });
 
@@ -359,7 +359,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
-                    State = InstrumentState.Continous,
+                    State = InstrumentStatus.Continous,
                     StateTimestamp = DateTime.Now
                 });
 
@@ -387,7 +387,7 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "l2205",
                     TradingDay = TradingDay,
-                    State = InstrumentState.Continous,
+                    State = InstrumentStatus.Continous,
                     StateTimestamp = DateTime.Now
                 });
 
@@ -413,7 +413,7 @@ namespace Evelyn.UnitTest.Behavior
                     Trigger = new TriggerCondition
                     {
                         When = TriggerType.StateChange,
-                        StateChange = InstrumentState.Continous
+                        StateChange = InstrumentStatus.Continous
                     }
                 });
 

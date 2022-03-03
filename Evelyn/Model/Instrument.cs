@@ -20,7 +20,7 @@ namespace Evelyn.Model
     {
         private string? _instrumentID = null;
         private DateOnly? _tradingDay = null;
-        private InstrumentState? _instrumentState = null;
+        private InstrumentStatus? _instrumentState = null;
         private DateTime? _stateTimestamp = null;
 
         public Instrument()
@@ -44,7 +44,7 @@ namespace Evelyn.Model
             set => _tradingDay = value;
         }
 
-        public InstrumentState? State
+        public InstrumentStatus? State
         {
             get => _instrumentState;
             set => _instrumentState = value;

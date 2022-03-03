@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace Evelyn.Model
 {
-    public enum InstrumentState
+    public enum InstrumentStatus
     {
         BeforeTrading = 1,
         NonTrading,

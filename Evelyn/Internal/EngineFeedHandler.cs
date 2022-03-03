@@ -26,7 +26,7 @@ namespace Evelyn.Internal
     {
         private readonly EngineClientHandler _clients;
         private readonly Dictionary<string, Instrument> _instruments = new Dictionary<string, Instrument>();
-        private readonly ISet<(Action, string, InstrumentState)> _scheduledJobs = new HashSet<(Action, string, InstrumentState)>();
+        private readonly ISet<(Action, string, InstrumentStatus)> _scheduledJobs = new HashSet<(Action, string, InstrumentStatus)>();
         private readonly ISet<IOHLCGenerator> _ohlcGenerators = new HashSet<IOHLCGenerator>();
         private readonly ISet<(string, bool)> _subscriptionResponses = new HashSet<(string, bool)>();
 
@@ -144,7 +144,7 @@ namespace Evelyn.Internal
             }
         }
 
-        internal void ScheduleOrder(Action job, string instrumentID, InstrumentState state)
+        internal void ScheduleOrder(Action job, string instrumentID, InstrumentStatus state)
         {
             if (_instruments.TryGetValue(instrumentID, out var instrument) && instrument.State == state)
             {

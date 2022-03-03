@@ -251,14 +251,14 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "l2205",
                     TradingDay = baseDay,
-                    State = InstrumentState.Continous,
+                    State = InstrumentStatus.Continous,
                     StateTimestamp = baseTime
                 },
                 new Instrument
                 {
                     InstrumentID = "pp2205",
                     TradingDay = baseDay,
-                    State = InstrumentState.Continous,
+                    State = InstrumentStatus.Continous,
                     StateTimestamp = baseTime
                 })
                 .Configure(mockedConfigurator);
@@ -622,14 +622,14 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "l2205",
                     TradingDay = baseDay,
-                    State = InstrumentState.Continous,
+                    State = InstrumentStatus.Continous,
                     StateTimestamp = baseTime
                 },
                 new Instrument
                 {
                     InstrumentID = "pp2205",
                     TradingDay = baseDay,
-                    State = InstrumentState.Continous,
+                    State = InstrumentStatus.Continous,
                     StateTimestamp = baseTime
                 })
                 .Configure(mockedConfiguator);

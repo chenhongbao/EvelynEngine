@@ -19,7 +19,7 @@ namespace Evelyn.Model
     public struct TriggerCondition
     {
         private TriggerType? _triggerType = null;
-        private InstrumentState? _stateChange = null;
+        private InstrumentStatus? _stateChange = null;
         private DateTime? _moment = null;
 
         public TriggerCondition()
@@ -32,7 +32,7 @@ namespace Evelyn.Model
             set => _triggerType = value;
         }
 
-        public InstrumentState StateChange
+        public InstrumentStatus StateChange
         {
             get => _stateChange ?? throw new NullReferenceException("Trigger instrument state has no value.");
             set => _stateChange = value;
