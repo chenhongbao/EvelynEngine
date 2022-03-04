@@ -34,18 +34,14 @@ namespace Evelyn.Internal
 
         public void Delete(DeleteOrder deleteOrder, OrderOption? option = null)
         {
+            var optionOrDefault = option ?? new OrderOption();
+
             switch (option?.Trigger.When)
             {
                 case TriggerType.Time:
-
-                    var moment = option?.Trigger.Time ?? DateTime.Now;
-                    _clientHandler.FeedHandler.ScheduleOrder(() => _clientHandler.OnDeleteOrder(deleteOrder, _clientID), moment);
-                    break;
-
                 case TriggerType.StateChange:
 
-                    var state = option?.Trigger.StateChange ?? InstrumentStatus.Continous;
-                    _clientHandler.FeedHandler.ScheduleOrder(() => _clientHandler.OnDeleteOrder(deleteOrder, _clientID), deleteOrder.InstrumentID, state);
+                    _clientHandler.FeedHandler.ScheduleOrder(() => _clientHandler.OnDeleteOrder(deleteOrder, _clientID), deleteOrder.InstrumentID, optionOrDefault);
                     break;
 
                 case TriggerType.Immediate:
@@ -58,17 +54,14 @@ namespace Evelyn.Internal
 
         public void New(NewOrder newOrder, OrderOption? option = null)
         {
+            var optionOrDefault = option ?? new OrderOption();
+
             switch (option?.Trigger.When)
             {
                 case TriggerType.Time:
-
-                    _clientHandler.FeedHandler.ScheduleOrder(() => _clientHandler.OnNewOrder(newOrder, _clientID), option?.Trigger.Time ?? DateTime.Now);
-                    break;
-
                 case TriggerType.StateChange:
 
-                    var state = option?.Trigger.StateChange ?? InstrumentStatus.Continous;
-                    _clientHandler.FeedHandler.ScheduleOrder(() => _clientHandler.OnNewOrder(newOrder, _clientID), newOrder.InstrumentID, state);
+                    _clientHandler.FeedHandler.ScheduleOrder(() => _clientHandler.OnNewOrder(newOrder, _clientID), newOrder.InstrumentID, optionOrDefault);
                     break;
 
                 case TriggerType.Immediate:

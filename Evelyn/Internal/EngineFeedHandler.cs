@@ -18,6 +18,7 @@ using Evelyn.Internal.Logging;
 using Evelyn.Model;
 using Evelyn.Plugin;
 using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
 using System.Timers;
 
 namespace Evelyn.Internal
@@ -26,9 +27,10 @@ namespace Evelyn.Internal
     {
         private readonly EngineClientHandler _clients;
         private readonly Dictionary<string, Instrument> _instruments = new Dictionary<string, Instrument>();
-        private readonly ISet<(Action, string, InstrumentStatus)> _scheduledJobs = new HashSet<(Action, string, InstrumentStatus)>();
         private readonly ISet<IOHLCGenerator> _ohlcGenerators = new HashSet<IOHLCGenerator>();
         private readonly ISet<(string, bool)> _subscriptionResponses = new HashSet<(string, bool)>();
+
+        private readonly ConcurrentDictionary<string, ScheduledJob> _scheduledJobs = new ConcurrentDictionary<string, ScheduledJob>();
 
         private ILogger Logger { get; } = Loggers.CreateLogger(nameof(EngineFeedHandler));
 
@@ -54,6 +56,11 @@ namespace Evelyn.Internal
                     OnFeed(ohlc);
                 }
             }
+
+            /*
+             * Check and run time scheduled jobs.
+             */
+            CheckRunScheduledJobs();
         }
 
         public void OnFeed(OHLC ohlc)
@@ -110,28 +117,6 @@ namespace Evelyn.Internal
             }
         }
 
-        internal void ScheduleOrder(Action action, DateTime time)
-        {
-            /*
-             * TODO If feed source is running backtest, use ticks to count the time.
-             */
-            if (DateTime.Now.CompareTo(time) > 0)
-            {
-                /*
-                 * The given moment has elapsed, do the job now.
-                 */
-                TryCatch(action);
-            }
-            else
-            {
-                var timer = new System.Timers.Timer(time.Subtract(DateTime.Now).TotalMilliseconds);
-
-                timer.Elapsed += (object? source, ElapsedEventArgs args) => TryCatch(action);
-                timer.AutoReset = false;
-                timer.Enabled = true;
-            }
-        }
-
         private void TryCatch(Action action)
         {
             try
@@ -144,16 +129,54 @@ namespace Evelyn.Internal
             }
         }
 
-        internal void ScheduleOrder(Action job, string instrumentID, InstrumentStatus state)
+        internal void ScheduleOrder(Action job, string instrumentID, OrderOption option)
         {
-            if (_instruments.TryGetValue(instrumentID, out var instrument) && instrument.State == state)
+            if (CheckOrderOption(instrumentID, option))
             {
                 job();
             }
             else
             {
-                _scheduledJobs.Add((job, instrumentID, state));
+                _scheduledJobs.TryAdd(Guid.NewGuid().ToString(), new ScheduledJob { Job = job, InstrumentID = instrumentID, Option = option });
             }
+        }
+
+        private bool CheckOrderOption(string instrumentID, OrderOption option)
+        {
+            if (option.Trigger.When == TriggerType.Immediate)
+            {
+                return true;
+            }
+            else if (option.Trigger.When == TriggerType.Time
+                && option.Trigger.Time.CompareTo(DateTime.Now) < 0)
+            {
+                return true;
+            }
+            else if (option.Trigger.When == TriggerType.StateChange
+                && _instruments.TryGetValue(instrumentID, out var instrument) && instrument.State == option.Trigger.StateChange)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private void CheckRunScheduledJobs()
+        {
+            var removed = new List<string>();
+            foreach (var entry in _scheduledJobs)
+            {
+                var scheduled = entry.Value;
+                if (CheckOrderOption(scheduled.InstrumentID, scheduled.Option))
+                {
+                    removed.Add(entry.Key);
+                    TryCatch(() => scheduled.Job());
+                }
+            }
+
+            removed.ForEach(jobID => _scheduledJobs.Remove(jobID, out var _));
         }
 
         public void OnInstrument(Instrument instrument)
@@ -165,18 +188,9 @@ namespace Evelyn.Internal
             SendInstrument(instrument);
 
             /*
-             * Check scheduled jobs and run if it meets the condition.
+             * Check and run scheduled jobs of state condition.
              */
-            var enumerator = _scheduledJobs.GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                var job = enumerator.Current;
-
-                if (job.Item2 == instrument.InstrumentID && job.Item3 == instrument.State)
-                {
-                    job.Item1();
-                }
-            }
+            CheckRunScheduledJobs();
         }
 
         public void OnSubscribed(string instrumentID, Description description, bool subscribed)
