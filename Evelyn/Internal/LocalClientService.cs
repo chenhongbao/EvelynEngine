@@ -53,7 +53,7 @@ namespace Evelyn.Internal
                 InitializeClient(clientID, client.Item1, client.Item2);
             }
             _savedClients.Clear();
-            
+
             /*
              * Send instruments to clients.
              */
@@ -64,62 +64,27 @@ namespace Evelyn.Internal
 
         public void SendInstrument(Instrument instrument, string clientID)
         {
-            try
-            {
-                ClientHandler[clientID].Algorithm.OnInstrument(instrument);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogWarning("{0}\n{1}", ex.Message, ex.StackTrace);
-            }
+            CallClientMethod(() => ClientHandler[clientID].Algorithm.OnInstrument(instrument));
         }
 
         public void SendOHLC(OHLC ohlc, string clientID)
         {
-            try
-            {
-                ClientHandler[clientID].Algorithm.OnFeed(ohlc);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogWarning("{0}\n{1}", ex.Message, ex.StackTrace);
-            }
+            CallClientMethod(() => ClientHandler[clientID].Algorithm.OnFeed(ohlc));
         }
 
         public void SendSubscribe(string instrumentID, Description description, bool isSubscribed, string clientID)
         {
-            try
-            {
-                ClientHandler[clientID].Algorithm.OnSubscribed(instrumentID, description, isSubscribed);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogWarning("{0}\n{1}", ex.Message, ex.StackTrace);
-            }
+            CallClientMethod(() => ClientHandler[clientID].Algorithm.OnSubscribed(instrumentID, description, isSubscribed));
         }
 
         public void SendTick(Tick tick, string clientID)
         {
-            try
-            {
-                ClientHandler[clientID].Algorithm.OnFeed(tick);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogWarning("{0}\n{1}", ex.Message, ex.StackTrace);
-            }
+            CallClientMethod(() => ClientHandler[clientID].Algorithm.OnFeed(tick));
         }
 
         public void SendTrade(Trade trade, Description description, string clientID)
         {
-            try
-            {
-                ClientHandler[clientID].Algorithm.OnTrade(trade, description);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogWarning("{0}\n{1}", ex.Message, ex.StackTrace);
-            }
+            CallClientMethod(() => ClientHandler[clientID].Algorithm.OnTrade(trade, description));
         }
 
         internal void RegisterClient(string clientID, IAlgorithm algorithm, params string[] instrumentID)
@@ -145,13 +110,18 @@ namespace Evelyn.Internal
             ClientHandler.OnClientConnect(clientID, algorithm, this);
             instrumentID.ToList().ForEach(instrument => ClientHandler.OnSubscribe(instrument, true, clientID));
 
+            CallClientMethod(() => ClientHandler[clientID].Algorithm.OnLoad(new LocalClientOperator(clientID, ClientHandler)));
+        }
+
+        private void CallClientMethod(Action action)
+        {
             try
             {
-                ClientHandler[clientID].Algorithm.OnLoad(new LocalClientOperator(clientID, ClientHandler));
+                action();
             }
             catch (Exception ex)
             {
-                Logger.LogWarning("{0}\n{1}", ex.Message, ex.StackTrace);
+                Logger.LogWarning("{0}, {1}\n{2}", DateTime.Now, ex.Message, ex.StackTrace);
             }
         }
     }
