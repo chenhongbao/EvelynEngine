@@ -555,7 +555,11 @@ namespace Evelyn.UnitTest.Behavior
              * Because the instrument is already subscribed, no more feed source subscription.
              */
             Assert.AreEqual(2, mockedConfigurator.FeedSource.SubscribedInstruments.Count);
-            Assert.AreEqual("pp2205", mockedConfigurator.FeedSource.SubscribedInstruments.Last());
+
+            var i0 = mockedConfigurator.FeedSource.SubscribedInstruments[0];
+            var i1 = mockedConfigurator.FeedSource.SubscribedInstruments[1];
+
+            Assert.IsTrue((i0 == "l2205" && i1 == "pp2205") || (i1 == "l2205" && i0 == "pp2205"));
 
             /*
              * Feed source doesn't receive the subscription request for pp2205, but engine sends a subscription response.

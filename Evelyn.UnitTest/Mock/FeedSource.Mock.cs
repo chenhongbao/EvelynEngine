@@ -38,11 +38,6 @@ namespace Evelyn.UnitTest.Mock
             UnsubscribedInstruments.Add(instrumentID);
         }
 
-        public void Unsubscribe(string instrumentID, IFeedHandler feedHandler)
-        {
-            UnsubscribedInstruments.Add(instrumentID);
-        }
-
         public void Register(IFeedHandler feedHandler, IExchangeListener exchangeListener)
         {
             _feedHandler = feedHandler;

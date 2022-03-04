@@ -14,51 +14,51 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using System.Collections.Concurrent;
+
 namespace Evelyn.Internal
 {
     internal class ClientSubscription
     {
-        private readonly ISet<string> _instruments;
-        private readonly ISet<string> _responses;
+        private readonly ConcurrentDictionary<string, bool> _instruments = new ConcurrentDictionary<string, bool>();
+        private readonly ConcurrentDictionary<string, bool> _responses = new ConcurrentDictionary<string, bool>();
         private readonly string _clientID;
 
         internal ClientSubscription(string clientID)
         {
             _clientID = clientID;
-            _instruments = new HashSet<string>();
-            _responses = new HashSet<string>();
         }
 
         internal string ClientID => _clientID;
 
-        internal ISet<string> Instruments => new HashSet<string>(_instruments);
+        internal ISet<string> Instruments => new HashSet<string>(_instruments.Keys);
 
         internal void Subscribe(string instrumentID, bool isSubscribed)
         {
             if (isSubscribed)
             {
-                _instruments.Add(instrumentID);
+                _instruments.TryAdd(instrumentID, default(bool));
             }
             else
             {
-                _instruments.Remove(instrumentID);
+                _instruments.Remove(instrumentID, out var _);
             }
         }
 
         internal bool WaitSubscriptionResponse(string instrumentID)
         {
-            return _responses.Contains(instrumentID);
+            return _responses.ContainsKey(instrumentID);
         }
 
         internal void MarkSubscriptionResponse(string instrumentID, bool waitResponse)
         {
             if (waitResponse)
             {
-                _responses.Add(instrumentID);
+                _responses.TryAdd(instrumentID, default(bool));
             }
             else
             {
-                _responses.Remove(instrumentID);
+                _responses.Remove(instrumentID, out var _);
             }
         }
     }

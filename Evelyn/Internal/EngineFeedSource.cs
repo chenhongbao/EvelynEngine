@@ -16,23 +16,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
 using Evelyn.Plugin;
+using System.Collections.Concurrent;
 
 namespace Evelyn.Internal
 {
     internal class EngineFeedSource
     {
+        private readonly ConcurrentDictionary<string, int> _counters = new ConcurrentDictionary<string, int>();
+
         private EngineFeedHandler? _feedHandler;
         private FeedSourceExchange? _feedSourceExchange;
         private IFeedSource? _feedSource;
-        private IDictionary<string, int> _counters = new Dictionary<string, int>();
 
         private IFeedSource FeedSource => _feedSource ?? throw new NullReferenceException("Feed source has no value.");
-
         private EngineFeedHandler FeedHandler => _feedHandler ?? throw new NullReferenceException("Feed handler has no value.");
         private bool IsConnected => _feedSourceExchange?.IsConnected ?? throw new NullReferenceException("Feed source exchange has no value.");
 
         internal bool IsConfigured { get; private set; } = false;
-
         internal DateOnly TradingDay => FeedSource.TradingDay;
 
         internal EngineFeedSource Subscribe()
@@ -82,7 +82,11 @@ namespace Evelyn.Internal
                         FeedHandler.EraseSubscriptionResponse(instrument, isSubscribed: true);
                     }
 
-                    _counters.Add(instrument, 1);
+                    /*
+                     * Except operation ensures the instrument doesn't exist in dictionary. So no need
+                     * to handle the return value.
+                     */
+                    _counters.TryAdd(instrument, 1);
                 });
             }
             else
@@ -100,7 +104,7 @@ namespace Evelyn.Internal
                                 FeedHandler.EraseSubscriptionResponse(instrument, isSubscribed: false);
                             }
                             
-                            _counters.Remove(instrument);
+                            _counters.Remove(instrument, out var _);
                         }
                         else
                         {

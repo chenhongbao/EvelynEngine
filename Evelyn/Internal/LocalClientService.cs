@@ -18,6 +18,7 @@ using Evelyn.Internal.Logging;
 using Evelyn.Model;
 using Evelyn.Plugin;
 using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
 using System.Net;
 
 namespace Evelyn.Internal
@@ -25,7 +26,7 @@ namespace Evelyn.Internal
     internal class LocalClientService : IClientService
     {
         private EngineClientHandler? _clientHandler;
-        private readonly Dictionary<string, (IAlgorithm, string[])> _savedClients = new Dictionary<string, (IAlgorithm, string[])>();
+        private readonly ConcurrentDictionary<string, ConfiguringClient> _savedClients = new ConcurrentDictionary<string, ConfiguringClient>();
 
         internal EngineClientHandler ClientHandler => _clientHandler ?? throw new NullReferenceException("Client handler has no value.");
 
@@ -50,7 +51,7 @@ namespace Evelyn.Internal
             foreach (var clientID in _savedClients.Keys)
             {
                 var client = _savedClients[clientID];
-                InitializeClient(clientID, client.Item1, client.Item2);
+                InitializeClient(client.ClientID, client.Algorithm, client.Instruments);
             }
             _savedClients.Clear();
 
@@ -97,12 +98,11 @@ namespace Evelyn.Internal
             /*
              * Save the client's information and call OnLoad later after engine is configured.
              */
-            if (_savedClients.ContainsKey(clientID))
+            var configuringClient = new ConfiguringClient { ClientID = clientID, Algorithm = algorithm, Instruments = instrumentID };
+            if (!_savedClients.TryAdd(clientID, configuringClient))
             {
                 throw new InvalidOperationException("Another client exists with ID " + clientID + ".");
             }
-
-            _savedClients.Add(clientID, (algorithm, instrumentID));
         }
 
         private void InitializeClient(string clientID, IAlgorithm algorithm, params string[] instrumentID)
