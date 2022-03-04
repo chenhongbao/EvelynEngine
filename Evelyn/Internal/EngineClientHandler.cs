@@ -18,12 +18,14 @@ using Evelyn.Internal.Logging;
 using Evelyn.Model;
 using Evelyn.Plugin;
 using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
 
 namespace Evelyn.Internal
 {
     internal class EngineClientHandler : IClientHandler
     {
-        private readonly IDictionary<string, Client> _clients = new Dictionary<string, Client>();
+        private readonly ConcurrentDictionary<string, Client> _clients = new ConcurrentDictionary<string, Client>();
+
         private EngineBroker? _broker;
         private EngineFeedSource? _feedSource;
         private EngineFeedHandler? _feedHandler;
@@ -50,24 +52,18 @@ namespace Evelyn.Internal
 
         public void OnClientConnect(string clientID, IClientService service)
         {
-            if (_clients.ContainsKey(clientID))
+            if (!_clients.TryAdd(clientID, new Client(service, clientID)))
             {
                 Logger.LogWarning("{0}\n{1}", "Another client exists with ID " + clientID + ".", new System.Diagnostics.StackTrace().ToString());
-                return;
             }
-
-            _clients.Add(clientID, new Client(service, clientID));
         }
 
         internal void OnClientConnect(string clientID, IAlgorithm algorithm, IClientService service)
         {
-            if (_clients.ContainsKey(clientID))
+            if (!_clients.TryAdd(clientID, new Client(service, clientID, algorithm)))
             {
                 Logger.LogWarning("{0}\n{1}", "Another client exists with ID " + clientID + ".", new System.Diagnostics.StackTrace().ToString());
-                return;
             }
-
-            _clients.Add(clientID, new Client(service, clientID, algorithm));
         }
 
         public void OnClientDisconnect(string clientID)
@@ -88,7 +84,7 @@ namespace Evelyn.Internal
             }
             finally
             {
-                _clients.Remove(clientID);
+                _clients.Remove(clientID, out var _);
             }
         }
 
