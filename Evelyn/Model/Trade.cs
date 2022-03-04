@@ -28,8 +28,8 @@ namespace Evelyn.Model
         private Offset? _offset = null;
         private string? _tradeID = null;
         private double? _tradePrice = null;
-        private long? _tradeQuantity = null;
-        private long? _leaveQuantity = null;
+        private int? _tradeQuantity = null;
+        private int? _leaveQuantity = null;
         private OrderStatus? _status = null;
         private string? _message = null;
 
@@ -102,13 +102,13 @@ namespace Evelyn.Model
             set => _tradePrice = value;
         }
 
-        public long TradeQuantity
+        public int TradeQuantity
         {
             get => _tradeQuantity ?? throw new NullReferenceException("Trade quantity has no value.");
             set => _tradeQuantity = value;
         }
 
-        public long LeaveQuantity
+        public int LeaveQuantity
         {
             get => _leaveQuantity ?? throw new NullReferenceException("Leave quantity has no value.");
             set => _leaveQuantity = value;
