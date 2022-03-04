@@ -31,7 +31,6 @@ namespace Evelyn.Model
         private int? _tradeQuantity = null;
         private int? _leaveQuantity = null;
         private OrderStatus? _status = null;
-        private string? _message = null;
 
         public Trade()
         {
@@ -120,10 +119,6 @@ namespace Evelyn.Model
             set => _status = value;
         }
 
-        public string Message
-        {
-            get => _message ?? throw new NullReferenceException("Message has no value.");
-            set => _message = value;
-        }
+        public string Message { get; set; } = string.Empty;
     }
 }
