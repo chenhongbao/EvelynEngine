@@ -68,6 +68,11 @@ namespace Evelyn.Internal
 
                 instruments.Except(_counters.Keys).ToList().ForEach(instrument =>
                 {
+                    /*
+                     * There is a chance that when engine is begine configured, and subscribing instruments,
+                     * feed source's exchange is not connecetd yet. So that here it will not make subscription
+                     * request to exchange until engine receives exchange connected event.
+                     */
                     if (IsConnected)
                     {
                         FeedSource.Subscribe(instrument);
