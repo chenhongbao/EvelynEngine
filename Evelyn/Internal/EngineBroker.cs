@@ -26,6 +26,8 @@ namespace Evelyn.Internal
 
         private IBroker Broker => _broker ?? throw new NullReferenceException("Broker has no value.");
 
+        internal DateOnly TradingDay => Broker.TradingDay;
+
         internal string NewOrderID => Broker.NewOrderID;
 
         internal bool IsConfigured { get; private set; } = false;

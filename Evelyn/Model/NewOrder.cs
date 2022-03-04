@@ -20,8 +20,6 @@ namespace Evelyn.Model
     {
         private string? _instrumentID = null;
         private string? _exchangeID = null;
-        private DateOnly? _tradingDay = null;
-        private DateTime? _timeStamp = null;
         private string? _orderID = null;
         private double? _price = null;
         private int? _quantity = null;
@@ -47,17 +45,9 @@ namespace Evelyn.Model
         public string Symbol { get; set; } = string.Empty;
 
 
-        public DateOnly TradingDay
-        {
-            get => _tradingDay ?? throw new NullReferenceException("Trading day has no value.");
-            set => _tradingDay = value;
-        }
+        public DateOnly? TradingDay { get; set; } = null;
 
-        public DateTime TimeStamp
-        {
-            get => _timeStamp ?? throw new NullReferenceException("Timestamp has no value.");
-            set => _timeStamp = value;
-        }
+        public DateTime? TimeStamp { get; set; } = null;
 
         public string OrderID
         {

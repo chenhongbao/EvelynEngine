@@ -33,6 +33,8 @@ namespace Evelyn.Internal
 
         internal bool IsConfigured { get; private set; } = false;
 
+        internal DateOnly TradingDay => FeedSource.TradingDay;
+
         internal EngineFeedSource Subscribe()
         {
             _counters.Keys.ToList().ForEach(instrument =>

@@ -23,7 +23,7 @@ namespace Evelyn.Model
         private DateTime? _timeStamp = null;
         private string? _orderID = null;
         private double? _price = null;
-        private long? _quantity = null;
+        private int? _quantity = null;
         private Direction? _direction = null;
         private Offset? _offset = null;
         private string? _tradeID = null;
@@ -72,7 +72,7 @@ namespace Evelyn.Model
             set => _price = value;
         }
 
-        public long Quantity
+        public int Quantity
         {
             get => _quantity ?? throw new NullReferenceException("Quantity has no value.");
             set => _quantity = value;

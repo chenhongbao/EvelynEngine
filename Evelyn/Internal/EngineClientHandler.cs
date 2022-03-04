@@ -215,8 +215,8 @@ namespace Evelyn.Internal
                         new Trade
                         {
                             InstrumentID = newOrder.InstrumentID,
-                            TradingDay = newOrder.TradingDay,
-                            TimeStamp = newOrder.TimeStamp,
+                            TradingDay = newOrder.TradingDay ?? Broker.TradingDay,
+                            TimeStamp = newOrder.TimeStamp ?? DateTime.Now,
                             OrderID = newOrder.OrderID,
                             Price = newOrder.Price,
                             Quantity = newOrder.Quantity,

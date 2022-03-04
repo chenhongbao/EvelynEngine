@@ -23,5 +23,7 @@ namespace Evelyn.Plugin
         public void New(NewOrder newOrder, OrderOption? option = null);
 
         public void Delete(DeleteOrder deleteOrder, OrderOption? option = null);
+
+        public DateOnly TradingDay { get; }
     }
 }

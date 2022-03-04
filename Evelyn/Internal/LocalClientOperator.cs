@@ -30,6 +30,8 @@ namespace Evelyn.Internal
             _clientHandler = clientHandler;
         }
 
+        public DateOnly TradingDay => _clientHandler.Broker.TradingDay;
+
         public void Delete(DeleteOrder deleteOrder, OrderOption? option = null)
         {
             switch (option?.Trigger.When)
