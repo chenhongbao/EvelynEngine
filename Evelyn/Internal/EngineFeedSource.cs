@@ -39,6 +39,9 @@ namespace Evelyn.Internal
         {
             _counters.Keys.ToList().ForEach(instrument =>
             {
+                /*
+                 * Subscribe for the existing instruments, and clear subcription response marks.
+                 */
                 FeedSource.Subscribe(instrument);
                 FeedHandler.EraseSubscriptionResponse(instrument, isSubscribed: true);
             });

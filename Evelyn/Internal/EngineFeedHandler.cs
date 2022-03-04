@@ -26,10 +26,9 @@ namespace Evelyn.Internal
     internal class EngineFeedHandler : IFeedHandler
     {
         private readonly EngineClientHandler _clients;
-        private readonly Dictionary<string, Instrument> _instruments = new Dictionary<string, Instrument>();
-        private readonly ISet<IOHLCGenerator> _ohlcGenerators = new HashSet<IOHLCGenerator>();
-        private readonly ISet<(string, bool)> _subscriptionResponses = new HashSet<(string, bool)>();
-
+        private readonly ConcurrentBag<IOHLCGenerator> _ohlcGenerators = new ConcurrentBag<IOHLCGenerator>();
+        private readonly ConcurrentDictionary<string, bool> _subscriptionResponses = new ConcurrentDictionary<string, bool>();
+        private readonly ConcurrentDictionary<string, Instrument> _instruments = new ConcurrentDictionary<string, Instrument>();
         private readonly ConcurrentDictionary<string, ScheduledJob> _scheduledJobs = new ConcurrentDictionary<string, ScheduledJob>();
 
         private ILogger Logger { get; } = Loggers.CreateLogger(nameof(EngineFeedHandler));
@@ -76,45 +75,24 @@ namespace Evelyn.Internal
 
         internal bool HasSubscriptionResponse(string instrument, bool isSubscribed)
         {
-            var enumerator = _subscriptionResponses.GetEnumerator();
-            while (enumerator.MoveNext())
-            {
-                var response = enumerator.Current;
-                if (response.Item1 == instrument && response.Item2 == isSubscribed)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return _subscriptionResponses.TryGetValue(instrument, out bool subscriptionType) && subscriptionType == isSubscribed;
         }
 
         internal void EraseSubscriptionResponse(string instrument, bool isSubscribed)
         {
-            (string, bool) removed = default;
-
-            var enumerator = _subscriptionResponses.GetEnumerator();
-            while (enumerator.MoveNext())
+            if (HasSubscriptionResponse(instrument, isSubscribed))
             {
-                var response = enumerator.Current;
-                if (response.Item1 == instrument && response.Item2 == isSubscribed)
-                {
-                    removed = response;
-                    break;
-                }
-            }
-
-            if (removed != default)
-            {
-                _subscriptionResponses.Remove(removed);
+                _subscriptionResponses.Remove(instrument, out var _);
             }
         }
 
         internal void SaveInstrument(Instrument instrument)
         {
-            if (!_instruments.TryAdd(instrument.InstrumentID, instrument))
-            {
-                _instruments[instrument.InstrumentID] = instrument;
-            }
+            /*
+             * The updateValueFactory takes key's existing value as the second parameter.
+             * So don't use the second parameter as the factory's return value.
+             */
+            _instruments.AddOrUpdate(instrument.InstrumentID, instrument, (_, _) => instrument);
         }
 
         private void TryCatch(Action action)
@@ -208,10 +186,10 @@ namespace Evelyn.Internal
             });
 
             /*
-             * Mark the response received, and erase the old state.
+             * Erase old state and mark the response received.
              */
-            _subscriptionResponses.Add((instrumentID, subscribed));
             EraseSubscriptionResponse(instrumentID, isSubscribed: !subscribed);
+            _subscriptionResponses.AddOrUpdate(instrumentID, subscribed, (_, _) => subscribed);
         }
 
         internal void SendInstruments()
