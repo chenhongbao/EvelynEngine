@@ -468,5 +468,132 @@ namespace Evelyn.UnitTest.Behavior
             Assert.AreEqual(Direction.Sell, secondOrder.Direction);
             Assert.AreEqual(Offset.Open, secondOrder.Offset);
         }
+
+        [TestMethod("New order with duplicated order ID.")]
+        public void NewOrderWithDuplicatedID()
+        {
+            /*
+             * Engine checks order ID before routing it to broker. If there is already the same ID,
+             * returns error response.
+             * 
+             * 1. Client requests a new order with a distinct ID, broker receives the order.
+             * 2. Client requests another order with the same ID.
+             * 3. Engine blocks the request and sends back error response.
+             * 4. Client receives the error response, and broker receives no new request.
+             */
+
+            /*
+             * 1. Client requests new order, broker receives the request.
+             */
+            Client.MockedNewOrder(
+                new NewOrder
+                {
+                    InstrumentID = "pp2205",
+                    TradingDay = DateOnly.MaxValue,
+                    TimeStamp = DateTime.MaxValue,
+                    OrderID = "MOCKED_ORDER_1",
+                    Price = 8555,
+                    Quantity = 2,
+                    Direction = Direction.Buy,
+                    Offset = Offset.Open,
+                });
+
+            /*
+             * Broker receives the order.
+             */
+            Assert.AreEqual(1, Configurator.Broker.ReceivedNewOrders.Count);
+
+            var order = Configurator.Broker.ReceivedNewOrders[0];
+
+            Assert.AreEqual("pp2205", order.InstrumentID);
+            Assert.AreEqual(8555, order.Price);
+            Assert.AreEqual(2, order.Quantity);
+            Assert.AreEqual(Direction.Buy, order.Direction);
+            Assert.AreEqual(Offset.Open, order.Offset);
+
+            /*
+             * 2. Client requests another order with the same ID.
+             */
+            Client.MockedNewOrder(
+                new NewOrder
+                {
+                    InstrumentID = "l2205",
+                    TradingDay = DateOnly.MaxValue,
+                    TimeStamp = DateTime.MaxValue,
+                    OrderID = "MOCKED_ORDER_1",
+                    Price = 8900,
+                    Quantity = 2,
+                    Direction = Direction.Sell,
+                    Offset = Offset.Close,
+                });
+
+            /*
+             * 3. Engine blocks the order, and broker receives no new request.
+             */
+            Assert.AreEqual(1, Configurator.Broker.ReceivedNewOrders.Count);
+
+            /*
+             * Engine sends back an error response.
+             */
+            Assert.AreEqual(1, Client.ReceivedTrades.Count);
+
+            var trade = Client.ReceivedTrades[0].Item1;
+
+            Assert.AreEqual("l2205", trade.InstrumentID);
+            Assert.AreEqual("MOCKED_ORDER_1", trade.OrderID);
+            Assert.AreEqual(8900, trade.Price);
+            Assert.AreEqual(2, trade.Quantity);
+            Assert.AreEqual(Direction.Sell, trade.Direction);
+            Assert.AreEqual(Offset.Close, trade.Offset);
+            Assert.AreEqual(double.MaxValue, trade.TradePrice);
+            Assert.AreEqual(int.MaxValue, trade.TradeQuantity);
+            Assert.AreEqual(string.Empty, trade.TradeID);
+            Assert.AreEqual(OrderStatus.Rejected, trade.Status);
+
+            /*
+             * Description has error information.
+             */
+            var description = Client.ReceivedTrades[0].Item2;
+
+            Assert.AreNotEqual(0, description.Code);
+        }
+
+        [TestMethod("Delete order with an unexisting ID.")]
+        public void DeleteOrderWithUnexistingID()
+        {
+            /*
+             * Engine checks the existence of a deleting orde ID. If no such order ID found,
+             * block the deletion request and sends back the error response.
+             */
+
+            Client.MockedDelete(new DeleteOrder
+            {
+                InstrumentID = "ANY_INSTRUMENT",
+                OrderID = "NOT_EXIST_ID"
+            });
+
+            /*
+             * Broker receives no deletion request.
+             */
+            Assert.AreEqual(0, Configurator.Broker.ReceivedNewOrders.Count);
+
+            /*
+             * Engine sends back error response.
+             */
+            Assert.AreEqual(1, Client.ReceivedTrades.Count);
+
+            var trade = Client.ReceivedTrades[0].Item1;
+
+            Assert.AreEqual("ANY_INSTRUMENT", trade.InstrumentID);
+            Assert.AreEqual("NOT_EXIST_ID", trade.OrderID);
+            Assert.AreEqual(OrderStatus.Deleted, trade.Status);
+
+            /*
+             * Description has error information.
+             */
+            var description = Client.ReceivedTrades[0].Item2;
+
+            Assert.AreNotEqual(0, description.Code);
+        }
     }
 }

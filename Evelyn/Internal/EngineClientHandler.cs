@@ -90,7 +90,7 @@ namespace Evelyn.Internal
 
         public void OnDeleteOrder(DeleteOrder deleteOrder, string clientID)
         {
-            if (!_clients.ContainsKey(clientID))
+            if (!_clients.TryGetValue(clientID, out var client))
             {
                 Logger.LogInformation("{0}\n{1}", "No such client with ID " + clientID + ".", new System.Diagnostics.StackTrace().ToString());
                 return;
@@ -103,7 +103,7 @@ namespace Evelyn.Internal
                  */
                 try
                 {
-                    _clients[clientID].Service.SendTrade(
+                    client.Service.SendTrade(
                         new Trade
                         {
                             InstrumentID = deleteOrder.InstrumentID,
@@ -136,56 +136,53 @@ namespace Evelyn.Internal
                 return;
             }
 
-            foreach (var order in _clients[clientID].Orders)
+            if (client.Orders.TryGetValue(deleteOrder.OrderID, out var order))
             {
-                if (order.OriginalOrder.OrderID == deleteOrder.OrderID)
+                try
                 {
-                    try
-                    {
-                        Broker.Delete(order.RewriteDeleteOrder);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogError("{0}\n{1}", "Broker deletes order and throws exception, " + ex.Message, ex.StackTrace?.ToString());
-                    }
-
-                    return;
+                    Broker.Delete(order.RewriteDeleteOrder);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError("{0}\n{1}", "Broker deletes order and throws exception, " + ex.Message, ex.StackTrace?.ToString());
                 }
             }
-
-            /*
-             * Sends error response when no order found for the given order ID.
-             */
-            try
+            else
             {
-                _clients[clientID].Service.SendTrade(
-                    new Trade
-                    {
-                        InstrumentID = String.Empty,
-                        TradingDay = DateOnly.MaxValue,
-                        TimeStamp = DateTime.MaxValue,
-                        OrderID = deleteOrder.OrderID,
-                        Price = double.MaxValue,
-                        Quantity = int.MaxValue,
-                        Direction = default(Direction),
-                        Offset = default(Offset),
-                        TradeID = String.Empty,
-                        TradePrice = double.MaxValue,
-                        TradeQuantity = int.MaxValue,
-                        LeaveQuantity = int.MaxValue,
-                        Status = OrderStatus.Deleted,
-                        Message = "No such order."
-                    },
-                    new Description
-                    {
-                        Code = 2,
-                        Message = "No such order with ID " + deleteOrder.OrderID + "."
-                    },
-                    clientID);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError("{0}\n{1}", "Send trade to client when no such order to delete and throws exception, " + ex.Message, ex.StackTrace?.ToString());
+                /*
+                 * Sends error response when no order found for the given order ID.
+                 */
+                try
+                {
+                    _clients[clientID].Service.SendTrade(
+                        new Trade
+                        {
+                            InstrumentID = deleteOrder.InstrumentID,
+                            TradingDay = DateOnly.MaxValue,
+                            TimeStamp = DateTime.MaxValue,
+                            OrderID = deleteOrder.OrderID,
+                            Price = double.MaxValue,
+                            Quantity = int.MaxValue,
+                            Direction = default(Direction),
+                            Offset = default(Offset),
+                            TradeID = String.Empty,
+                            TradePrice = double.MaxValue,
+                            TradeQuantity = int.MaxValue,
+                            LeaveQuantity = int.MaxValue,
+                            Status = OrderStatus.Deleted,
+                            Message = "No such order."
+                        },
+                        new Description
+                        {
+                            Code = 2,
+                            Message = "No such order with ID " + deleteOrder.OrderID + "."
+                        },
+                        clientID);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError("{0}\n{1}", "Send trade to client when no such order to delete and throws exception, " + ex.Message, ex.StackTrace?.ToString());
+                }
             }
         }
 
@@ -194,7 +191,7 @@ namespace Evelyn.Internal
             /*
              * Rewrite the order ID, and save order information into ClientOrder.
              */
-            if (!_clients.ContainsKey(clientID))
+            if (!_clients.TryGetValue(clientID, out var client))
             {
                 Logger.LogInformation("{0}\n{1}", "No such client with ID " + clientID + ".", new System.Diagnostics.StackTrace().ToString());
                 return;
@@ -207,7 +204,7 @@ namespace Evelyn.Internal
                  */
                 try
                 {
-                    _clients[clientID].Service.SendTrade(
+                    client.Service.SendTrade(
                         new Trade
                         {
                             InstrumentID = newOrder.InstrumentID,
@@ -239,16 +236,55 @@ namespace Evelyn.Internal
             }
             else
             {
-                try
-                {
-                    var clientOrder = new ClientOrder(newOrder, Broker.NewOrderID);
+                var clientOrder = new ClientOrder(newOrder, Broker.NewOrderID);
 
-                    _clients[clientID].Orders.Add(clientOrder);
-                    Broker.NewOrder(clientOrder.RewriteNewOrder);
-                }
-                catch (Exception ex)
+                if (!client.Orders.TryAdd(newOrder.OrderID, clientOrder))
                 {
-                    Logger.LogError("{0}\n{1}", "Broker requests new order and throws exception, " + ex.Message, ex.StackTrace?.ToString());
+                    /*
+                     * Duplicated client's order ID, don't send the order because responses confuse.
+                     */
+                    try
+                    {
+                        client.Service.SendTrade(
+                            new Trade
+                            {
+                                InstrumentID = newOrder.InstrumentID,
+                                TradingDay = newOrder.TradingDay ?? Broker.TradingDay,
+                                TimeStamp = newOrder.TimeStamp ?? DateTime.Now,
+                                OrderID = newOrder.OrderID,
+                                Price = newOrder.Price,
+                                Quantity = newOrder.Quantity,
+                                Direction = newOrder.Direction,
+                                Offset = newOrder.Offset,
+                                TradeID = String.Empty,
+                                TradePrice = double.MaxValue,
+                                TradeQuantity = int.MaxValue,
+                                LeaveQuantity = newOrder.Quantity,
+                                Status = OrderStatus.Rejected,
+                                Message = "Duplicated order ID."
+                            },
+                            new Description
+                            {
+                                Code = 12,
+                                Message = "Duplicated order ID."
+                            },
+                            clientID);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError("{0}\n{1}", "Send trade to client when order is duplicated and throws exception, " + ex.Message, ex.StackTrace?.ToString());
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        Broker.NewOrder(clientOrder.RewriteNewOrder);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError("{0}\n{1}", "Broker requests new order and throws exception, " + ex.Message, ex.StackTrace?.ToString());
+                    }
                 }
             }
         }

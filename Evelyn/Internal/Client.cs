@@ -15,6 +15,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Plugin;
+using System.Collections.Concurrent;
 
 namespace Evelyn.Internal
 {
@@ -41,6 +42,6 @@ namespace Evelyn.Internal
 
         internal IClientService Service => _service;
 
-        internal List<ClientOrder> Orders { get; private init; } = new List<ClientOrder>();
+        internal ConcurrentDictionary<string, ClientOrder> Orders { get; private init; } = new ConcurrentDictionary<string, ClientOrder>();
     }
 }

@@ -36,7 +36,7 @@ namespace Evelyn.Internal
         {
             foreach (var client in _clients.Clients)
             {
-                foreach (var order in client.Orders)
+                foreach (var order in client.Orders.Values)
                 {
                     if (order.BrokerOrderID == trade.OrderID)
                     {

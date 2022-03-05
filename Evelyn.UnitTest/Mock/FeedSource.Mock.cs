@@ -58,8 +58,6 @@ namespace Evelyn.UnitTest.Mock
         internal void MockedReceive(Instrument instrument)
         {
             Handler.OnInstrument(instrument);
-
-            System.Console.Error.WriteLine("SEND: " + instrument.InstrumentID);
         }
 
         internal void MockedReplySubscribe(string instrumentID, Description description, bool isSubscribed)
