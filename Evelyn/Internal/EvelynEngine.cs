@@ -44,8 +44,6 @@ namespace Evelyn.Internal
 
         private LocalClientService LocalService => _localService;
 
-        public EndPoint? ClientServiceEndPoint => throw new NotImplementedException();
-
         public EndPoint? ManagementEndPoint => throw new NotImplementedException();
 
         public IConfigurator Configurator => _configurator ?? throw new NullReferenceException("Engine is not configured yet.");
@@ -84,46 +82,15 @@ namespace Evelyn.Internal
             return this;
         }
 
-        public IEvelyn EnableLocalManagement()
+        public IEvelyn EnableRemoteManagement(EndPoint? bindingAddress = null)
         {
             throw new NotImplementedException();
-        }
-
-        public IEvelyn EnableManagement()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEvelyn EnableRemoteManagement()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEvelyn EnableRemoteManagement(EndPoint listeningEndPoint)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEvelyn GenerateOHLC()
-        {
-            _feedHandler.RegisterOHLCGenerator(new OHLCGenerator());
-            return this;
         }
 
         public IEvelyn GenerateOHLC(IOHLCGenerator generator)
         {
             _feedHandler.RegisterOHLCGenerator(generator);
             return this;
-        }
-
-        public IEvelyn RegisterClientService()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEvelyn RegisterClientService(EndPoint listeningEndPoint)
-        {
-            throw new NotImplementedException();
         }
 
         public IEvelyn RegisterClientService(IClientService clientService)

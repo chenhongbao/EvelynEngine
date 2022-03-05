@@ -14,6 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Extension;
 using Evelyn.Model;
 using Evelyn.UnitTest.Mock;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -88,7 +89,7 @@ namespace Evelyn.UnitTest.Plugin
         public void OfficialOHLC()
         {
             Engine.RegisterLocalClient("MOCKED_CLIENT", Client, "l2205")
-                .GenerateOHLC()
+                .GenerateOHLC(new OHLCGenerator())
                 .Configure(Configurator);
 
             Configurator.FeedSource.MockedConnect(true);

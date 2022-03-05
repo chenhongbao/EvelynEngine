@@ -29,13 +29,7 @@ namespace Evelyn
 
         public void Configure(IConfigurator configurator);
 
-        public IEvelyn GenerateOHLC();
-
         public IEvelyn GenerateOHLC(IOHLCGenerator generator);
-
-        public IEvelyn RegisterClientService();
-
-        public IEvelyn RegisterClientService(EndPoint listeningEndPoint);
 
         public IEvelyn RegisterClientService(IClientService clientService);
 
@@ -52,13 +46,7 @@ namespace Evelyn
         /// <returns><see cref="IEvelyn"/> instance.</returns>
         public IEvelyn AlterLocalClient(string clientID, params string[] instrumentID);
 
-        public IEvelyn EnableManagement();
-
-        public IEvelyn EnableLocalManagement();
-
-        public IEvelyn EnableRemoteManagement();
-
-        public IEvelyn EnableRemoteManagement(EndPoint listeningEndPoint);
+        public IEvelyn EnableRemoteManagement(EndPoint? bindingAddress = null);
 
         /// <summary>
         /// Registered instruments are sent to clients when clients are being loaded.
@@ -66,8 +54,6 @@ namespace Evelyn
         /// <param name="instruments">Registered instruments.</param>
         /// <returns><see cref="IEvelyn"/> instance.</returns>
         public IEvelyn RegisterInstrument(params Instrument[] instruments);
-
-        public EndPoint? ClientServiceEndPoint { get; }
 
         public EndPoint? ManagementEndPoint { get; }
 

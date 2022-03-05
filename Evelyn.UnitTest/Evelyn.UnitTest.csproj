@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Evelyn.Extension\Evelyn.Extension.csproj" />
     <ProjectReference Include="..\Evelyn\Evelyn.csproj" />
   </ItemGroup>
 
