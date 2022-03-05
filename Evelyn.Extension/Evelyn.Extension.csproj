@@ -4,6 +4,9 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Authors>Chen Hongbao</Authors>
+    <Description>Extensions for Evelyn Engine.</Description>
+    <Copyright>GNU Affero General Public License Version 3</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
