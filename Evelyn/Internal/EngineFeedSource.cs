@@ -32,9 +32,6 @@ namespace Evelyn.Internal
         private EngineFeedHandler FeedHandler => _feedHandler ?? throw new NullReferenceException("Feed handler has no value.");
         private bool IsConnected => _feedSourceExchange?.IsConnected ?? throw new NullReferenceException("Feed source exchange has no value.");
 
-        internal bool IsConfigured { get; private set; } = false;
-        internal DateOnly TradingDay => FeedSource.TradingDay;
-
         internal EngineFeedSource Subscribe()
         {
             _counters.Keys.ToList().ForEach(instrument =>
@@ -131,8 +128,6 @@ namespace Evelyn.Internal
             _feedSourceExchange = exchange;
             _feedSource = feedSource;
             _feedSource.Register(feedHandler, exchange);
-
-            IsConfigured = true;
         }
     }
 }

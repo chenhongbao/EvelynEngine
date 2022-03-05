@@ -27,11 +27,7 @@ namespace Evelyn.Internal
         private IBroker Broker => _broker ?? throw new NullReferenceException("Broker has no value.");
 
         internal DateOnly TradingDay => Broker.TradingDay;
-
         internal string NewOrderID => Broker.NewOrderID;
-
-        internal bool IsConfigured { get; private set; } = false;
-
         internal bool IsConnected => _brokerExchange?.IsConnected ?? throw new NullReferenceException("Borker exchange has no value.");
 
         internal void Configure(IBroker broker, EngineOrderHandler orderHandler, BrokerExchange exchange)
@@ -39,8 +35,6 @@ namespace Evelyn.Internal
             _brokerExchange = exchange;
             _broker = broker;
             _broker.Register(orderHandler, exchange);
-
-            IsConfigured = true;
         }
 
         internal void Delete(DeleteOrder deleteOrder)

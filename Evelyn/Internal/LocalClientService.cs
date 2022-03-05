@@ -29,12 +29,8 @@ namespace Evelyn.Internal
         private readonly ConcurrentDictionary<string, ConfiguringClient> _savedClients = new ConcurrentDictionary<string, ConfiguringClient>();
 
         internal EngineClientHandler ClientHandler => _clientHandler ?? throw new NullReferenceException("Client handler has no value.");
-
         internal ILogger Logger { get; private init; } = Loggers.CreateLogger(nameof(LocalClientService));
-
-        public EndPoint? ServiceEndPoint => throw new NotImplementedException("Local client service doesn't have an end point.");
-
-        internal bool IsConfigured { get; private set; } = false;
+        private bool IsConfigured { get; set; } = false;
 
         public void Configure(IClientHandler clientHandler)
         {

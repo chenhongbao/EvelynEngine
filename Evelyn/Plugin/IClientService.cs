@@ -21,8 +21,6 @@ namespace Evelyn.Plugin
 {
     public interface IClientService
     {
-        public EndPoint? ServiceEndPoint { get; }
-
         public void SendTick(Tick tick, string clientID);
 
         public void SendOHLC(OHLC ohlc, string clientID);
