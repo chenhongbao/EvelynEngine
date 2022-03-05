@@ -138,7 +138,7 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * 4. Client B subscribes for the same instrument.
              */
-            Engine.AlterLocalClient("MOCKED_CLIENT_B", "l2205");
+            Engine.AlterClient("MOCKED_CLIENT_B", "l2205");
 
             /*
              * 5. Feed source doesn't receive the request, but engine will send a subscription response to client B.
@@ -258,7 +258,7 @@ namespace Evelyn.UnitTest.Behavior
             ClientA.ReceivedSubscribe = default;
             ClientB.ReceivedSubscribe = default;
 
-            Engine.AlterLocalClient("MOCKED_CLIENT_A");
+            Engine.AlterClient("MOCKED_CLIENT_A");
 
             /*
              * 4. Feed source doesn't receive the unsubscription request and engine sends an unsubscription 
@@ -313,7 +313,7 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * 6. Client B unsubscribes the instrument.
              */
-            Engine.AlterLocalClient("MOCKED_CLIENT_B");
+            Engine.AlterClient("MOCKED_CLIENT_B");
 
             /*
              * 7. Feed source receives the unsubscription request and sends an unsubscription response.

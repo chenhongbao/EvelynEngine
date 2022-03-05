@@ -26,5 +26,10 @@ namespace Evelyn.Internal
         {
             _engine = engine;
         }
+
+        public void AlterClient(string clientID, params string[] instrumentID)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

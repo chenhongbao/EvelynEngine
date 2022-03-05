@@ -25,7 +25,7 @@ namespace Evelyn.Internal
 {
     internal class EngineFeedHandler : IFeedHandler
     {
-        private readonly EngineClientHandler _clients;
+        private readonly EngineClientHandler _clientHandler;
         private readonly ConcurrentBag<IOHLCGenerator> _ohlcGenerators = new ConcurrentBag<IOHLCGenerator>();
         private readonly ConcurrentDictionary<string, bool> _subscriptionResponses = new ConcurrentDictionary<string, bool>();
         private readonly ConcurrentDictionary<string, Instrument> _instruments = new ConcurrentDictionary<string, Instrument>();
@@ -35,18 +35,18 @@ namespace Evelyn.Internal
 
         internal EngineFeedHandler(EngineClientHandler clientHandler)
         {
-            _clients = clientHandler;
+            _clientHandler = clientHandler;
         }
 
         public void OnFeed(Tick tick)
         {
-            _clients.Clients.ForEach(client =>
+            foreach (var client in _clientHandler.Clients.Values)
             {
                 if (client.Subscription.Instruments.Contains(tick.InstrumentID))
                 {
                     TryCatch(() => client.Service.SendTick(tick, client.ClientID));
                 }
-            });
+            }
 
             foreach (var generator in _ohlcGenerators)
             {
@@ -64,13 +64,13 @@ namespace Evelyn.Internal
 
         public void OnFeed(OHLC ohlc)
         {
-            _clients.Clients.ForEach(client =>
+            foreach (var client in _clientHandler.Clients.Values)
             {
                 if (client.Subscription.Instruments.Contains(ohlc.InstrumentID))
                 {
                     TryCatch(() => client.Service.SendOHLC(ohlc, client.ClientID));
                 }
-            });
+            }
         }
 
         internal bool HasSubscriptionResponse(string instrument, bool isSubscribed)
@@ -173,7 +173,7 @@ namespace Evelyn.Internal
 
         public void OnSubscribed(string instrumentID, Description description, bool subscribed)
         {
-            _clients.Clients.ForEach(client =>
+            foreach (var client in _clientHandler.Clients.Values)
             {
                 if (client.Subscription.WaitSubscriptionResponse(instrumentID))
                 {
@@ -183,7 +183,7 @@ namespace Evelyn.Internal
                         client.Subscription.MarkSubscriptionResponse(instrumentID, waitResponse: false);
                     });
                 }
-            });
+            }
 
             /*
              * Erase old state and mark the response received.
@@ -204,14 +204,14 @@ namespace Evelyn.Internal
 
         private void SendInstrument(Instrument instrument)
         {
-            _clients.Clients.ForEach(client =>
+            foreach(var client in _clientHandler.Clients.Values)
             {
                 var instrumentID = instrument.InstrumentID;
                 if (client.Subscription.Instruments.Contains(instrumentID))
                 {
                     TryCatch(() => client.Service.SendInstrument(_instruments[instrumentID], client.ClientID));
                 }
-            });
+            }
         }
     }
 }

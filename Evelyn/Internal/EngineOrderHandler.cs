@@ -23,18 +23,18 @@ namespace Evelyn.Internal
 {
     internal class EngineOrderHandler : IOrderHandler
     {
-        private readonly EngineClientHandler _clients;
+        private readonly EngineClientHandler _clientHandler;
 
         private ILogger Logger { get; init; } = Loggers.CreateLogger(nameof(EngineOrderHandler));
 
         internal EngineOrderHandler(EngineClientHandler clientHandler)
         {
-            _clients = clientHandler;
+            _clientHandler = clientHandler;
         }
 
         public void OnTrade(Trade trade, Description description)
         {
-            foreach (var client in _clients.Clients)
+            foreach (var client in _clientHandler.Clients.Values)
             {
                 foreach (var order in client.Orders.Values)
                 {

@@ -45,42 +45,45 @@ namespace Evelyn.Internal
             _feedHandler = new EngineFeedHandler(_clientHandler);
         }
 
-        private LocalClientService LocalService => _localService;
-
         public IConfigurator Configurator => _configurator ?? throw new NullReferenceException("Engine is not configured yet.");
 
-        public IEvelyn AlterLocalClient(string clientID, params string[] instrumentID)
+        public IEvelyn AlterClient(string clientID, params string[] instrumentID)
         {
-            var client = _clientHandler[clientID];
-
-            /*
-             * Call IClientHandler methods to handle the instruments, so all kinds of subscription go through the same logic.
-             * For every new subscribed instrument, susbcribe it, and for those not in the altered instruments' list, unsubscribe.
-             */
-            instrumentID.ToList().ForEach(instrument => _clientHandler.OnSubscribe(instrument, true, clientID));
-            client.Subscription.Instruments
-                .Where(instrument => !instrumentID.Contains(instrument)).ToList()
-                .ForEach(instrument => _clientHandler.OnSubscribe(instrument, false, clientID));
-            return this;
+            if (_clientHandler.Clients.TryGetValue(clientID, out var client))
+            {
+                /*
+                 * Call IClientHandler methods to handle the instruments, so all kinds of subscription go through the same logic.
+                 * For every new subscribed instrument, susbcribe it, and for those not in the altered instruments' list, unsubscribe.
+                 */
+                instrumentID.ToList().ForEach(instrument => _clientHandler.OnSubscribe(instrument, true, clientID));
+                client.Subscription.Instruments
+                    .Where(instrument => !instrumentID.Contains(instrument)).ToList()
+                    .ForEach(instrument => _clientHandler.OnSubscribe(instrument, false, clientID));
+                return this;
+            }
+            else
+            {
+                throw new InvalidOperationException("No such client with ID " + clientID + ".");
+            }
         }
 
         public void Configure(IConfigurator configurator)
         {
             _configurator = configurator;
-            Configurator.Configure(out IBroker broker, out IFeedSource feedSource);
+            _configurator.Configure(out IBroker broker, out IFeedSource feedSource);
 
             _feedSource.Configure(feedSource, _feedHandler, new FeedSourceExchange(_feedSource));
             _broker.Configure(broker, _orderHandler, new BrokerExchange());
             _clientHandler.Configure(_broker, _feedSource, _feedHandler);
 
-            LocalService.Configure(_clientHandler);
+            _localService.Configure(_clientHandler);
             _registeredClientServices.ToList().ForEach(service => service.Configure(_clientHandler));
             _registerManagementServices.ToList().ForEach(service => service.Configure(_management));
         }
 
         public IEvelyn RegisterLocalClient(string clientID, IAlgorithm algorithm, params string[] instrumentID)
         {
-            LocalService.RegisterClient(clientID, algorithm, instrumentID);
+            _localService.RegisterClient(clientID, algorithm, instrumentID);
             return this;
         }
 

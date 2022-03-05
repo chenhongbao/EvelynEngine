@@ -42,7 +42,7 @@ namespace Evelyn
         /// <param name="clientID">Client ID.</param>
         /// <param name="instrumentID">Subscribed instruments for client.</param>
         /// <returns><see cref="IEvelyn"/> instance.</returns>
-        public IEvelyn AlterLocalClient(string clientID, params string[] instrumentID);
+        public IEvelyn AlterClient(string clientID, params string[] instrumentID);
 
         /// <summary>
         /// Registered instruments are sent to clients when clients are being loaded.

@@ -33,18 +33,9 @@ namespace Evelyn.Internal
         private ILogger Logger { get; init; } = Loggers.CreateLogger(nameof(EngineClientHandler));
 
         internal EngineBroker Broker => _broker ?? throw new NullReferenceException("Engine broker has no value.");
-
         internal EngineFeedSource FeedSource => _feedSource ?? throw new NullReferenceException("Enginefeed source has no value.");
-
         internal EngineFeedHandler FeedHandler => _feedHandler ?? throw new NullReferenceException("Engine feed handler has no value.");
-
-        internal List<Client> Clients => new List<Client>(_clients.Values);
-
-        internal Client this[string clientID]
-        {
-            // TODO need to write the indexer, expose the dictionary is better.
-            get => _clients[clientID];
-        }
+        internal ConcurrentDictionary<string, Client> Clients => _clients;
 
         public void OnClientConnect(string clientID, IClientService service)
         {

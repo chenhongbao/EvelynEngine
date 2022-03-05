@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evelyn", "Evelyn\Evelyn.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evelyn.UnitTest", "Evelyn.UnitTest\Evelyn.UnitTest.csproj", "{E744EF48-9EED-4E23-87B9-046DB2227880}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evelyn.Extension", "Evelyn.Extension\Evelyn.Extension.csproj", "{58397B7C-B1E8-4DA2-9410-AEE2693BDDA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evelyn.Extension", "Evelyn.Extension\Evelyn.Extension.csproj", "{58397B7C-B1E8-4DA2-9410-AEE2693BDDA6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evelyn.Extension.UnitTest", "Evelyn.Extension.UnitTest\Evelyn.Extension.UnitTest.csproj", "{DBF0976F-E40A-45B8-9ADA-373B9799A8A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{58397B7C-B1E8-4DA2-9410-AEE2693BDDA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58397B7C-B1E8-4DA2-9410-AEE2693BDDA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58397B7C-B1E8-4DA2-9410-AEE2693BDDA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBF0976F-E40A-45B8-9ADA-373B9799A8A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBF0976F-E40A-45B8-9ADA-373B9799A8A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBF0976F-E40A-45B8-9ADA-373B9799A8A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBF0976F-E40A-45B8-9ADA-373B9799A8A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

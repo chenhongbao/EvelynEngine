@@ -61,27 +61,27 @@ namespace Evelyn.Internal
 
         public void SendInstrument(Instrument instrument, string clientID)
         {
-            CallClientMethod(() => ClientHandler[clientID].Algorithm.OnInstrument(instrument));
+            CallClientMethod(clientID, client => client.Algorithm.OnInstrument(instrument));
         }
 
         public void SendOHLC(OHLC ohlc, string clientID)
         {
-            CallClientMethod(() => ClientHandler[clientID].Algorithm.OnFeed(ohlc));
+            CallClientMethod(clientID, client => client.Algorithm.OnFeed(ohlc));
         }
 
         public void SendSubscribe(string instrumentID, Description description, bool isSubscribed, string clientID)
         {
-            CallClientMethod(() => ClientHandler[clientID].Algorithm.OnSubscribed(instrumentID, description, isSubscribed));
+            CallClientMethod(clientID, client => client.Algorithm.OnSubscribed(instrumentID, description, isSubscribed));
         }
 
         public void SendTick(Tick tick, string clientID)
         {
-            CallClientMethod(() => ClientHandler[clientID].Algorithm.OnFeed(tick));
+            CallClientMethod(clientID, client => client.Algorithm.OnFeed(tick));
         }
 
         public void SendTrade(Trade trade, Description description, string clientID)
         {
-            CallClientMethod(() => ClientHandler[clientID].Algorithm.OnTrade(trade, description));
+            CallClientMethod(clientID, client => client.Algorithm.OnTrade(trade, description));
         }
 
         internal void RegisterClient(string clientID, IAlgorithm algorithm, params string[] instrumentID)
@@ -106,18 +106,25 @@ namespace Evelyn.Internal
             ClientHandler.OnClientConnect(clientID, algorithm, this);
             instrumentID.ToList().ForEach(instrument => ClientHandler.OnSubscribe(instrument, true, clientID));
 
-            CallClientMethod(() => ClientHandler[clientID].Algorithm.OnLoad(new LocalClientOperator(clientID, ClientHandler)));
+            CallClientMethod(clientID, client => client.Algorithm.OnLoad(new LocalClientOperator(clientID, ClientHandler)));
         }
 
-        private void CallClientMethod(Action action)
+        private void CallClientMethod(string clientID, Action<Client> action)
         {
-            try
+            if (ClientHandler.Clients.TryGetValue(clientID, out var client))
             {
-                action();
+                try
+                {
+                    action(client);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogWarning("{0}, {1}\n{2}", DateTime.Now, ex.Message, ex.StackTrace);
+                }
             }
-            catch (Exception ex)
+            else
             {
-                Logger.LogWarning("{0}, {1}\n{2}", DateTime.Now, ex.Message, ex.StackTrace);
+                throw new InvalidOperationException("No such client with ID " + clientID + ".");
             }
         }
     }

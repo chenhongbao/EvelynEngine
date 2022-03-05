@@ -548,7 +548,7 @@ namespace Evelyn.UnitTest.Behavior
              * 
              * Just change the subscribed instruments, then extra instruments are requested, and missing instruments are unsubscribed.
              */
-            engine.AlterLocalClient("MockedClient", "pp2205");
+            engine.AlterClient("MockedClient", "pp2205");
 
             /*
              * Because the instrument is already subscribed, no more feed source subscription.

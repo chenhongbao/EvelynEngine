@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
 
 This program is free software: you can redistribute it and/or modify
@@ -14,10 +14,9 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace Evelyn.Plugin
-{
-    public interface IManagement
-    {
-        public void AlterClient(string clientID, params string[] instrumentID);
-    }
-}
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+[assembly: ComVisible(false)]
+[assembly: Guid("4331371f-d545-454a-a2e3-5808518c0b62")]
+[assembly: InternalsVisibleTo("Evelyn.Extension.UnitTest")]

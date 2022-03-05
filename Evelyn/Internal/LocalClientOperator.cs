@@ -33,7 +33,7 @@ namespace Evelyn.Internal
 
         public DateOnly TradingDay => _clientHandler.Broker.TradingDay;
 
-        public ILogger Logger => _clientHandler[_clientID].Logger;
+        public ILogger Logger => _clientHandler.Clients[_clientID].Logger;
 
         public void Delete(DeleteOrder deleteOrder, OrderOption? option = null)
         {
