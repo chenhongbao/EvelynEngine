@@ -22,7 +22,7 @@ namespace Evelyn
 {
     public interface IEvelyn
     {
-        public static IEvelyn Instance => new Internal.EvelynEngine();
+        public static IEvelyn NewInstance => new Internal.EvelynEngine();
 
         public void Configure(IConfigurator configurator);
 

@@ -18,7 +18,7 @@ namespace Evelyn
 {
     public interface IManagementConsole
     {
-        public static IManagementConsole Instance => new CLI.ManagementConsole();
+        public static IManagementConsole NewInstance => new CLI.ManagementConsole();
 
         public void Run(string[] args);
     }
