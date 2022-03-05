@@ -20,13 +20,17 @@ namespace Evelyn.Internal
 {
     internal class BrokerExchange : IExchangeListener
     {
-        private bool _isConnected = false;
+        private long _isConnected = 0;
 
-        internal bool IsConnected => _isConnected;
+        internal bool IsConnected
+        {
+            get => Interlocked.Read(ref _isConnected) == 1;
+            set => Interlocked.Exchange(ref _isConnected, value ? 1 : 0);
+        }
 
         public void OnConnected(bool isConnected)
         {
-            _isConnected = isConnected;
+            IsConnected = isConnected;
         }
     }
 }

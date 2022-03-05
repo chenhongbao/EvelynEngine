@@ -21,9 +21,13 @@ namespace Evelyn.Internal
     internal class FeedSourceExchange : IExchangeListener
     {
         private readonly EngineFeedSource _feedSource;
-        private bool _isConnected = false;
+        private long _isConnected = 0;
 
-        internal bool IsConnected => _isConnected;
+        internal bool IsConnected
+        {
+            get => Interlocked.Read(ref _isConnected) == 1;
+            set => Interlocked.Exchange(ref _isConnected, value ? 1 : 0);
+        }
 
         internal FeedSourceExchange(EngineFeedSource feedSource)
         {
@@ -32,9 +36,9 @@ namespace Evelyn.Internal
 
         public void OnConnected(bool isConnected)
         {
-            _isConnected = isConnected;
+            IsConnected = isConnected;
 
-            if (isConnected)
+            if (IsConnected)
             {
                 /*
                  * Every time it connects to exchange, subscribes the existing instruments
