@@ -38,21 +38,21 @@ namespace Evelyn.Model
         public string Symbol { get; set; } = string.Empty;
 
 
-        public DateOnly? TradingDay
+        public DateOnly TradingDay
         {
-            get => _tradingDay;
+            get => _tradingDay ?? throw new NullReferenceException("Instrument trading day has no value.");
             set => _tradingDay = value;
         }
 
-        public InstrumentStatus? State
+        public InstrumentStatus State
         {
-            get => _instrumentState;
+            get => _instrumentState ?? throw new NullReferenceException("Instrument status has no value.");
             set => _instrumentState = value;
         }
 
-        public DateTime? StateTimestamp
+        public DateTime StateTimestamp
         {
-            get => _stateTimestamp;
+            get => _stateTimestamp ?? throw new NullReferenceException("Instrument status timestamp has no value.");
             set => _stateTimestamp = value;
         }
     }

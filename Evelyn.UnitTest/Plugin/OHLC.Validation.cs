@@ -27,7 +27,7 @@ namespace Evelyn.UnitTest.Plugin
     public class OHLCValidation
     {
         internal List<Tick> MockedTicks { get; private set; } = new List<Tick>();
-        internal IEvelyn Engine { get; private set; } = IEvelyn.New();
+        internal IEvelyn Engine { get; private set; } = IEvelyn.NewInstance;
         internal MockedConfigurator Configurator { get; private set; } = new MockedConfigurator();
         internal MockedLocalClient Client { get; private set; } = new MockedLocalClient();
         internal DateOnly TradingDay { get; private set; }
@@ -39,7 +39,7 @@ namespace Evelyn.UnitTest.Plugin
             var baseTime = BaseTime;
             TradingDay = DateOnly.FromDateTime(baseTime);
 
-            Engine = IEvelyn.New();
+            Engine = IEvelyn.NewInstance;
 
             MockedTicks.Clear();
 

@@ -18,7 +18,6 @@ using Evelyn.Model;
 using Evelyn.UnitTest.Mock;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Evelyn.UnitTest.Behavior
@@ -35,7 +34,7 @@ namespace Evelyn.UnitTest.Behavior
         [TestMethod("Run feed source for client service.")]
         public void RunFeedSourceForClientService()
         {
-            IEvelyn engine = IEvelyn.New();
+            IEvelyn engine = IEvelyn.NewInstance;
 
             var mockedClientService = new MockedClientService();
             var mockedConfiguator = new MockedConfigurator();
@@ -132,7 +131,7 @@ namespace Evelyn.UnitTest.Behavior
         [TestMethod("Un/Subscribe instrument more than once.")]
         public void DuplicatedSubscription()
         {
-            IEvelyn engine = IEvelyn.New();
+            IEvelyn engine = IEvelyn.NewInstance;
 
             var mockedClientService = new MockedClientService();
             var mockedConfiguator = new MockedConfigurator();
@@ -240,7 +239,7 @@ namespace Evelyn.UnitTest.Behavior
             var baseTime = DateTime.Now;
             var baseDay = DateOnly.FromDateTime(baseTime);
 
-            IEvelyn engine = IEvelyn.New();
+            IEvelyn engine = IEvelyn.NewInstance;
 
             var mockedClientService = new MockedClientService();
             var mockedConfigurator = new MockedConfigurator();
@@ -443,7 +442,7 @@ namespace Evelyn.UnitTest.Behavior
         [TestMethod("Call OHLC generator.")]
         public void CallOHLCGenerator()
         {
-            IEvelyn engine = IEvelyn.New();
+            IEvelyn engine = IEvelyn.NewInstance;
 
             var mockedOHLCGenerator = new MockedOHLCGenerator();
             var mockedClientService = new MockedClientService();
@@ -480,7 +479,7 @@ namespace Evelyn.UnitTest.Behavior
         [TestMethod("Run feed source on local client.")]
         public void RunFeedSourceForLocalClient()
         {
-            IEvelyn engine = IEvelyn.New();
+            IEvelyn engine = IEvelyn.NewInstance;
 
             var mockedClient = new MockedLocalClient();
             var mockedClientFake = new MockedLocalClient();
@@ -608,7 +607,7 @@ namespace Evelyn.UnitTest.Behavior
             var baseTime = DateTime.Now;
             var baseDay = DateOnly.FromDateTime(baseTime);
 
-            IEvelyn engine = IEvelyn.New();
+            IEvelyn engine = IEvelyn.NewInstance;
 
             var mockedClient = new MockedLocalClient();
             var mockedClientFake = new MockedLocalClient();

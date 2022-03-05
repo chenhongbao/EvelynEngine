@@ -25,7 +25,7 @@ namespace Evelyn.UnitTest.Behavior
     [TestClass]
     public class FeedSourceBehaviorVerification : DataInitialize
     {
-        internal IEvelyn Engine { get; private set; } = IEvelyn.New();
+        internal IEvelyn Engine { get; private set; } = IEvelyn.NewInstance;
         internal MockedConfigurator Configurator { get; private set; } = new MockedConfigurator();
         internal MockedLocalClient ClientA { get; private set; } = new MockedLocalClient();
         internal MockedLocalClient ClientB { get; private set; } = new MockedLocalClient();
@@ -35,7 +35,7 @@ namespace Evelyn.UnitTest.Behavior
         {
             base.Initialize();
 
-            Engine = IEvelyn.New();
+            Engine = IEvelyn.NewInstance;
             Configurator = new MockedConfigurator();
             ClientA = new MockedLocalClient();
             ClientB = new MockedLocalClient();
@@ -366,6 +366,48 @@ namespace Evelyn.UnitTest.Behavior
             Assert.AreEqual(0, ClientB.ReceivedTicks.Count);
             Assert.AreEqual(0, ClientB.ReceivedOHLCs.Count);
             Assert.AreEqual(0, ClientB.ReceivedInstruments.Count);
+        }
+
+        [TestMethod("Feed source returns subcription response many times.")]
+        public void FeedSourceSubscriptionMnayTimes()
+        {
+            /*
+             * Engine filters extra subscription responses, so each client receives the (un)subscription notice
+             * once and only once.
+             * 
+             * 1. Client subscribes for instrument.
+             * 2. Feed source receives the request, sends the response, and client receives the response.
+             * 3. Feed source sends again the same response, but client doesn't receive the response.
+             */
+            Engine.RegisterLocalClient("MOCKED_CLIENT_A", ClientA, "l2205")
+                .Configure(Configurator);
+
+            Configurator.FeedSource.MockedConnect(true);
+
+            /*
+             * 1. Feed source receives the request, sends back response, and client A receives the response.
+             */
+            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0 }, true);
+
+            Assert.AreEqual(1, Configurator.FeedSource.SubscribedInstruments.Count);
+            Assert.AreEqual("l2205", Configurator.FeedSource.SubscribedInstruments[0]);
+
+            /*
+             * Client A receives the response.
+             */
+            Assert.AreEqual("l2205", ClientA.ReceivedSubscribe.Item1);
+            Assert.AreEqual(0, ClientA.ReceivedSubscribe.Item2.Code);
+
+            /*
+             * 2. Feed source sends again the response, and client A doesn't receive the response.
+             */
+            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 1 }, true);
+
+            /*
+             * Check response is still the first one, second response has Code of 1.
+             */
+            Assert.AreEqual("l2205", ClientA.ReceivedSubscribe.Item1);
+            Assert.AreEqual(0, ClientA.ReceivedSubscribe.Item2.Code);
         }
     }
 }

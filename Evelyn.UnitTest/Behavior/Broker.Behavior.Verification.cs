@@ -24,7 +24,7 @@ namespace Evelyn.UnitTest.Behavior
     [TestClass]
     public class BrokerBehaviorVerification
     {
-        internal IEvelyn Engine { get; private set; } = IEvelyn.New();
+        internal IEvelyn Engine { get; private set; } = IEvelyn.NewInstance;
         internal MockedConfigurator Configurator { get; private set; } = new MockedConfigurator();
         internal MockedLocalClient Client { get; private set; } = new MockedLocalClient();
         internal DateOnly TradingDay { get; private set; } = DateOnly.MaxValue;
@@ -34,7 +34,7 @@ namespace Evelyn.UnitTest.Behavior
         {
             var baseTime = DateTime.Now;
 
-            Engine = IEvelyn.New();
+            Engine = IEvelyn.NewInstance;
             TradingDay = DateOnly.FromDateTime(baseTime);
 
             Engine.RegisterLocalClient("MOCKED_CLIENT", Client, "l2205", "pp2205")
