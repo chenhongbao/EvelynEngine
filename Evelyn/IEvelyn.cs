@@ -33,20 +33,19 @@ namespace Evelyn
 
         public IEvelyn RegisterClientService(IClientService clientService);
 
+        public IEvelyn RegisterRemoteManagement(IManagementService managementService);
+
         public IEvelyn RegisterLocalClient(string clientID, IAlgorithm algorithm, params string[] instrumentID);
 
         /// <summary>
-        /// Alter instrument subscription for the client with the given name. If an instrument
-        /// in the given instruments' array hasn't been subscribed, it is subscribed. And if a
-        /// previous subscribed instrument doesn't exist in the given instruments' array, it is
-        /// unsubscribed.
+        /// Alter instrument subscription for the client with the clientID. If an instrument
+        /// in the following array hasn't been subscribed, it is subscribed. And for those
+        /// not in that array, all are unsubscribed.
         /// </summary>
         /// <param name="clientID">Client ID.</param>
         /// <param name="instrumentID">Subscribed instruments for client.</param>
         /// <returns><see cref="IEvelyn"/> instance.</returns>
         public IEvelyn AlterLocalClient(string clientID, params string[] instrumentID);
-
-        public IEvelyn EnableRemoteManagement(EndPoint? bindingAddress = null);
 
         /// <summary>
         /// Registered instruments are sent to clients when clients are being loaded.
@@ -54,8 +53,6 @@ namespace Evelyn
         /// <param name="instruments">Registered instruments.</param>
         /// <returns><see cref="IEvelyn"/> instance.</returns>
         public IEvelyn RegisterInstrument(params Instrument[] instruments);
-
-        public EndPoint? ManagementEndPoint { get; }
 
         public IConfigurator Configurator { get; }
     }

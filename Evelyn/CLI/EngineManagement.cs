@@ -14,17 +14,17 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace Evelyn.CLI
+using Evelyn.Plugin;
+
+namespace Evelyn.Internal
 {
-    /// <summary>
-    /// Management console tool entry.
-    /// </summary>
-    public interface IManagementConsole
+    internal class EngineManagement : IManagement
     {
-        /// <summary>
-        /// Set up management console.
-        /// </summary>
-        /// <param name="args">Program command line arguments.</param>
-        public void Run(string[] args);
+        private readonly EvelynEngine _engine;
+
+        internal EngineManagement(EvelynEngine engine)
+        {
+            _engine = engine;
+        }
     }
 }

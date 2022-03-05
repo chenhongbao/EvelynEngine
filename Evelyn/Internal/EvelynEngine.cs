@@ -28,7 +28,9 @@ namespace Evelyn.Internal
         private readonly EngineFeedSource _feedSource;
         private readonly EngineFeedHandler _feedHandler;
         private readonly EngineClientHandler _clientHandler;
-        private readonly ISet<IClientService> _registeredServices = new HashSet<IClientService>();
+        private readonly EngineManagement _management;
+        private readonly ISet<IManagementService> _registerManagementServices = new HashSet<IManagementService>();
+        private readonly ISet<IClientService> _registeredClientServices = new HashSet<IClientService>();
 
         private IConfigurator? _configurator;
 
@@ -38,13 +40,12 @@ namespace Evelyn.Internal
             _feedSource = new EngineFeedSource();
             _localService = new LocalClientService();
             _clientHandler = new EngineClientHandler();
+            _management = new EngineManagement(this);
             _orderHandler = new EngineOrderHandler(_clientHandler);
             _feedHandler = new EngineFeedHandler(_clientHandler);
         }
 
         private LocalClientService LocalService => _localService;
-
-        public EndPoint? ManagementEndPoint => throw new NotImplementedException();
 
         public IConfigurator Configurator => _configurator ?? throw new NullReferenceException("Engine is not configured yet.");
 
@@ -73,18 +74,14 @@ namespace Evelyn.Internal
             _clientHandler.Configure(_broker, _feedSource, _feedHandler);
 
             LocalService.Configure(_clientHandler);
-            _registeredServices.ToList().ForEach(service => service.Configure(_clientHandler));
+            _registeredClientServices.ToList().ForEach(service => service.Configure(_clientHandler));
+            _registerManagementServices.ToList().ForEach(service => service.Configure(_management));
         }
 
         public IEvelyn RegisterLocalClient(string clientID, IAlgorithm algorithm, params string[] instrumentID)
         {
             LocalService.RegisterClient(clientID, algorithm, instrumentID);
             return this;
-        }
-
-        public IEvelyn EnableRemoteManagement(EndPoint? bindingAddress = null)
-        {
-            throw new NotImplementedException();
         }
 
         public IEvelyn GenerateOHLC(IOHLCGenerator generator)
@@ -95,13 +92,19 @@ namespace Evelyn.Internal
 
         public IEvelyn RegisterClientService(IClientService clientService)
         {
-            _registeredServices.Add(clientService);
+            _registeredClientServices.Add(clientService);
             return this;
         }
 
         public IEvelyn RegisterInstrument(params Instrument[] instruments)
         {
             instruments.ToList().ForEach(instrument => _feedHandler.SaveInstrument(instrument));
+            return this;
+        }
+
+        public IEvelyn RegisterRemoteManagement(IManagementService managementService)
+        {
+            _registerManagementServices.Add(managementService);
             return this;
         }
     }
