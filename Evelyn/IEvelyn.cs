@@ -28,9 +28,9 @@ namespace Evelyn
 
         public IEvelyn GenerateOHLC(IOHLCGenerator generator);
 
-        public IEvelyn RegisterClientService(IClientService clientService);
+        public IEvelyn RegisterRemoteClient(IClientService clientService);
 
-        public IEvelyn RegisterRemoteManagement(IManagementService managementService);
+        public IEvelyn RegisterManagement(IManagementService managementService);
 
         public IEvelyn RegisterLocalClient(string clientID, IAlgorithm algorithm, params string[] instrumentID);
 

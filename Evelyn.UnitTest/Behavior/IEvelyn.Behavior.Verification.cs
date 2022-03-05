@@ -39,7 +39,7 @@ namespace Evelyn.UnitTest.Behavior
             var mockedClientService = new MockedClientService();
             var mockedConfiguator = new MockedConfigurator();
 
-            engine.RegisterClientService(mockedClientService)
+            engine.RegisterRemoteClient(mockedClientService)
                 .Configure(mockedConfiguator);
 
             mockedConfiguator.FeedSource.MockedConnect(true);
@@ -136,7 +136,7 @@ namespace Evelyn.UnitTest.Behavior
             var mockedClientService = new MockedClientService();
             var mockedConfiguator = new MockedConfigurator();
 
-            engine.RegisterClientService(mockedClientService)
+            engine.RegisterRemoteClient(mockedClientService)
                 .Configure(mockedConfiguator);
 
             mockedConfiguator.FeedSource.MockedConnect(true);
@@ -244,7 +244,7 @@ namespace Evelyn.UnitTest.Behavior
             var mockedClientService = new MockedClientService();
             var mockedConfigurator = new MockedConfigurator();
 
-            engine.RegisterClientService(mockedClientService)
+            engine.RegisterRemoteClient(mockedClientService)
                 .RegisterInstrument(
                 new Instrument
                 {
@@ -449,7 +449,7 @@ namespace Evelyn.UnitTest.Behavior
             var mockedConfiguator = new MockedConfigurator();
 
             engine.GenerateOHLC(mockedOHLCGenerator)
-                .RegisterClientService(mockedClientService)
+                .RegisterRemoteClient(mockedClientService)
                 .Configure(mockedConfiguator);
 
             mockedConfiguator.FeedSource.MockedConnect(true);
@@ -486,7 +486,7 @@ namespace Evelyn.UnitTest.Behavior
             var mockedClientService = new MockedClientService();
             var mockedConfigurator = new MockedConfigurator();
 
-            engine.RegisterClientService(mockedClientService)
+            engine.RegisterRemoteClient(mockedClientService)
                 .RegisterLocalClient("MockedClient", mockedClient, "l2205")
                 .RegisterLocalClient("MockedClientFake", mockedClientFake, "pp2205")
                 .Configure(mockedConfigurator);

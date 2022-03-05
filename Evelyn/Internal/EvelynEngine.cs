@@ -90,7 +90,7 @@ namespace Evelyn.Internal
             return this;
         }
 
-        public IEvelyn RegisterClientService(IClientService clientService)
+        public IEvelyn RegisterRemoteClient(IClientService clientService)
         {
             _registeredClientServices.Add(clientService);
             return this;
@@ -102,7 +102,7 @@ namespace Evelyn.Internal
             return this;
         }
 
-        public IEvelyn RegisterRemoteManagement(IManagementService managementService)
+        public IEvelyn RegisterManagement(IManagementService managementService)
         {
             _registerManagementServices.Add(managementService);
             return this;

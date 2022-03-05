@@ -14,12 +14,13 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace Evelyn
+namespace Evelyn.Extension.CLI
 {
-    public interface IManagementConsole
+    public class ManagementConsole
     {
-        public static IManagementConsole NewInstance => new CLI.ManagementConsole();
-
-        public void Run(string[] args);
+        public void Run(string[] args)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
