@@ -29,8 +29,6 @@ namespace Evelyn.Internal
             _clientID = clientID;
         }
 
-        internal string ClientID => _clientID;
-
         internal ISet<string> Instruments => new HashSet<string>(_instruments.Keys);
 
         internal void Subscribe(string instrumentID, bool isSubscribed)

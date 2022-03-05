@@ -42,12 +42,8 @@ namespace Evelyn.Internal
 
         internal Client this[string clientID]
         {
+            // TODO need to write the indexer, expose the dictionary is better.
             get => _clients[clientID];
-        }
-
-        internal bool HasClient(string clientID)
-        {
-            return _clients.ContainsKey(clientID);
         }
 
         public void OnClientConnect(string clientID, IClientService service)
