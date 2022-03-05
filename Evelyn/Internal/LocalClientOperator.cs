@@ -71,20 +71,5 @@ namespace Evelyn.Internal
                     break;
             }
         }
-
-        private bool TryFindInstrumentIDByOrderID(string orderID, out string instrumentID)
-        {
-            foreach (ClientOrder order in _clientHandler[_clientID].Orders)
-            {
-                if (order.OriginalOrder.OrderID == orderID)
-                {
-                    instrumentID = order.OriginalOrder.InstrumentID;
-                    return true;
-                }
-            }
-
-            instrumentID = string.Empty;
-            return false;
-        }
     }
 }

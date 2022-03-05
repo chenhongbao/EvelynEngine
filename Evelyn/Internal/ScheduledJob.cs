@@ -20,7 +20,7 @@ namespace Evelyn.Internal
 {
     internal struct ScheduledJob
     {
-        public string InstrumentID { get; internal set; }
+        internal string InstrumentID { get; set; }
         internal Action Job { get; init; }
         internal OrderOption Option { get; init; }
     }
