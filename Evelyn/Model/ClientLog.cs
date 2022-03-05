@@ -14,19 +14,14 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using Evelyn.Model;
 using Microsoft.Extensions.Logging;
 
-namespace Evelyn.Plugin
+namespace Evelyn.Model
 {
-    public interface IOperator
+    public struct ClientLog
     {
-        public void New(NewOrder newOrder, OrderOption? option = null);
-
-        public void Delete(DeleteOrder deleteOrder, OrderOption? option = null);
-
-        public ILogger Logger { get; }
-
-        public DateOnly TradingDay { get; }
+        public EventId EventID { get; set; }
+        public LogLevel LogLevel { get; set; }
+        public string Message { get; set; }
     }
 }

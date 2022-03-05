@@ -15,6 +15,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Plugin;
+using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 
 namespace Evelyn.Internal
@@ -28,11 +29,13 @@ namespace Evelyn.Internal
 
         internal Client(IClientService service, string clientID, IAlgorithm? algorithm = null)
         {
-            _algorithm = algorithm;
-            _clientID = clientID;
             _service = service;
+            _clientID = clientID;
+            _algorithm = algorithm;
             _subscription = new ClientSubscription(_clientID);
         }
+
+        internal ILogger Logger { get; init; } = new ClientLogger();
 
         internal ClientSubscription Subscription => _subscription;
 

@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
 using Evelyn.Plugin;
+using Microsoft.Extensions.Logging;
 
 namespace Evelyn.Internal
 {
@@ -31,6 +32,8 @@ namespace Evelyn.Internal
         }
 
         public DateOnly TradingDay => _clientHandler.Broker.TradingDay;
+
+        public ILogger Logger => _clientHandler[_clientID].Logger;
 
         public void Delete(DeleteOrder deleteOrder, OrderOption? option = null)
         {

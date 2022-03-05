@@ -16,17 +16,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
 using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
 
-namespace Evelyn.Plugin
+namespace Evelyn.Internal
 {
-    public interface IOperator
+    internal class ClientLogger : ILogger
     {
-        public void New(NewOrder newOrder, OrderOption? option = null);
+        internal ConcurrentQueue<ClientLog> Logs { get; init; } = new ConcurrentQueue<ClientLog>();
 
-        public void Delete(DeleteOrder deleteOrder, OrderOption? option = null);
+        public IDisposable BeginScope<TState>(TState state)
+        {
+            throw new NotSupportedException("Scope is not supported.");
+        }
 
-        public ILogger Logger { get; }
+        public bool IsEnabled(LogLevel logLevel) => true;
 
-        public DateOnly TradingDay { get; }
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+        {
+            Logs.Enqueue(new ClientLog { LogLevel = logLevel, EventID = eventId, Message = formatter(state, exception) });
+        }
     }
 }
