@@ -99,7 +99,6 @@ namespace Evelyn.UnitTest.Behavior
              */
             Configurator.FeedSource.MockedConnect(true);
 
-
             /*
              * Check feed source receives susbcription requests for the given instruments.
              */
@@ -109,6 +108,21 @@ namespace Evelyn.UnitTest.Behavior
             var i1 = Configurator.FeedSource.SubscribedInstruments[1];
 
             Assert.IsTrue((i0 == "l2205" && i1 == "pp2205") || (i1 == "l2205" && i0 == "pp2205"));
+
+            /*
+             * Feed source sends back the subscription responses and clients receive the respones.
+             */
+            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK-l2205" }, true);
+
+            Assert.AreEqual("l2205", Client.ReceivedSubscribe.Item1);
+            Assert.AreEqual(0, Client.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual("OK-l2205", Client.ReceivedSubscribe.Item2.Message);
+
+            Configurator.FeedSource.MockedReplySubscribe("pp2205", new Description { Code = 0, Message = "OK-pp2205" }, true);
+
+            Assert.AreEqual("pp2205", Client.ReceivedSubscribe.Item1);
+            Assert.AreEqual(0, Client.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual("OK-pp2205", Client.ReceivedSubscribe.Item2.Message);
 
             /*
              * Feed source sends market data and client receives the data.

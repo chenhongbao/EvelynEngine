@@ -369,7 +369,7 @@ namespace Evelyn.UnitTest.Behavior
         }
 
         [TestMethod("Feed source returns subcription response many times.")]
-        public void FeedSourceSubscriptionMnayTimes()
+        public void FeedSourceSubscriptionManyTimes()
         {
             /*
              * Engine filters extra subscription responses, so each client receives the (un)subscription notice
@@ -408,6 +408,52 @@ namespace Evelyn.UnitTest.Behavior
              */
             Assert.AreEqual("l2205", ClientA.ReceivedSubscribe.Item1);
             Assert.AreEqual(0, ClientA.ReceivedSubscribe.Item2.Code);
+        }
+
+        [TestMethod("Feed source returns unsubcription response many times.")]
+        public void FeedSourceUnsubscriptionManyTimes()
+        {
+            /*
+             * Engine filters extra unsubscription responses, so each client receives the unsubscription notice
+             * once and only once.
+             * 
+             * 1. Client unsubscribes for instrument.
+             * 2. Feed source receives the request, sends the response, and client receives the response.
+             * 3. Feed source sends again the same response, but client doesn't receive the response.
+             */
+            Engine.RegisterLocalClient("MOCKED_CLIENT_A", ClientA, "l2205")
+                .Configure(Configurator);
+
+            Configurator.FeedSource.MockedConnect(true);
+
+            /*
+             * 1. Feed source receives the request, sends back response, and client A receives the response.
+             */
+            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0 }, false);
+
+            Assert.AreEqual(1, Configurator.FeedSource.SubscribedInstruments.Count);
+            Assert.AreEqual("l2205", Configurator.FeedSource.SubscribedInstruments[0]);
+
+            /*
+             * Client A receives the unsubcription response, no subcription.
+             */
+            Assert.AreEqual(String.Empty, ClientA.ReceivedSubscribe.Item1);
+
+            Assert.AreEqual("l2205", ClientA.ReceivedUnsubscribe.Item1);
+            Assert.AreEqual(0, ClientA.ReceivedUnsubscribe.Item2.Code);
+
+            /*
+             * 2. Feed source sends again the response, and client A doesn't receive the response.
+             */
+            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 1 }, false);
+
+            /*
+             * Check unsubcription response is still the first one, second response has Code of 1.
+             */
+            Assert.AreEqual(String.Empty, ClientA.ReceivedSubscribe.Item1);
+
+            Assert.AreEqual("l2205", ClientA.ReceivedUnsubscribe.Item1);
+            Assert.AreEqual(0, ClientA.ReceivedUnsubscribe.Item2.Code);
         }
     }
 }
