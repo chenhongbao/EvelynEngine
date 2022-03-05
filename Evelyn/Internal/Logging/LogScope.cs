@@ -15,6 +15,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
 
 namespace Evelyn.Internal.Logging
 {
@@ -23,9 +24,9 @@ namespace Evelyn.Internal.Logging
         private readonly string _name;
         private readonly string _messageIndent;
         private readonly TextWriter _writer;
-        private readonly Stack<LogScope> _scopes;
+        private readonly ConcurrentStack<LogScope> _scopes;
 
-        internal LogScope(string scopeName, int scopeLevels, Stack<LogScope> scopes, TextWriter writer)
+        internal LogScope(string scopeName, int scopeLevels, ConcurrentStack<LogScope> scopes, TextWriter writer)
         {
             _name = scopeName;
             _scopes = scopes;
@@ -39,7 +40,10 @@ namespace Evelyn.Internal.Logging
 
         public void Dispose()
         {
-            var top = _scopes.Pop();
+            if (!_scopes.TryPop(out var top))
+            {
+                throw new InvalidOperationException("No existing scope to log.");
+            }
             if (top != this)
             {
                 throw new InvalidOperationException("The scope stack is modified by outside current scope.");

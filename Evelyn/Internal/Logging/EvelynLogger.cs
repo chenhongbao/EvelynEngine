@@ -15,18 +15,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Microsoft.Extensions.Logging;
+using System.Collections.Concurrent;
 
 namespace Evelyn.Internal.Logging
 {
     internal class EvelynLogger : ILogger
     {
         private readonly TextWriter _writer;
-        private readonly Stack<LogScope> _scopes;
+        private readonly ConcurrentStack<LogScope> _scopes = new ConcurrentStack<LogScope>();
 
         internal EvelynLogger(string loggerName, TextWriter? writer = null)
         {
             _writer = writer ?? new StreamWriter(loggerName.Replace('\\', '.').Replace('/', '.') + ".log");
-            _scopes = new Stack<LogScope>();
             _scopes.Push(new LogScope(string.Empty, 0, _scopes, _writer));
         }
 
@@ -41,7 +41,12 @@ namespace Evelyn.Internal.Logging
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
-            _scopes.Peek().Log(logLevel, eventId, formatter(state, exception));
+            if (!_scopes.TryPeek(out var element))
+            {
+                throw new InvalidOperationException("No existing scope to log.");
+            }
+
+            element.Log(logLevel, eventId, formatter(state, exception));
         }
     }
 }
