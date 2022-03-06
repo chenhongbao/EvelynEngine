@@ -123,7 +123,7 @@ namespace Evelyn.Internal
                         Job = job,
                         InstrumentID = instrumentID,
                         Option = option,
-                        ScheduledTime = DateTime.Now,
+                        SchedulingTime = DateTime.Now,
                     });
             }
         }
