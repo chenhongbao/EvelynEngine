@@ -72,7 +72,7 @@ namespace Evelyn.UnitTest.Mock
         internal List<string> SubscribedInstruments { get; } = new List<string>();
         internal List<string> UnsubscribedInstruments { get; } = new List<string>();
 
-        public DateOnly TradingDay => throw new NotImplementedException();
+        public DateOnly TradingDay { get; set; } = DateOnly.MaxValue;
         #endregion
     }
 }

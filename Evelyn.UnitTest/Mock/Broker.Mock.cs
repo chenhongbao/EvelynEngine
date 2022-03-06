@@ -60,7 +60,7 @@ namespace Evelyn.UnitTest.Mock
 
         public string NewOrderID => Guid.NewGuid().ToString("N");
 
-        public DateOnly TradingDay => throw new NotImplementedException();
+        public DateOnly TradingDay { get; set; } = DateOnly.MaxValue;
         #endregion
     }
 }
