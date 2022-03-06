@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using Evelyn.Internal;
 using Evelyn.Model;
 using Evelyn.Model.CLI;
+using Evelyn.Model.Logging;
 using Evelyn.Plugin;
 using Microsoft.Extensions.Logging;
 
@@ -59,7 +60,7 @@ namespace Evelyn.CLI
         public ManagementResult<ClientLogInformation> QueryClientLog(string clientID, DateTime afterTime, LogLevel logLevel = LogLevel.None)
         {
             var description = new Description();
-            var information = new ClientLogInformation { ClientID = clientID, Level = logLevel };
+            var information = new ClientLogInformation { ClientID = clientID, Level = logLevel, LastLogTime = DateTime.MaxValue };
 
             if (_engine.Handler.Clients.TryGetValue(clientID, out var client))
             {
@@ -67,9 +68,16 @@ namespace Evelyn.CLI
                     .Where(log => log.LogLevel == logLevel && log.Timestamp.CompareTo(afterTime) > 0)
                     .ToList();
                 information.Logs.Sort((lhs, rhs) => lhs.Timestamp.CompareTo(rhs.Timestamp));
+                
+                if (information.Logs.Count > 0)
+                {
+                    information.LastLogTime = information.Logs.Last().Timestamp;
+                }
             }
             else
             {
+                information.Logs = new List<ClientLog>();
+
                 description.Code = 22;
                 description.Message = "No such client with ID " + clientID + ".";
             }
