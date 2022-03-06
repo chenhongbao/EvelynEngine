@@ -118,27 +118,14 @@ namespace Evelyn.Internal
                 _scheduledJobs.TryAdd(Guid.NewGuid().ToString(),
                     new ScheduledJob
                     {
-                        JobID = CreateJobID(),
+                        JobID = Interlocked.Increment(ref _jobCounter),
                         Name = name,
                         Job = job,
                         InstrumentID = instrumentID,
-                        Option = option
+                        Option = option,
+                        ScheduledTime = DateTime.Now,
                     });
             }
-        }
-
-        private int CreateJobID()
-        {
-            var prefix = int.Parse(DateTime.Now.ToString("yyyyMMdd"));
-            var suffix = Interlocked.Increment(ref _jobCounter);
-
-            if (suffix > 9999)
-            {
-                suffix = 1;
-                Interlocked.Exchange(ref _jobCounter, suffix); 
-            }
-
-            return prefix * 10000 + suffix;
         }
 
         private bool CheckOrderOption(string instrumentID, OrderOption option)

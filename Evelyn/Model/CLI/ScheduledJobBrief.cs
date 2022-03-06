@@ -22,5 +22,6 @@ namespace Evelyn.Model.CLI
         public string Name { get; set; }
         public string InstrumentID { get; set; }
         public OrderOption Option { get; init; }
+        public DateTime SchedulingTime { get; set; }
     }
 }

@@ -25,5 +25,6 @@ namespace Evelyn.Internal
         internal string InstrumentID { get; set; }
         internal Action Job { get; init; }
         internal OrderOption Option { get; init; }
+        internal DateTime SchedulingTime { get; set; }
     }
 }
