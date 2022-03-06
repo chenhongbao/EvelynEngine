@@ -50,10 +50,13 @@ namespace Evelyn.Internal
 
             foreach (var generator in _ohlcGenerators)
             {
-                if (generator.Generate(tick, out OHLC ohlc))
+                TryCatch(() =>
                 {
-                    OnFeed(ohlc);
-                }
+                    if (generator.Generate(tick, out OHLC ohlc))
+                    {
+                        OnFeed(ohlc);
+                    }
+                });
             }
 
             /*
