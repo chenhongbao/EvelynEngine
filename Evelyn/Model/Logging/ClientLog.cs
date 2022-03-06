@@ -20,7 +20,7 @@ namespace Evelyn.Model.Logging
 {
     public struct ClientLog
     {
-        public EventId EventID { get; set; }
+        public EventId LogID { get; set; }
         public LogLevel LogLevel { get; set; }
         public string Message { get; set; }
     }

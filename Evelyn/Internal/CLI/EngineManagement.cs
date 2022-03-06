@@ -35,22 +35,7 @@ namespace Evelyn.CLI
             throw new NotImplementedException();
         }
 
-        public ManagementResult<AllClientsInformation> QueryAllClients()
-        {
-            throw new NotImplementedException();
-        }
-
-        public ManagementResult<BrokerInformation> QueryBroker()
-        {
-            throw new NotImplementedException();
-        }
-
-        public ManagementResult<ClientInformation> QueryClient(string clientID)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ManagementResult<ClientLogInformation> QueryClientLog(string clientID, LogLevel logLevel = LogLevel.None)
+        public ManagementResult<ClientLogInformation> QueryClientLog(string clientID, int afterLogID = 0, LogLevel logLevel = LogLevel.None)
         {
             throw new NotImplementedException();
         }
@@ -60,7 +45,12 @@ namespace Evelyn.CLI
             throw new NotImplementedException();
         }
 
-        public ManagementResult<FeedSourceInformation> QueryFeedSource()
+        public ManagementResult<ClientsInformation> QueryClients()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ManagementResult<EngineInformation> QueryEngineInformation()
         {
             throw new NotImplementedException();
         }

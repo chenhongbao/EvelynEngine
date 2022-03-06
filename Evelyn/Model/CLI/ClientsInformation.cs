@@ -16,7 +16,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace Evelyn.Model.CLI
 {
-    public struct ClientInformation
+    public struct ClientsInformation
     {
+        public List<ClientBrief> Clients { get; set; }
     }
 }

@@ -23,13 +23,9 @@ namespace Evelyn.Plugin
     {
         public ManagementResult<AlterClientResult> AlterClient(string clientID, params string[] instrumentID);
 
-        public ManagementResult<FeedSourceInformation> QueryFeedSource();
+        public ManagementResult<EngineInformation> QueryEngineInformation();
 
-        public ManagementResult<BrokerInformation> QueryBroker();
-
-        public ManagementResult<AllClientsInformation> QueryAllClients();
-
-        public ManagementResult<ClientInformation> QueryClient(string clientID);
+        public ManagementResult<ClientsInformation> QueryClients();
 
         public ManagementResult<ClientOrderInformation> QueryClientOrder(string clientID, string orderID);
 

@@ -16,7 +16,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace Evelyn.Model.CLI
 {
-    public struct AllClientsInformation
+    public struct ClientOrderBrief
     {
+        public string ClientID { get; set; }
+        public NewOrder Order { get; set; }
+        public double AverageTradePrice { get; set; }
+        public int TradeQuantity { get; set; }
+        public DateTime LastTradeTime {get; set;}
+        public OrderStatus Status { get; set; }
     }
 }

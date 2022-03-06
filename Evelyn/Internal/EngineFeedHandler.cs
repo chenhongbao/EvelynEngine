@@ -29,6 +29,7 @@ namespace Evelyn.Internal
         private readonly ConcurrentDictionary<string, bool> _subscriptionResponses = new ConcurrentDictionary<string, bool>();
         private readonly ConcurrentDictionary<string, Instrument> _instruments = new ConcurrentDictionary<string, Instrument>();
         private readonly ConcurrentDictionary<string, ScheduledJob> _scheduledJobs = new ConcurrentDictionary<string, ScheduledJob>();
+        private int _jobCounter = 0;
 
         private ILogger Logger { get; } = Loggers.CreateLogger(nameof(EngineFeedHandler));
 
@@ -106,7 +107,7 @@ namespace Evelyn.Internal
             }
         }
 
-        internal void ScheduleOrder(Action job, string instrumentID, OrderOption option)
+        internal void ScheduleJob(string name, Action job, string instrumentID, OrderOption option)
         {
             if (CheckOrderOption(instrumentID, option))
             {
@@ -114,8 +115,30 @@ namespace Evelyn.Internal
             }
             else
             {
-                _scheduledJobs.TryAdd(Guid.NewGuid().ToString(), new ScheduledJob { Job = job, InstrumentID = instrumentID, Option = option });
+                _scheduledJobs.TryAdd(Guid.NewGuid().ToString(),
+                    new ScheduledJob
+                    {
+                        JobID = CreateJobID(),
+                        Name = name,
+                        Job = job,
+                        InstrumentID = instrumentID,
+                        Option = option
+                    });
             }
+        }
+
+        private int CreateJobID()
+        {
+            var prefix = int.Parse(DateTime.Now.ToString("yyyyMMdd"));
+            var suffix = Interlocked.Increment(ref _jobCounter);
+
+            if (suffix > 9999)
+            {
+                suffix = 1;
+                Interlocked.Exchange(ref _jobCounter, suffix); 
+            }
+
+            return prefix * 10000 + suffix;
         }
 
         private bool CheckOrderOption(string instrumentID, OrderOption option)
@@ -203,7 +226,7 @@ namespace Evelyn.Internal
 
         private void SendInstrument(Instrument instrument)
         {
-            foreach(var client in _clientHandler.Clients.Values)
+            foreach (var client in _clientHandler.Clients.Values)
             {
                 var instrumentID = instrument.InstrumentID;
                 if (client.Subscription.Instruments.Contains(instrumentID))

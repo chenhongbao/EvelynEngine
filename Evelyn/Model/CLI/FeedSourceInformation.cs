@@ -18,5 +18,11 @@ namespace Evelyn.Model.CLI
 {
     public struct FeedSourceInformation
     {
+        public bool IsConnected { get; set; }
+        public DateOnly TradingDay { get; set; }
+        public int OHLCGeneratorCount { get; set; }
+        public Dictionary<string, bool> SubscriptionResponses { get; set; }
+        public List<Instrument> Instruments { get; set; }
+        public List<ScheduledJobBrief> ScheduledJobs { get; set; }
     }
 }

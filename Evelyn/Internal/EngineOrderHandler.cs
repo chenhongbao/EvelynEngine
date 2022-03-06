@@ -44,6 +44,10 @@ namespace Evelyn.Internal
                          * Rewrite the order ID back to original ID.
                          */
                         trade.OrderID = order.OriginalOrder.OrderID;
+
+                        order.Status = trade.Status;
+                        order.Trades.Enqueue(trade);
+
                         client.Service.SendTrade(trade, description, client.ClientID);
                         return;
                     }

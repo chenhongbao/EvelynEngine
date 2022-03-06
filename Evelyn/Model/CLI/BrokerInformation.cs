@@ -18,5 +18,7 @@ namespace Evelyn.Model.CLI
 {
     public struct BrokerInformation
     {
+        public bool IsConnected { get; set; }
+        public DateOnly TradingDay { get; set; }
     }
 }

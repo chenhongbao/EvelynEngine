@@ -15,6 +15,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
+using System.Collections.Concurrent;
 
 namespace Evelyn.Internal
 {
@@ -53,7 +54,8 @@ namespace Evelyn.Internal
         }
 
         internal NewOrder OriginalOrder => _order;
-
         internal string BrokerOrderID => _borkerOrderID;
+        internal OrderStatus Status { get; set; }
+        internal ConcurrentQueue<Trade> Trades { get; init; } = new ConcurrentQueue<Trade>();
     }
 }
