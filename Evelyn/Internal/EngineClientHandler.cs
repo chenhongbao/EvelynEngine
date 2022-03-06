@@ -35,7 +35,7 @@ namespace Evelyn.Internal
         internal EngineBroker Broker => _broker ?? throw new NullReferenceException("Engine broker has no value.");
         internal EngineFeedSource FeedSource => _feedSource ?? throw new NullReferenceException("Enginefeed source has no value.");
         internal EngineFeedHandler FeedHandler => _feedHandler ?? throw new NullReferenceException("Engine feed handler has no value.");
-        internal ConcurrentDictionary<string, Client> Clients => _clients;
+        internal IReadOnlyDictionary<string, Client> Clients => _clients;
 
         public void OnClientConnect(string clientID, IClientService service)
         {

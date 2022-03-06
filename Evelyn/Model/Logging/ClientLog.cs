@@ -23,5 +23,6 @@ namespace Evelyn.Model.Logging
         public EventId LogID { get; set; }
         public LogLevel LogLevel { get; set; }
         public string Message { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }

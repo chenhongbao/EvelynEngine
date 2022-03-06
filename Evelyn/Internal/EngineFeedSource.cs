@@ -29,8 +29,10 @@ namespace Evelyn.Internal
         private IFeedSource? _feedSource;
 
         private IFeedSource FeedSource => _feedSource ?? throw new NullReferenceException("Feed source has no value.");
-        private EngineFeedHandler FeedHandler => _feedHandler ?? throw new NullReferenceException("Feed handler has no value.");
-        private bool IsConnected => _feedSourceExchange?.IsConnected ?? throw new NullReferenceException("Feed source exchange has no value.");
+        internal EngineFeedHandler Handler => _feedHandler ?? throw new NullReferenceException("Feed handler has no value.");
+
+        internal bool IsConnected => _feedSourceExchange?.IsConnected ?? throw new NullReferenceException("Feed source exchange has no value.");
+        internal DateOnly TradingDay => FeedSource.TradingDay;
 
         internal EngineFeedSource Subscribe()
         {
@@ -39,7 +41,7 @@ namespace Evelyn.Internal
                 /*
                  * Subscribe for the existing instruments, and clear subcription response marks.
                  */
-                FeedHandler.EraseSubscriptionResponse(instrument, isSubscribed: true);
+                Handler.EraseSubscriptionResponse(instrument, isSubscribed: true);
                 FeedSource.Subscribe(instrument);
             });
             return this;
@@ -60,9 +62,9 @@ namespace Evelyn.Internal
                      * Send a fake unsubscription response to client if the instrument is subscribed
                      * and response has arrived, otherwise waits for response.
                      */
-                    if (FeedHandler.HasSubscriptionResponse(instrument, isSubscribed: true))
+                    if (Handler.HasSubscriptionResponse(instrument, isSubscribed: true))
                     {
-                        FeedHandler.OnSubscribed(instrument, new Description { Code = 0, Message = String.Empty }, true);
+                        Handler.OnSubscribed(instrument, new Description { Code = 0, Message = String.Empty }, true);
                     }
                 });
 
@@ -75,7 +77,7 @@ namespace Evelyn.Internal
                      */
                     if (IsConnected)
                     {
-                        FeedHandler.EraseSubscriptionResponse(instrument, isSubscribed: true);
+                        Handler.EraseSubscriptionResponse(instrument, isSubscribed: true);
                         FeedSource.Subscribe(instrument);
                     }
 
@@ -97,7 +99,7 @@ namespace Evelyn.Internal
                         {
                             if (IsConnected)
                             {
-                                FeedHandler.EraseSubscriptionResponse(instrument, isSubscribed: false);
+                                Handler.EraseSubscriptionResponse(instrument, isSubscribed: false);
                                 FeedSource.Unsubscribe(instrument);
                             }
                             
@@ -113,7 +115,7 @@ namespace Evelyn.Internal
                              * responses are correctly sent. After the real unsubscription request is sent to 
                              * feed source, the last client receives the real response.
                              */
-                            FeedHandler.OnSubscribed(instrument, new Description { Code = 0, Message = String.Empty }, false);
+                            Handler.OnSubscribed(instrument, new Description { Code = 0, Message = String.Empty }, false);
                         }
                     }
                 });

@@ -15,6 +15,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Internal;
+using Evelyn.Model;
 using Evelyn.Model.CLI;
 using Evelyn.Plugin;
 using Microsoft.Extensions.Logging;
@@ -32,27 +33,176 @@ namespace Evelyn.CLI
 
         public ManagementResult<AlterClientResult> AlterClient(string clientID, params string[] instrumentID)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _engine.AlterClient(clientID, instrumentID);
+                return new ManagementResult<AlterClientResult>
+                {
+                    Result = new AlterClientResult { ClientID = clientID },
+                    Description = new Description()
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ManagementResult<AlterClientResult>
+                {
+                    Result = new AlterClientResult { ClientID = clientID },
+                    Description = new Description
+                    {
+                        Code = 21,
+                        Message = ex.Message
+                    }
+                };
+            }
         }
 
-        public ManagementResult<ClientLogInformation> QueryClientLog(string clientID, int afterLogID = 0, LogLevel logLevel = LogLevel.None)
+        public ManagementResult<ClientLogInformation> QueryClientLog(string clientID, DateTime afterTime, LogLevel logLevel = LogLevel.None)
         {
-            throw new NotImplementedException();
+            var description = new Description();
+            var information = new ClientLogInformation { ClientID = clientID, Level = logLevel };
+
+            if (_engine.Handler.Clients.TryGetValue(clientID, out var client))
+            {
+                information.Logs = ((ClientLogger)client.Logger).Logs
+                    .Where(log => log.LogLevel == logLevel && log.Timestamp.CompareTo(afterTime) > 0)
+                    .ToList();
+                information.Logs.Sort((lhs, rhs) => lhs.Timestamp.CompareTo(rhs.Timestamp));
+            }
+            else
+            {
+                description.Code = 22;
+                description.Message = "No such client with ID " + clientID + ".";
+            }
+
+            return new ManagementResult<ClientLogInformation>
+            {
+                Result = information,
+                Description = description
+            };
         }
 
         public ManagementResult<ClientOrderInformation> QueryClientOrder(string clientID, string orderID)
         {
-            throw new NotImplementedException();
+            if (_engine.Handler.Clients.TryGetValue(clientID, out var client))
+            {
+                if (client.Orders.TryGetValue(orderID, out var order))
+                {
+                    return new ManagementResult<ClientOrderInformation>
+                    {
+                        Result = new ClientOrderInformation
+                        {
+                            ClientID = clientID,
+                            Order = order.OriginalOrder,
+                            Trades = order.Trades.ToList(),
+                            Status = order.Status
+                        },
+                        Description = new Description()
+                    };
+                }
+                else
+                {
+                    return new ManagementResult<ClientOrderInformation>
+                    {
+                        Result = new ClientOrderInformation
+                        {
+                            ClientID = clientID
+                        },
+                        Description = new Description
+                        {
+                            Code = 23,
+                            Message = "No such order with ID " + orderID + "."
+                        }
+                    };
+                }
+            }
+            else
+            {
+                return new ManagementResult<ClientOrderInformation>
+                {
+                    Result = new ClientOrderInformation
+                    {
+                        ClientID = clientID
+                    },
+                    Description = new Description
+                    {
+                        Code = 24,
+                        Message = "No such client with ID " + clientID + "."
+                    }
+                };
+            }
         }
 
         public ManagementResult<ClientsInformation> QueryClients()
         {
-            throw new NotImplementedException();
+            return new ManagementResult<ClientsInformation>
+            {
+                Result = new ClientsInformation
+                {
+                    Clients = _engine.Handler.Clients.Values.Select(client => new ClientBrief
+                    {
+                        ClientID = client.ClientID,
+                        Subscription = client.Subscription.Instruments,
+                        Orders = client.Orders.Values.Select(clientOrder => new ClientOrderBrief
+                        {
+                            ClientID = client.ClientID,
+                            Order = clientOrder.OriginalOrder,
+                            TradeQuantity = clientOrder.Trades.Select(trade => trade.TradeQuantity).Sum(),
+                            AverageTradePrice = clientOrder.Trades.Select(trade => trade.TradePrice * trade.TradeQuantity).Sum() / clientOrder.Trades.Select(trade => trade.TradeQuantity).Sum(),
+                            LastTradeTime = clientOrder.Trades.Last().TimeStamp,
+                            Status = clientOrder.Status
+                            
+                        }).ToList()
+                    }).ToList()
+                },
+                Description = new Description()
+            };
         }
 
         public ManagementResult<EngineInformation> QueryEngineInformation()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return new ManagementResult<EngineInformation>
+                {
+                    Result = new EngineInformation
+                    {
+                        Broker = new BrokerInformation
+                        {
+                            IsConnected = _engine.Broker.IsConnected,
+                            TradingDay = _engine.Broker.TradingDay
+                        },
+                        FeedSource = new FeedSourceInformation
+                        {
+                            IsConnected = _engine.FeedSource.IsConnected,
+                            TradingDay = _engine.FeedSource.TradingDay,
+                            OHLCGeneratorCount = _engine.FeedSource.Handler.OHLCGenerators.Count,
+                            SubscriptionResponses = new Dictionary<string, bool>(_engine.FeedSource.Handler.SubscriptionResponses),
+                            Instruments = new List<Instrument>(_engine.FeedSource.Handler.Instruments.Values),
+                            ScheduledJobs = _engine.FeedSource.Handler.ScheduledJobs.Values.Select(job => new ScheduledJobBrief
+                            {
+                                JobID = job.JobID,
+                                Name = job.Name,
+                                InstrumentID = job.InstrumentID,
+                                Option = job.Option,
+                                SchedulingTime = job.SchedulingTime
+                            }).ToList()
+                        }
+                    },
+                    Description = new Description()
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ManagementResult<EngineInformation>
+                {
+                    Result = new EngineInformation(),
+                    Description = new Description
+                    {
+                        Code = 25,
+                        Message = ex.Message
+                    }
+                };
+            }
         }
     }
 }

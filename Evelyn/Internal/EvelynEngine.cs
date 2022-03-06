@@ -34,6 +34,10 @@ namespace Evelyn.Internal
 
         private IConfigurator? _configurator;
 
+        internal EngineBroker Broker => _broker;
+        internal EngineFeedSource FeedSource => _feedSource;
+        internal EngineClientHandler Handler => _clientHandler;
+
         internal EvelynEngine()
         {
             _broker = new EngineBroker();

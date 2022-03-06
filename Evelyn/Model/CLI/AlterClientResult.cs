@@ -19,7 +19,5 @@ namespace Evelyn.Model.CLI
     public struct AlterClientResult
     {
         public string ClientID { get; set; }
-        public string[] AddedInstruments { get; set; }
-        public string[] RemovedInstruments { get; set; }
     }
 }

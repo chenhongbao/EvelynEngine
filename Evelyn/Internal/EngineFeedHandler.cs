@@ -33,6 +33,11 @@ namespace Evelyn.Internal
 
         private ILogger Logger { get; } = Loggers.CreateLogger(nameof(EngineFeedHandler));
 
+        internal IReadOnlyCollection<IOHLCGenerator> OHLCGenerators => _ohlcGenerators;
+        internal IReadOnlyDictionary<string, bool> SubscriptionResponses => _subscriptionResponses;
+        internal IReadOnlyDictionary<string, Instrument> Instruments => _instruments;
+        internal IReadOnlyDictionary<string, ScheduledJob> ScheduledJobs => _scheduledJobs;
+
         internal EngineFeedHandler(EngineClientHandler clientHandler)
         {
             _clientHandler = clientHandler;

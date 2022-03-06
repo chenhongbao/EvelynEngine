@@ -22,7 +22,7 @@ namespace Evelyn.Model.CLI
     public struct ClientLogInformation
     {
         public LogLevel Level { get; set; }
-        public EventId LastLogID { get; set; }
+        public DateTime LastLogTime { get; set; }
         public string ClientID { get; set; }
         public List<ClientLog> Logs { get; set; }
     }

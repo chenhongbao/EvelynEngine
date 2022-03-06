@@ -29,6 +29,6 @@ namespace Evelyn.Plugin
 
         public ManagementResult<ClientOrderInformation> QueryClientOrder(string clientID, string orderID);
 
-        public ManagementResult<ClientLogInformation> QueryClientLog(string clientID, int afterLogID = 0, LogLevel logLevel = LogLevel.None);
+        public ManagementResult<ClientLogInformation> QueryClientLog(string clientID, DateTime afterTime, LogLevel logLevel = LogLevel.None);
     }
 }
