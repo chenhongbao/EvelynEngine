@@ -14,14 +14,9 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using Microsoft.Extensions.Logging;
-
-namespace Evelyn.Model
+namespace Evelyn.Model.CLI
 {
-    public struct ClientLog
+    public struct AllClientsInformation
     {
-        public EventId EventID { get; set; }
-        public LogLevel LogLevel { get; set; }
-        public string Message { get; set; }
     }
 }

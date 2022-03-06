@@ -14,22 +14,9 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using Evelyn.Plugin;
-
-namespace Evelyn.Internal
+namespace Evelyn.Model.CLI
 {
-    internal class EngineManagement : IManagement
+    public struct ClientLogInformation
     {
-        private readonly EvelynEngine _engine;
-
-        internal EngineManagement(EvelynEngine engine)
-        {
-            _engine = engine;
-        }
-
-        public void AlterClient(string clientID, params string[] instrumentID)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

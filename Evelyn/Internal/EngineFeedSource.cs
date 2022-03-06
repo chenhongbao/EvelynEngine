@@ -39,8 +39,8 @@ namespace Evelyn.Internal
                 /*
                  * Subscribe for the existing instruments, and clear subcription response marks.
                  */
-                FeedSource.Subscribe(instrument);
                 FeedHandler.EraseSubscriptionResponse(instrument, isSubscribed: true);
+                FeedSource.Subscribe(instrument);
             });
             return this;
         }
@@ -75,8 +75,8 @@ namespace Evelyn.Internal
                      */
                     if (IsConnected)
                     {
-                        FeedSource.Subscribe(instrument);
                         FeedHandler.EraseSubscriptionResponse(instrument, isSubscribed: true);
+                        FeedSource.Subscribe(instrument);
                     }
 
                     /*
@@ -97,8 +97,8 @@ namespace Evelyn.Internal
                         {
                             if (IsConnected)
                             {
-                                FeedSource.Unsubscribe(instrument);
                                 FeedHandler.EraseSubscriptionResponse(instrument, isSubscribed: false);
+                                FeedSource.Unsubscribe(instrument);
                             }
                             
                             _counters.Remove(instrument, out var _);

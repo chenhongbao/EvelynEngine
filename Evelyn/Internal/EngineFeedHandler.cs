@@ -19,7 +19,6 @@ using Evelyn.Model;
 using Evelyn.Plugin;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
-using System.Timers;
 
 namespace Evelyn.Internal
 {

@@ -14,10 +14,16 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace Evelyn.Plugin
+namespace Evelyn.Model.CLI
 {
-    public interface IManagementService
+    public struct ManagementResult<T>
     {
-        public void Configure(IManagement management);
+        public ManagementResult()
+        {
+        }
+
+        public T? Result { get; set; } = default(T);
+
+        public Description Description { get; set; } = new Description();
     }
 }

@@ -14,10 +14,25 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Model.CLI;
+using Microsoft.Extensions.Logging;
+
 namespace Evelyn.Plugin
 {
     public interface IManagement
     {
-        public void AlterClient(string clientID, params string[] instrumentID);
+        public ManagementResult<AlterClientResult> AlterClient(string clientID, params string[] instrumentID);
+
+        public ManagementResult<FeedSourceInformation> QueryFeedSource();
+
+        public ManagementResult<BrokerInformation> QueryBroker();
+
+        public ManagementResult<AllClientsInformation> QueryAllClients();
+
+        public ManagementResult<ClientInformation> QueryClient(string clientID);
+
+        public ManagementResult<ClientOrderInformation> QueryClientOrder(string clientID, string orderID);
+
+        public ManagementResult<ClientLogInformation> QueryClientLog(string clientID, LogLevel logLevel = LogLevel.None);
     }
 }

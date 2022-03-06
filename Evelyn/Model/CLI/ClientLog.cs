@@ -14,10 +14,14 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace Evelyn.Plugin
+using Microsoft.Extensions.Logging;
+
+namespace Evelyn.Model.CLI
 {
-    public interface IManagementService
+    public struct ClientLog
     {
-        public void Configure(IManagement management);
+        public EventId EventID { get; set; }
+        public LogLevel LogLevel { get; set; }
+        public string Message { get; set; }
     }
 }
