@@ -115,7 +115,7 @@ namespace Evelyn.Internal
             }
         }
 
-        internal void ScheduleJob(string name, Action job, string instrumentID, OrderOption option)
+        internal void ScheduleJob(string clientID, string name, Action job, string instrumentID, OrderOption option)
         {
             if (CheckOrderOption(instrumentID, option))
             {
@@ -126,6 +126,7 @@ namespace Evelyn.Internal
                 _scheduledJobs.TryAdd(Guid.NewGuid().ToString(),
                     new ScheduledJob
                     {
+                        ClientID = clientID,
                         JobID = Interlocked.Increment(ref _jobCounter),
                         Name = name,
                         Job = job,

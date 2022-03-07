@@ -44,7 +44,7 @@ namespace Evelyn.Internal
                 case TriggerType.Time:
                 case TriggerType.StateChange:
 
-                    _clientHandler.FeedHandler.ScheduleJob("Delete:" + deleteOrder.OrderID, () => _clientHandler.OnDeleteOrder(deleteOrder, _clientID), deleteOrder.InstrumentID, optionOrDefault);
+                    _clientHandler.FeedHandler.ScheduleJob(_clientID, "Delete:" + deleteOrder.OrderID, () => _clientHandler.OnDeleteOrder(deleteOrder, _clientID), deleteOrder.InstrumentID, optionOrDefault);
                     break;
 
                 case TriggerType.Immediate:
@@ -64,7 +64,7 @@ namespace Evelyn.Internal
                 case TriggerType.Time:
                 case TriggerType.StateChange:
 
-                    _clientHandler.FeedHandler.ScheduleJob("New:" + newOrder.OrderID, () => _clientHandler.OnNewOrder(newOrder, _clientID), newOrder.InstrumentID, optionOrDefault);
+                    _clientHandler.FeedHandler.ScheduleJob(_clientID, "New:" + newOrder.OrderID, () => _clientHandler.OnNewOrder(newOrder, _clientID), newOrder.InstrumentID, optionOrDefault);
                     break;
 
                 case TriggerType.Immediate:

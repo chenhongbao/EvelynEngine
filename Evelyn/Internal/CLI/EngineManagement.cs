@@ -68,7 +68,7 @@ namespace Evelyn.CLI
                     .Where(log => log.LogLevel == logLevel && log.Timestamp.CompareTo(afterTime) > 0)
                     .ToList();
                 information.Logs.Sort((lhs, rhs) => lhs.Timestamp.CompareTo(rhs.Timestamp));
-                
+
                 if (information.Logs.Count > 0)
                 {
                     information.LastLogTime = information.Logs.Last().Timestamp;
@@ -150,15 +150,23 @@ namespace Evelyn.CLI
                     {
                         ClientID = client.ClientID,
                         Subscription = client.Subscription.Instruments,
-                        Orders = client.Orders.Values.Select(clientOrder => new ClientOrderBrief
+                        Orders = client.Orders.Values.Select(clientOrder =>
                         {
-                            ClientID = client.ClientID,
-                            Order = clientOrder.OriginalOrder,
-                            TradeQuantity = clientOrder.Trades.Select(trade => trade.TradeQuantity).Sum(),
-                            AverageTradePrice = clientOrder.Trades.Select(trade => trade.TradePrice * trade.TradeQuantity).Sum() / clientOrder.Trades.Select(trade => trade.TradeQuantity).Sum(),
-                            LastTradeTime = clientOrder.Trades.Last().TimeStamp,
-                            Status = clientOrder.Status
-                            
+                            var brief = new ClientOrderBrief
+                            {
+                                ClientID = client.ClientID,
+                                Order = clientOrder.OriginalOrder,
+                                TradeQuantity = clientOrder.Trades.Select(trade => trade.TradeQuantity).Sum(),
+                                Status = clientOrder.Status
+                            };
+
+                            if (brief.TradeQuantity > 0)
+                            {
+                                brief.AverageTradePrice = clientOrder.Trades.Select(trade => trade.TradePrice * trade.TradeQuantity).Sum() / clientOrder.Trades.Select(trade => trade.TradeQuantity).Sum();
+                                brief.LastTradeTime = clientOrder.Trades.Last().TimeStamp;
+                            }
+
+                            return brief;
                         }).ToList()
                     }).ToList()
                 },
@@ -188,6 +196,7 @@ namespace Evelyn.CLI
                             Instruments = new List<Instrument>(_engine.FeedSource.Handler.Instruments.Values),
                             ScheduledJobs = _engine.FeedSource.Handler.ScheduledJobs.Values.Select(job => new ScheduledJobBrief
                             {
+                                ClientID = job.ClientID,
                                 JobID = job.JobID,
                                 Name = job.Name,
                                 InstrumentID = job.InstrumentID,

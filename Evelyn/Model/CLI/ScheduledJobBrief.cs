@@ -18,6 +18,7 @@ namespace Evelyn.Model.CLI
 {
     public struct ScheduledJobBrief
     {
+        public string ClientID { get; set; }
         public int JobID { get; set; }
         public string Name { get; set; }
         public string InstrumentID { get; set; }

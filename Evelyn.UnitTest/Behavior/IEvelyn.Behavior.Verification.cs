@@ -611,7 +611,7 @@ namespace Evelyn.UnitTest.Behavior
 
             var mockedClient = new MockedLocalClient();
             var mockedClientFake = new MockedLocalClient();
-            var mockedConfiguator = new MockedConfigurator();
+            var mockedConfigurator = new MockedConfigurator();
 
             /*
              * Prepare engine for ordering.
@@ -633,9 +633,9 @@ namespace Evelyn.UnitTest.Behavior
                     Status = InstrumentStatus.Continous,
                     EnterTime = baseTime
                 })
-                .Configure(mockedConfiguator);
+                .Configure(mockedConfigurator);
 
-            mockedConfiguator.Broker.MockedConnect(true);
+            mockedConfigurator.Broker.MockedConnect(true);
 
             /*
              * Client requests new order, order is partly traded, and then client deletes the order.
@@ -686,13 +686,13 @@ namespace Evelyn.UnitTest.Behavior
              * Engine rewrites the order ID presented to broker, so don't check
              * the broker's order ID.
              */
-            var newOrder = mockedConfiguator.Broker.ReceivedNewOrders[0];
+            var newOrder = mockedConfigurator.Broker.ReceivedNewOrders[0];
 
             Assert.AreEqual("l2205", newOrder.InstrumentID);
             Assert.AreEqual(8888, newOrder.Price);
             Assert.AreEqual(2, newOrder.Quantity);
 
-            var newOrderFake = mockedConfiguator.Broker.ReceivedNewOrders[1];
+            var newOrderFake = mockedConfigurator.Broker.ReceivedNewOrders[1];
 
             Assert.AreEqual("l2205", newOrderFake.InstrumentID);
             Assert.AreEqual(7777, newOrderFake.Price);
@@ -701,7 +701,7 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * 2. Broker sends a trade response.
              */
-            mockedConfiguator.Broker.MockedTrade(
+            mockedConfigurator.Broker.MockedTrade(
                 new Trade
                 {
                     InstrumentID = "l2205",
@@ -755,12 +755,12 @@ namespace Evelyn.UnitTest.Behavior
                 InstrumentID = "l2205"
             });
 
-            Assert.AreEqual(newOrder.OrderID, mockedConfiguator.Broker.ReceivedDeleteOrders[0]);
+            Assert.AreEqual(newOrder.OrderID, mockedConfigurator.Broker.ReceivedDeleteOrders[0]);
 
             /*
              * Mocked broker sends a trade update with deletion status.
              */
-            mockedConfiguator.Broker.MockedTrade(
+            mockedConfigurator.Broker.MockedTrade(
                 new Trade
                 {
                     InstrumentID = "l2205",

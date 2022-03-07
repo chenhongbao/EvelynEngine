@@ -28,6 +28,7 @@ namespace Evelyn.Internal
         {
             _order = newOrder;
             _borkerOrderID = brokerOrderID;
+            Status = OrderStatus.None;
         }
 
         internal DeleteOrder RewriteDeleteOrder

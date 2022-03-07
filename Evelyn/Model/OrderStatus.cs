@@ -21,6 +21,7 @@ namespace Evelyn.Model
         Trading = 1,
         Completed,
         Deleted,
-        Rejected
+        Rejected,
+        None
     }
 }

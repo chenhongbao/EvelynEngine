@@ -22,7 +22,7 @@ namespace Evelyn.Model.CLI
         public NewOrder Order { get; set; }
         public double AverageTradePrice { get; set; }
         public int TradeQuantity { get; set; }
-        public DateTime LastTradeTime {get; set;}
+        public DateTime LastTradeTime { get; set; }
         public OrderStatus Status { get; set; }
     }
 }

@@ -23,13 +23,11 @@ using System;
 namespace Evelyn.UnitTest.CLI
 {
     [TestClass]
-    public class Basic : DataInitialize
+    public class EmptyEngine : DataInitialize
     {
         internal IEvelyn Engine { get; private set; } = IEvelyn.NewInstance;
         internal MockedConfigurator Configurator { get; private set; } = new MockedConfigurator();
         internal MockedManagementService ManagementService { get; private set; } = new MockedManagementService();
-        internal MockedLocalClient ClientA { get; private set; } = new MockedLocalClient();
-        internal MockedLocalClient ClientB { get; private set; } = new MockedLocalClient();
         internal DateOnly TradingDay { get; } = DateOnly.FromDateTime(DateTime.Now);
 
         [TestInitialize]
@@ -37,11 +35,9 @@ namespace Evelyn.UnitTest.CLI
         {
             base.Initialize();
 
-            Engine = IEvelyn.NewInstance;
             Configurator = new MockedConfigurator();
-            ClientA = new MockedLocalClient();
-            ClientB = new MockedLocalClient();
 
+            Engine = IEvelyn.NewInstance;
             Engine.RegisterManagement(ManagementService)
                 .Configure(Configurator);
         }
