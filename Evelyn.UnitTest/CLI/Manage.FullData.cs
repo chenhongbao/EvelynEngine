@@ -39,7 +39,8 @@ namespace Evelyn.UnitTest.CLI
         internal NewOrder OrderA2 { get; private set; } = new NewOrder();
         internal NewOrder OrderA3 { get; private set; } = new NewOrder();
         internal NewOrder OrderB1 { get; private set; } = new NewOrder();
-
+        internal Trade OrderA3Trade { get; private set; } = new Trade();
+        internal Trade OrderB1Trade { get; private set; } = new Trade();
 
         [TestInitialize]
         public new void Initialize()
@@ -105,6 +106,7 @@ namespace Evelyn.UnitTest.CLI
             OrderA1 = new NewOrder
             {
                 InstrumentID = "l2205",
+                ExchangeID = "DCE",
                 TradingDay = DateOnly.MaxValue,
                 TimeStamp = DateTime.MaxValue,
                 OrderID = "MOCKED_ORDER_1",
@@ -117,6 +119,7 @@ namespace Evelyn.UnitTest.CLI
             OrderA2 = new NewOrder
             {
                 InstrumentID = "l2205",
+                ExchangeID = "DCE",
                 TradingDay = DateOnly.MaxValue,
                 TimeStamp = DateTime.MaxValue,
                 OrderID = "MOCKED_ORDER_2",
@@ -129,6 +132,7 @@ namespace Evelyn.UnitTest.CLI
             OrderA3 = new NewOrder
             {
                 InstrumentID = "pp2205",
+                ExchangeID = "DCE",
                 TradingDay = DateOnly.MaxValue,
                 TimeStamp = DateTime.MaxValue,
                 OrderID = "MOCKED_ORDER_3",
@@ -168,6 +172,7 @@ namespace Evelyn.UnitTest.CLI
                 new Instrument
                 {
                     InstrumentID = "pp2205",
+                    ExchangeID = "DCE",
                     TradingDay = TradingDay,
                     Status = InstrumentStatus.Continous,
                     EnterTime = BaseTime
@@ -187,24 +192,25 @@ namespace Evelyn.UnitTest.CLI
              */
             var newOrder = Configurator.Broker.ReceivedNewOrders.Where(received => received.InstrumentID == "pp2205").First();
 
-            Configurator.Broker.MockedTrade(
-                new Trade
-                {
-                    InstrumentID = "pp2205",
-                    TradingDay = TradingDay,
-                    TimeStamp = BaseTime,
-                    OrderID = newOrder.OrderID, /* Engine rewrites order ID. */
-                    Price = 8890,
-                    Quantity = 3,
-                    Direction = Direction.Buy,
-                    Offset = Offset.Open,
-                    TradeID = "MOCKED_ORDER_1_TRADE_1",
-                    TradePrice = 8890,
-                    TradeQuantity = 3,
-                    LeaveQuantity = 0,
-                    Status = OrderStatus.Completed,
-                    Message = "Completed"
-                },
+            OrderA3Trade = new Trade
+            {
+                InstrumentID = "pp2205",
+                ExchangeID = "DCE",
+                TradingDay = TradingDay,
+                TimeStamp = BaseTime,
+                OrderID = newOrder.OrderID, /* Engine rewrites order ID. */
+                Price = 8890,
+                Quantity = 3,
+                Direction = Direction.Buy,
+                Offset = Offset.Open,
+                TradeID = "MOCKED_ORDER_1_TRADE_1",
+                TradePrice = 8890,
+                TradeQuantity = 3,
+                LeaveQuantity = 0,
+                Status = OrderStatus.Completed,
+                Message = "Completed"
+            };
+            Configurator.Broker.MockedTrade(OrderA3Trade,
                 new Description
                 {
                     Code = 0,
@@ -220,6 +226,7 @@ namespace Evelyn.UnitTest.CLI
             OrderB1 = new NewOrder
             {
                 InstrumentID = "l2205",
+                ExchangeID = "DCE",
                 TradingDay = DateOnly.MaxValue,
                 TimeStamp = DateTime.MaxValue,
                 OrderID = "MOCKED_ORDER_1", /* It is OK for client B to have the same ID with client A. */
@@ -243,24 +250,24 @@ namespace Evelyn.UnitTest.CLI
             /*
              * Broker returns part trade for the above order.
              */
-            Configurator.Broker.MockedTrade(
-                new Trade
-                {
-                    InstrumentID = "l2205",
-                    TradingDay = TradingDay,
-                    TimeStamp = BaseTime,
-                    OrderID = newOrderB.OrderID, /* Engine rewrites order ID. */
-                    Price = 8892,
-                    Quantity = 3,
-                    Direction = Direction.Sell,
-                    Offset = Offset.Close,
-                    TradeID = "MOCKED_ORDER_1_TRADE_1",
-                    TradePrice = 8892,
-                    TradeQuantity = 1,
-                    LeaveQuantity = 2,
-                    Status = OrderStatus.Trading,
-                    Message = "Trading"
-                },
+            OrderB1Trade = new Trade
+            {
+                InstrumentID = "l2205",
+                TradingDay = TradingDay,
+                TimeStamp = BaseTime,
+                OrderID = newOrderB.OrderID, /* Engine rewrites order ID. */
+                Price = 8892,
+                Quantity = 3,
+                Direction = Direction.Sell,
+                Offset = Offset.Close,
+                TradeID = "MOCKED_ORDER_1_TRADE_1",
+                TradePrice = 8892,
+                TradeQuantity = 1,
+                LeaveQuantity = 2,
+                Status = OrderStatus.Trading,
+                Message = "Trading"
+            };
+            Configurator.Broker.MockedTrade(OrderB1Trade,
                 new Description
                 {
                     Code = 0,
@@ -405,7 +412,7 @@ namespace Evelyn.UnitTest.CLI
             Assert.IsTrue(clientA.Subscription.Contains("l2205"));
         }
 
-        [TestMethod("Query clients and client's order, then compare them.")]
+        [TestMethod("Query clients and client's order.")]
         public void QueryClientsAndOrder()
         {
             var clients = ManagementService.Management.QueryClients().Result.Clients;
@@ -434,26 +441,98 @@ namespace Evelyn.UnitTest.CLI
              * First order trades l2205.
              */
             var order1 = clientA.Orders.Where(brief => brief.Order.OrderID == "MOCKED_ORDER_1").First();
-            var clientAOrder1 = ManagementService.Management.QueryClientOrder("MOCKED_CLIENT_A", "MOCKED_ORDER_1");
+            var clientAOrder1 = ManagementService.Management.QueryClientOrder("MOCKED_CLIENT_A", "MOCKED_ORDER_1").Result;
 
             Assert.AreEqual("MOCKED_CLIENT_A", order1.ClientID);
             Assert.AreEqual(default(double), order1.AverageTradePrice);
             Assert.AreEqual(0, order1.TradeQuantity);
             Assert.AreEqual(default(DateTime), order1.LastTradeTime);
-
-            /*
-             * The orde is not traded, so status is None.
-             */
             Assert.AreEqual(OrderStatus.None, order1.Status);
+
+            Assert.AreEqual(order1.ClientID, clientAOrder1.ClientID);
+            Assert.AreEqual(order1.Status, clientAOrder1.Status);
 
             /*
              * Check order equality.
              */
             Assert.AreEqual(OrderA1, order1.Order);
+            Assert.AreEqual(order1.Order, clientAOrder1.Order);
+
+            /*
+             * No trade.
+             */
+            Assert.AreEqual(0, clientAOrder1.Trades.Count);
 
             /*
              * Second order trades pp2205.
              */
+            var order3 = clientA.Orders.Where(brief => brief.Order.OrderID == "MOCKED_ORDER_3").First();
+            var clientAOrder3 = ManagementService.Management.QueryClientOrder("MOCKED_CLIENT_A", "MOCKED_ORDER_3").Result;
+
+            Assert.AreEqual("MOCKED_CLIENT_A", order3.ClientID);
+            Assert.AreEqual(8890, order3.AverageTradePrice);
+            Assert.AreEqual(3, order3.TradeQuantity);
+            Assert.AreEqual(BaseTime, order3.LastTradeTime);
+            Assert.AreEqual(OrderStatus.Completed, order3.Status);
+
+            Assert.AreEqual(order3.ClientID, clientAOrder3.ClientID);
+            Assert.AreEqual(order3.Status, clientAOrder3.Status);
+
+            /*
+             * Check order equality.
+             */
+            Assert.AreEqual(OrderA3, order3.Order);
+            Assert.AreEqual(order3.Order, clientAOrder3.Order);
+
+            /*
+             * Check 1 completed trade.
+             */
+            Assert.AreEqual(1, clientAOrder3.Trades.Count);
+
+            /*
+             * Rewrite order ID.
+             */
+            var trade = OrderA3Trade;
+            trade.OrderID = "MOCKED_ORDER_3";
+            Assert.AreEqual(trade, clientAOrder3.Trades[0]);
+
+            /*
+             * Client B has one order and is partly traded.
+             */
+            var clientB = clients.Where(client => client.ClientID == "MOCKED_CLIENT_B").First();
+
+            Assert.AreEqual("MOCKED_CLIENT_B", clientB.ClientID);
+
+            /*
+             * Client B subscribes for two instruments.
+             */
+            Assert.AreEqual(1, clientB.Subscription.Count);
+            Assert.IsTrue(clientB.Subscription.Contains("l2205"));
+
+            /*
+             * Client B has 1 order.
+             */
+            Assert.AreEqual(1, clientB.Orders.Count);
+
+            var order4 = clientB.Orders.Where(brief => brief.Order.OrderID == "MOCKED_ORDER_1").First();
+            var clientBOrder1 = ManagementService.Management.QueryClientOrder("MOCKED_CLIENT_B", "MOCKED_ORDER_1").Result;
+
+            Assert.AreEqual("MOCKED_CLIENT_B", order4.ClientID);
+            Assert.AreEqual(8892, order4.AverageTradePrice);
+            Assert.AreEqual(1, order4.TradeQuantity);
+            Assert.AreEqual(BaseTime, order4.LastTradeTime);
+            Assert.AreEqual(OrderStatus.Trading, order4.Status);
+
+            Assert.AreEqual(order4.ClientID, clientBOrder1.ClientID);
+            Assert.AreEqual(order4.Status, clientBOrder1.Status);
+
+            /*
+             * Check trade.
+             * Rewrite order ID.
+             */
+            trade = OrderB1Trade;
+            trade.OrderID = "MOCKED_ORDER_1";
+            Assert.AreEqual(trade, clientBOrder1.Trades[0]);
         }
     }
 }
