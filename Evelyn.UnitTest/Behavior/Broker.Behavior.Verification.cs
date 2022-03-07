@@ -43,15 +43,15 @@ namespace Evelyn.UnitTest.Behavior
                  {
                      InstrumentID = "l2205",
                      TradingDay = TradingDay,
-                     State = InstrumentStatus.Continous,
-                     StateTimestamp = baseTime
+                     Status = InstrumentStatus.Continous,
+                     EnterTime = baseTime
                  },
                 new Instrument
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
-                    State = InstrumentStatus.Closed,
-                    StateTimestamp = baseTime
+                    Status = InstrumentStatus.Closed,
+                    EnterTime = baseTime
                 })
                 .Configure(Configurator);
 
@@ -72,8 +72,8 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "l2205",
                     TradingDay = TradingDay,
-                    State = InstrumentStatus.Closed,
-                    StateTimestamp = DateTime.Now
+                    Status = InstrumentStatus.Closed,
+                    EnterTime = DateTime.Now
                 });
 
             /*
@@ -123,8 +123,8 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
-                    State = InstrumentStatus.Continous,
-                    StateTimestamp = DateTime.Now
+                    Status = InstrumentStatus.Continous,
+                    EnterTime = DateTime.Now
                 });
 
             /*
@@ -217,8 +217,8 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "l2205",
                     TradingDay = TradingDay,
-                    State = InstrumentStatus.NoTrading,
-                    StateTimestamp = DateTime.Now
+                    Status = InstrumentStatus.NoTrading,
+                    EnterTime = DateTime.Now
                 });
 
             /*
@@ -258,8 +258,8 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "l2205",
                     TradingDay = TradingDay,
-                    State = InstrumentStatus.Continous,
-                    StateTimestamp = DateTime.Now
+                    Status = InstrumentStatus.Continous,
+                    EnterTime = DateTime.Now
                 });
 
             /*
@@ -295,8 +295,8 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
-                    State = InstrumentStatus.Continous,
-                    StateTimestamp = DateTime.Now
+                    Status = InstrumentStatus.Continous,
+                    EnterTime = DateTime.Now
                 });
 
             /*
@@ -323,8 +323,8 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
-                    State = InstrumentStatus.NoTrading,
-                    StateTimestamp = DateTime.Now
+                    Status = InstrumentStatus.NoTrading,
+                    EnterTime = DateTime.Now
                 });
 
             /*
@@ -358,8 +358,8 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
-                    State = InstrumentStatus.Continous,
-                    StateTimestamp = DateTime.Now
+                    Status = InstrumentStatus.Continous,
+                    EnterTime = DateTime.Now
                 });
 
             /*
@@ -386,8 +386,8 @@ namespace Evelyn.UnitTest.Behavior
                 {
                     InstrumentID = "l2205",
                     TradingDay = TradingDay,
-                    State = InstrumentStatus.Continous,
-                    StateTimestamp = DateTime.Now
+                    Status = InstrumentStatus.Continous,
+                    EnterTime = DateTime.Now
                 });
 
             /*

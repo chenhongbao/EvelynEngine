@@ -46,15 +46,15 @@ namespace Evelyn.UnitTest.Behavior
                  {
                      InstrumentID = "l2205",
                      TradingDay = TradingDay,
-                     State = InstrumentStatus.Continous,
-                     StateTimestamp = baseTime
+                     Status = InstrumentStatus.Continous,
+                     EnterTime = baseTime
                  },
                 new Instrument
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
-                    State = InstrumentStatus.Closed,
-                    StateTimestamp = baseTime
+                    Status = InstrumentStatus.Closed,
+                    EnterTime = baseTime
                 })
                 .Configure(Configurator);
 

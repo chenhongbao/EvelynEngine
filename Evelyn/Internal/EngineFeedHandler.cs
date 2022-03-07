@@ -148,7 +148,7 @@ namespace Evelyn.Internal
                 return true;
             }
             else if (option.Trigger.When == TriggerType.StateChange
-                && _instruments.TryGetValue(instrumentID, out var instrument) && instrument.State == option.Trigger.StateChange)
+                && _instruments.TryGetValue(instrumentID, out var instrument) && instrument.Status == option.Trigger.StateChange)
             {
                 return true;
             }

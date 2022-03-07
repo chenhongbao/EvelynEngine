@@ -44,13 +44,13 @@ namespace Evelyn.Model
             set => _tradingDay = value;
         }
 
-        public InstrumentStatus State
+        public InstrumentStatus Status
         {
             get => _instrumentState ?? throw new NullReferenceException("Instrument status has no value.");
             set => _instrumentState = value;
         }
 
-        public DateTime StateTimestamp
+        public DateTime EnterTime
         {
             get => _stateTimestamp ?? throw new NullReferenceException("Instrument status timestamp has no value.");
             set => _stateTimestamp = value;
