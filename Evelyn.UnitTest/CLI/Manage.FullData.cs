@@ -504,7 +504,7 @@ namespace Evelyn.UnitTest.CLI
             Assert.AreEqual("MOCKED_CLIENT_B", clientB.ClientID);
 
             /*
-             * Client B subscribes for two instruments.
+             * Client B subscribes for 1 instrument.
              */
             Assert.AreEqual(1, clientB.Subscription.Count);
             Assert.IsTrue(clientB.Subscription.Contains("l2205"));
