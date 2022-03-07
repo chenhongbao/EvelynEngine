@@ -533,6 +533,11 @@ namespace Evelyn.UnitTest.CLI
             Assert.AreEqual(order4.Order, clientBOrder1.Order);
 
             /*
+             * Client B has 1 trade.
+             */
+            Assert.AreEqual(1, clientBOrder1.Trades.Count);
+
+            /*
              * Check trade.
              * Rewrite order ID.
              */
