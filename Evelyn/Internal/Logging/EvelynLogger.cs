@@ -26,7 +26,7 @@ namespace Evelyn.Internal.Logging
 
         internal EvelynLogger(string loggerName, TextWriter? writer = null)
         {
-            _writer = writer ?? new StreamWriter(loggerName.Replace('\\', '.').Replace('/', '.') + ".log");
+            _writer = writer ?? new StreamWriter(loggerName.Replace('\\', '.').Replace('/', '.') + "." + GetHashCode() + ".log");
             _scopes.Push(new LogScope(string.Empty, 0, _scopes, _writer));
         }
 
