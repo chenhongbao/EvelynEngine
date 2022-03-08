@@ -16,10 +16,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Microsoft.Extensions.Logging;
 
-#if DEBUG
-using Microsoft.Extensions.Logging.Debug;
-#endif
-
 namespace Evelyn.Internal.Logging
 {
     public class Loggers
@@ -30,11 +26,7 @@ namespace Evelyn.Internal.Logging
 
         internal static ILogger CreateLogger(string loggerName)
         {
-#if DEBUG
-            return new DebugLoggerProvider().CreateLogger(loggerName);
-#else
             return new EvelynLogger(loggerName, Writer);
-#endif
         }
     }
 }
