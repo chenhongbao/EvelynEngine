@@ -80,12 +80,12 @@ namespace Evelyn.Internal
     {
         public static string FullName(this DeleteOrder order)
         {
-            return string.Format("DEL_{0}_{1}", order.InstrumentID, order.OrderID);
+            return string.Format("DEL-{{{0}}}{{{1}}}", order.InstrumentID, order.OrderID);
         }
 
         public static string FullName(this NewOrder order)
         {
-            return string.Format("NEW_{0}_{1}_{2}{3}_{4}V{5}", order.InstrumentID, order.OrderID, order.Direction, order.Offset, order.Price, order.Quantity);
+            return string.Format("NEW-{{{0}}}{{{1}}}{{{2}{3}}}{{{4}V{5}}}", order.InstrumentID, order.OrderID, order.Direction, order.Offset, order.Price, order.Quantity);
         }
     }
 }

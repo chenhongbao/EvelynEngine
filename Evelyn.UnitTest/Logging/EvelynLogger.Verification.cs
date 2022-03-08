@@ -16,7 +16,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 #define EVELYN_LOGGER
 
+using Evelyn.Internal;
 using Evelyn.Internal.Logging;
+using Evelyn.Model;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -64,6 +66,32 @@ namespace Evelyn.UnitTest.Logging
              * Check each scope has an extra indentation, and default scope has no indentation.
              */
             System.Console.Error.WriteLine(Loggers.Writer.ToString());
+        }
+
+        [TestMethod("Order full name.")]
+        public void CheckFullName()
+        {
+            var order = new NewOrder
+            {
+                InstrumentID = "l2205",
+                TradingDay = DateOnly.MaxValue,
+                TimeStamp = DateTime.MaxValue,
+                OrderID = "MOCKED_ORDER_1",
+                Price = 8888,
+                Quantity = 2,
+                Direction = Direction.Buy,
+                Offset = Offset.Open,
+            };
+
+            Console.WriteLine(order.FullName());
+
+            var delete = new DeleteOrder
+            {
+                InstrumentID = "pp2205",
+                OrderID = "MOCKED_ORDER_1"
+            };
+
+            Console.WriteLine(delete.FullName());
         }
     }
 }
