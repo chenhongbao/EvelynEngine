@@ -175,7 +175,7 @@ namespace Evelyn.Internal
             removed.ForEach(jobID => _scheduledJobs.Remove(jobID, out var _));
         }
 
-        public void OnInstrument(Instrument instrument)
+        public void OnFeed(Instrument instrument)
         {
             /*
              * Save and send the instrument.

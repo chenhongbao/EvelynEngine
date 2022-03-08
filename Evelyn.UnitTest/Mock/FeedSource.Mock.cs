@@ -57,7 +57,7 @@ namespace Evelyn.UnitTest.Mock
 
         internal void MockedReceive(Instrument instrument)
         {
-            Handler.OnInstrument(instrument);
+            Handler.OnFeed(instrument);
         }
 
         internal void MockedReplySubscribe(string instrumentID, Description description, bool isSubscribed)

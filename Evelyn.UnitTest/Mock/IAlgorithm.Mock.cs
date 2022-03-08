@@ -35,7 +35,7 @@ namespace Evelyn.UnitTest.Mock
             ReceivedOHLCs.Add(ohlc);
         }
 
-        public void OnInstrument(Instrument instrument)
+        public void OnFeed(Instrument instrument)
         {
             ReceivedInstruments.Add(instrument);
         }

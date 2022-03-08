@@ -61,7 +61,7 @@ namespace Evelyn.Internal
 
         public void SendInstrument(Instrument instrument, string clientID)
         {
-            CallClientMethod(clientID, client => client.Algorithm.OnInstrument(instrument));
+            CallClientMethod(clientID, client => client.Algorithm.OnFeed(instrument));
         }
 
         public void SendOHLC(OHLC ohlc, string clientID)

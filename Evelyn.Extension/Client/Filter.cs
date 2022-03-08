@@ -16,16 +16,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
 
-namespace Evelyn.Plugin
+namespace Evelyn.Extension.Client
 {
-    public interface IFeedHandler
+    public class Filter
     {
-        public void OnFeed(Tick tick);
+        public virtual bool DoFeed(Tick tick) => true;
 
-        public void OnFeed(OHLC ohlc);
+        public bool DoFeed(OHLC ohlc) => true;
 
-        public void OnFeed(Instrument instrument);
-
-        public void OnSubscribed(string instrumentID, Description description, bool subscribed);
+        public bool DoFeed(Instrument instrument) => true;
     }
 }
