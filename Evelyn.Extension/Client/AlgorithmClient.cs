@@ -25,7 +25,7 @@ namespace Evelyn.Extension.Client
         private readonly ConcurrentQueue<Filter> _filters = new ConcurrentQueue<Filter>();
         private readonly IAlgorithm _algorithm;
 
-        public string ClientID { get; private init; } 
+        public string ClientID { get; private init; }
         public string[] InstrumentID { get; private set; } = new string[0];
 
         public AlgorithmClient(string clientID, IAlgorithm algorithm)

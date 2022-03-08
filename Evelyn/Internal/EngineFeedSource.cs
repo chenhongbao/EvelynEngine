@@ -102,7 +102,7 @@ namespace Evelyn.Internal
                                 Handler.EraseSubscriptionResponse(instrument, isSubscribed: false);
                                 FeedSource.Unsubscribe(instrument);
                             }
-                            
+
                             _counters.Remove(instrument, out var _);
                         }
                         else

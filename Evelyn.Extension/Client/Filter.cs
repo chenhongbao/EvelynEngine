@@ -22,8 +22,8 @@ namespace Evelyn.Extension.Client
     {
         public virtual bool DoFeed(Tick tick) => true;
 
-        public bool DoFeed(OHLC ohlc) => true;
+        public virtual bool DoFeed(OHLC ohlc) => true;
 
-        public bool DoFeed(Instrument instrument) => true;
+        public virtual bool DoFeed(Instrument instrument) => true;
     }
 }
