@@ -44,7 +44,7 @@ namespace Evelyn.Internal
                 case TriggerType.Time:
                 case TriggerType.StateChange:
 
-                    _clientHandler.FeedHandler.ScheduleJob(_clientID, "Delete:" + deleteOrder.OrderID, () => _clientHandler.OnDeleteOrder(deleteOrder, _clientID), deleteOrder.InstrumentID, optionOrDefault);
+                    _clientHandler.FeedHandler.ScheduleJob(_clientID, deleteOrder.FullName(), () => _clientHandler.OnDeleteOrder(deleteOrder, _clientID), deleteOrder.InstrumentID, optionOrDefault);
                     break;
 
                 case TriggerType.Immediate:
@@ -64,7 +64,7 @@ namespace Evelyn.Internal
                 case TriggerType.Time:
                 case TriggerType.StateChange:
 
-                    _clientHandler.FeedHandler.ScheduleJob(_clientID, "New:" + newOrder.OrderID, () => _clientHandler.OnNewOrder(newOrder, _clientID), newOrder.InstrumentID, optionOrDefault);
+                    _clientHandler.FeedHandler.ScheduleJob(_clientID, newOrder.FullName(), () => _clientHandler.OnNewOrder(newOrder, _clientID), newOrder.InstrumentID, optionOrDefault);
                     break;
 
                 case TriggerType.Immediate:
@@ -73,6 +73,19 @@ namespace Evelyn.Internal
                     _clientHandler.OnNewOrder(newOrder, _clientID);
                     break;
             }
+        }
+    }
+
+    internal static class ScheduledJobExtension
+    {
+        public static string FullName(this DeleteOrder order)
+        {
+            return string.Format("DEL_{0}_{1}", order.InstrumentID, order.OrderID);
+        }
+
+        public static string FullName(this NewOrder order)
+        {
+            return string.Format("NEW_{0}_{1}_{2}{3}_{4}V{5}", order.InstrumentID, order.OrderID, order.Direction, order.Offset, order.Price, order.Quantity);
         }
     }
 }
