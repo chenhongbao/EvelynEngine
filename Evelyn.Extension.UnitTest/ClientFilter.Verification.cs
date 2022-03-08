@@ -92,7 +92,7 @@ namespace Evelyn.Extension.UnitTest
             /*
              * 3. Now block feeds again.
              * 
-             * New status is set to ActionBalance, no need to send more.
+             * New status is set to AuctionBalance, no need to send more.
              */
             client.OnFeed(new Tick());
             client.OnFeed(new OHLC());
