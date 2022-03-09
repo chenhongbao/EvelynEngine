@@ -59,14 +59,10 @@ namespace Evelyn.Extension
                 _initialized = true;
             }
 
-            if (tick.TimeStamp.CompareTo(_timeStamp) < 0)
-            {
-                /*
-                 * Replay the old market data, don't update the OHLC.
-                 */
-                ohlc = default(OHLC);
-                return false;
-            }
+            /*
+             * Let's assure the input ticks have correct fields. So here no need
+             * to tackle the any wrong data.
+             */
 
             if (tick.TimeStamp.Minute == _timeStamp.Minute)
             {
