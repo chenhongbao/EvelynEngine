@@ -26,6 +26,13 @@ namespace Evelyn.Extension.Simulator
         private readonly IEnumerator<FeedEvent> _eventEnumerator;
         private readonly ISet<string> _instrumentID = new HashSet<string>();
 
+        private IFeedHandler? _feed;
+        private IExchangeListener? _exchange;
+
+        private DateOnly _tradingDay = DateOnly.MaxValue;
+
+        internal IFeedHandler Handler => _feed ?? throw new NullReferenceException();
+
         public SimulatedFeedSource(SimulatedBroker broker, List<Tick> ticks, List<Instrument> instruments)
         {
             _broker = broker;
@@ -56,10 +63,13 @@ namespace Evelyn.Extension.Simulator
 
             events.Sort((a, b) => a.TimeStamp.CompareTo(b.TimeStamp));
 
+            _tradingDay = ticks.Count > 0 ? ticks.First().TradingDay
+                : instruments.Count > 0 ? instruments.First().TradingDay : throw new ArgumentException("No elements in both arguments.");
+
             return events;
         }
 
-        public DateOnly TradingDay => throw new NotImplementedException();
+        public DateOnly TradingDay => _tradingDay;
 
         public void Register(IFeedHandler feedHandler, IExchangeListener exchangeListener)
         {
