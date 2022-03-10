@@ -32,10 +32,10 @@ namespace Evelyn.UnitTest.Behavior
         [TestInitialize]
         public void Initialize()
         {
-            var baseTime = DateTime.Now;
+            var BaseTime = DateTime.Now;
 
             Engine = IEvelyn.NewInstance;
-            TradingDay = DateOnly.FromDateTime(baseTime);
+            TradingDay = DateOnly.FromDateTime(BaseTime);
 
             Engine.RegisterLocalClient("MOCKED_CLIENT", Client, "l2205", "pp2205")
                 .RegisterInstrument(
@@ -44,14 +44,14 @@ namespace Evelyn.UnitTest.Behavior
                      InstrumentID = "l2205",
                      TradingDay = TradingDay,
                      Status = InstrumentStatus.Continous,
-                     EnterTime = baseTime
+                     EnterTime = BaseTime
                  },
                 new Instrument
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
                     Status = InstrumentStatus.Closed,
-                    EnterTime = baseTime
+                    EnterTime = BaseTime
                 })
                 .Configure(Configurator);
 

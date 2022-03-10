@@ -236,8 +236,8 @@ namespace Evelyn.UnitTest.Behavior
         [TestMethod("Run order for client service.")]
         public void RunOrderForClientService()
         {
-            var baseTime = DateTime.Now;
-            var baseDay = DateOnly.FromDateTime(baseTime);
+            var BaseTime = DateTime.Now;
+            var TradingDay = DateOnly.FromDateTime(BaseTime);
 
             IEvelyn engine = IEvelyn.NewInstance;
 
@@ -249,16 +249,16 @@ namespace Evelyn.UnitTest.Behavior
                 new Instrument
                 {
                     InstrumentID = "l2205",
-                    TradingDay = baseDay,
+                    TradingDay = TradingDay,
                     Status = InstrumentStatus.Continous,
-                    EnterTime = baseTime
+                    EnterTime = BaseTime
                 },
                 new Instrument
                 {
                     InstrumentID = "pp2205",
-                    TradingDay = baseDay,
+                    TradingDay = TradingDay,
                     Status = InstrumentStatus.Continous,
-                    EnterTime = baseTime
+                    EnterTime = BaseTime
                 })
                 .Configure(mockedConfigurator);
 
@@ -604,8 +604,8 @@ namespace Evelyn.UnitTest.Behavior
         [TestMethod("Run order on local client.")]
         public void RunOrderForLocalClient()
         {
-            var baseTime = DateTime.Now;
-            var baseDay = DateOnly.FromDateTime(baseTime);
+            var BaseTime = DateTime.Now;
+            var TradingDay = DateOnly.FromDateTime(BaseTime);
 
             IEvelyn engine = IEvelyn.NewInstance;
 
@@ -622,16 +622,16 @@ namespace Evelyn.UnitTest.Behavior
                 new Instrument
                 {
                     InstrumentID = "l2205",
-                    TradingDay = baseDay,
+                    TradingDay = TradingDay,
                     Status = InstrumentStatus.Continous,
-                    EnterTime = baseTime
+                    EnterTime = BaseTime
                 },
                 new Instrument
                 {
                     InstrumentID = "pp2205",
-                    TradingDay = baseDay,
+                    TradingDay = TradingDay,
                     Status = InstrumentStatus.Continous,
-                    EnterTime = baseTime
+                    EnterTime = BaseTime
                 })
                 .Configure(mockedConfigurator);
 

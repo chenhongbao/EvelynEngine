@@ -33,8 +33,6 @@ namespace Evelyn.UnitTest.CLI
         internal MockedConfigurator Configurator { get; private set; } = new MockedConfigurator();
         internal MockedClientService ClientService { get; private set; } = new MockedClientService();
         internal MockedManagementService ManagementService { get; private set; } = new MockedManagementService();
-        internal DateTime BaseTime { get; private set; } = DateTime.Now;
-        internal DateOnly TradingDay { get; private set; } = DateOnly.FromDateTime(DateTime.Now);
         internal NewOrder OrderA1 { get; private set; } = new NewOrder();
         internal NewOrder OrderA2 { get; private set; } = new NewOrder();
         internal NewOrder OrderA3 { get; private set; } = new NewOrder();
@@ -47,7 +45,6 @@ namespace Evelyn.UnitTest.CLI
         {
             base.Initialize();
 
-            TradingDay = DateOnly.FromDateTime(BaseTime);
             Engine = IEvelyn.NewInstance;
 
             ClientA = new MockedLocalClient();

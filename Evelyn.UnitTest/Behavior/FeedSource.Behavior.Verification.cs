@@ -44,24 +44,24 @@ namespace Evelyn.UnitTest.Behavior
         [TestMethod("Engine sends registered instruments to clients at configuration.")]
         public void SendRegisterInstruments()
         {
-            var baseTime = DateTime.Now;
-            var baseDay = DateOnly.FromDateTime(baseTime);
+            var BaseTime = DateTime.Now;
+            var TradingDay = DateOnly.FromDateTime(BaseTime);
 
             Engine.RegisterLocalClient("MOCKED_CLIENT_A", ClientA, "l2205", "pp2205")
                 .RegisterInstrument(
                  new Instrument
                  {
                      InstrumentID = "l2205",
-                     TradingDay = baseDay,
+                     TradingDay = TradingDay,
                      Status = InstrumentStatus.Continous,
-                     EnterTime = baseTime
+                     EnterTime = BaseTime
                  },
                 new Instrument
                 {
                     InstrumentID = "pp2205",
-                    TradingDay = baseDay,
+                    TradingDay = TradingDay,
                     Status = InstrumentStatus.Closed,
-                    EnterTime = baseTime
+                    EnterTime = BaseTime
                 })
                 .Configure(Configurator);
 

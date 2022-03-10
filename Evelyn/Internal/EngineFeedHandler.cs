@@ -29,6 +29,12 @@ namespace Evelyn.Internal
         private readonly ConcurrentDictionary<string, bool> _subscriptionResponses = new ConcurrentDictionary<string, bool>();
         private readonly ConcurrentDictionary<string, Instrument> _instruments = new ConcurrentDictionary<string, Instrument>();
         private readonly ConcurrentDictionary<string, ScheduledJob> _scheduledJobs = new ConcurrentDictionary<string, ScheduledJob>();
+        
+        /*
+         * Must be min value here to mark the current tick time is at the begining and none of time condition
+         * order will not be triggered.
+         */
+        private DateTime _trackTime = DateTime.MinValue;
         private int _jobCounter = 0;
 
         private ILogger Logger { get; } = Loggers.CreateLogger(nameof(EngineFeedHandler));
@@ -67,6 +73,7 @@ namespace Evelyn.Internal
             /*
              * Check and run time scheduled jobs.
              */
+            _trackTime = tick.TimeStamp;
             CheckRunScheduledJobs();
         }
 
@@ -144,7 +151,7 @@ namespace Evelyn.Internal
                 return true;
             }
             else if (option.Trigger.When == TriggerType.Time
-                && option.Trigger.Time.CompareTo(DateTime.Now) < 0)
+                && option.Trigger.Time.CompareTo(_trackTime) < 0)
             {
                 return true;
             }

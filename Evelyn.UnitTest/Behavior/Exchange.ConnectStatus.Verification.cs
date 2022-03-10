@@ -28,18 +28,13 @@ namespace Evelyn.UnitTest.Behavior
         internal IEvelyn Engine { get; private set; } = IEvelyn.NewInstance;
         internal MockedConfigurator Configurator { get; private set; } = new MockedConfigurator();
         internal MockedLocalClient Client { get; private set; } = new MockedLocalClient();
-        internal DateOnly TradingDay { get; private set; } = DateOnly.MaxValue;
 
         [TestInitialize]
         public new void Initialize()
         {
             base.Initialize();
 
-            var baseTime = DateTime.Now;
-
             Engine = IEvelyn.NewInstance;
-            TradingDay = DateOnly.FromDateTime(baseTime);
-
             Engine.RegisterLocalClient("MOCKED_CLIENT", Client, "l2205", "pp2205")
                 .RegisterInstrument(
                  new Instrument
@@ -47,14 +42,14 @@ namespace Evelyn.UnitTest.Behavior
                      InstrumentID = "l2205",
                      TradingDay = TradingDay,
                      Status = InstrumentStatus.Continous,
-                     EnterTime = baseTime
+                     EnterTime = BaseTime
                  },
                 new Instrument
                 {
                     InstrumentID = "pp2205",
                     TradingDay = TradingDay,
                     Status = InstrumentStatus.Closed,
-                    EnterTime = baseTime
+                    EnterTime = BaseTime
                 })
                 .Configure(Configurator);
 
