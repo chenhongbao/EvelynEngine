@@ -27,7 +27,8 @@ namespace Evelyn.UnitTest.Behavior
         internal IEvelyn Engine { get; private set; } = IEvelyn.NewInstance;
         internal MockedConfigurator Configurator { get; private set; } = new MockedConfigurator();
         internal MockedLocalClient Client { get; private set; } = new MockedLocalClient();
-        internal DateOnly TradingDay { get; private set; } = DateOnly.MaxValue;
+        internal DateTime BaseTime { get; private set; } = DateTime.Now;
+        internal DateOnly TradingDay { get; private set; } = DateOnly.FromDateTime(DateTime.Now);
 
         [TestInitialize]
         public void Initialize()
@@ -451,9 +452,20 @@ namespace Evelyn.UnitTest.Behavior
                     Trigger = new TriggerCondition
                     {
                         When = TriggerType.Time,
-                        Time = DateTime.Now.AddSeconds(-1)
+                        Time = BaseTime.AddSeconds(-1)
                     }
                 });
+
+            /*
+             * Since engine uses tick's time stamp as current time, it needs to feed
+             * some ticks to trigger the order.
+             */
+            Configurator.FeedSource.MockedReceive(new Tick
+            {
+                InstrumentID = "l2205",
+                ExchangeID = "DCE",
+                TimeStamp = BaseTime
+            });
 
             /*
              * Check broker receives the second request.
