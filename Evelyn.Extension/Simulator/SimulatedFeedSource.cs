@@ -25,13 +25,15 @@ namespace Evelyn.Extension.Simulator
         private readonly IReadOnlyList<FeedEvent> _events;
         private readonly IEnumerator<FeedEvent> _eventEnumerator;
         private readonly ISet<string> _instrumentID = new HashSet<string>();
+        private readonly ISet<string> _subscribed = new HashSet<string>();
 
         private IFeedHandler? _feed;
         private IExchangeListener? _exchange;
-
+        private bool _connected = false;
         private DateOnly _tradingDay = DateOnly.MaxValue;
 
-        internal IFeedHandler Handler => _feed ?? throw new NullReferenceException();
+        internal IFeedHandler Handler => _feed ?? throw new NullReferenceException("Feed handler has no value.");
+        internal IExchangeListener Exchange => _exchange ?? throw new NullReferenceException("Exchange listener has no value.");
 
         public SimulatedFeedSource(SimulatedBroker broker, List<Tick> ticks, List<Instrument> instruments)
         {
@@ -73,33 +75,81 @@ namespace Evelyn.Extension.Simulator
 
         public void Register(IFeedHandler feedHandler, IExchangeListener exchangeListener)
         {
-            throw new NotImplementedException();
+            _feed = feedHandler;
+            _exchange = exchangeListener;
         }
 
         public void Subscribe(string instrumentID)
         {
-            throw new NotImplementedException();
+            if (_instrumentID.Contains(instrumentID))
+            {
+                _subscribed.Add(instrumentID);
+            }
+            else
+            {
+                Handler.OnSubscribed(
+                    instrumentID,
+                    new Description
+                    {
+                        Code = 1001,
+                        Message = "No such instrument " + instrumentID + "."
+                    },
+                    false);
+            }
         }
 
         public void Unsubscribe(string instrumentID)
         {
-            throw new NotImplementedException();
+            if (!_subscribed.Remove(instrumentID))
+            {
+                Handler.OnSubscribed(
+                    instrumentID,
+                    new Description
+                    {
+                        Code = 1002,
+                        Message = "No such subscribed instrument " + instrumentID + "."
+                    },
+                    false);
+            }
         }
 
         public bool Flip()
         {
             lock (_events)
             {
+                if (!_connected)
+                {
+                    _connected = true;
+                    Exchange.OnConnected(_connected);
+                }
+
                 var r = _eventEnumerator.MoveNext();
                 if (r)
                 {
                     /*
                      * Call back.
                      */
+                    var evt = _eventEnumerator.Current;
+
+                    if (evt.Type == typeof(Tick))
+                    {
+                        Handler.OnFeed((Tick)evt.Object);
+                        _broker.Match((Tick)evt.Object);
+                    }
+                    else if (evt.Type == typeof(Instrument))
+                    {
+                        Handler.OnFeed((Instrument)evt.Object);
+                    }
+                    else
+                    {
+                        throw new InvalidDataException("Unknown type " + evt.Type + '.');
+                    }
                 }
                 else
                 {
                     _eventEnumerator.Reset();
+                    _connected = false;
+                    Exchange.OnConnected(_connected);
                 }
 
                 return r;
