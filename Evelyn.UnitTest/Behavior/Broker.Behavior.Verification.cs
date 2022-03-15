@@ -598,7 +598,7 @@ namespace Evelyn.UnitTest.Behavior
 
             Assert.AreEqual("ANY_INSTRUMENT", trade.InstrumentID);
             Assert.AreEqual("NOT_EXIST_ID", trade.OrderID);
-            Assert.AreEqual(OrderStatus.Deleted, trade.Status);
+            Assert.AreEqual(OrderStatus.None, trade.Status);
 
             /*
              * Description has error information.

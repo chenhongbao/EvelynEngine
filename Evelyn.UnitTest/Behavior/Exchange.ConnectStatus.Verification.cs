@@ -211,7 +211,7 @@ namespace Evelyn.UnitTest.Behavior
             Assert.AreEqual(int.MaxValue, trade.Quantity);
             Assert.AreEqual(double.MaxValue, trade.TradePrice);
             Assert.AreEqual(int.MaxValue, trade.TradeQuantity);
-            Assert.AreEqual(OrderStatus.Deleted, trade.Status);
+            Assert.AreEqual(OrderStatus.None, trade.Status);
 
             var description = Client.ReceivedTrades[0].Item2;
 
