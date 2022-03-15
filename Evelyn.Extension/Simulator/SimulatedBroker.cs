@@ -14,8 +14,10 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Internal.Logging;
 using Evelyn.Model;
 using Evelyn.Plugin;
+using Microsoft.Extensions.Logging;
 
 namespace Evelyn.Extension.Simulator
 {
@@ -33,6 +35,7 @@ namespace Evelyn.Extension.Simulator
 
         private IOrderHandler Handler => _handler ?? throw new NullReferenceException("Handler has no value.");
         private IExchangeListener Exchange => _exchange ?? throw new NullReferenceException("Exchange has no value.");
+        private ILogger Logger { get; init; } = Loggers.CreateLogger(nameof(SimulatedBroker));
 
         public string NewOrderID => Interlocked.Increment(ref _orderCounter).ToString();
         public DateOnly TradingDay => _tradingDay;
@@ -48,7 +51,7 @@ namespace Evelyn.Extension.Simulator
                 removed.Status = OrderStatus.Deleted;
                 removed.Message = "Deleted";
 
-                Handler.OnTrade(removed, new Description { Code = 0, Message = "OK" });
+                TryCatch(() => Handler.OnTrade(removed, new Description { Code = 0, Message = "OK" }));
             }
         }
 
@@ -108,13 +111,13 @@ namespace Evelyn.Extension.Simulator
             var trade = InitDeleteTrade(delete);
             trade.Message = "No such order";
 
-            Handler.OnTrade(
+            TryCatch(() => Handler.OnTrade(
                 trade,
                 new Description
                 {
                     Code = 1004,
                     Message = "No such order with ID " + delete.OrderID + "."
-                });
+                }));
         }
 
         private void CallDupOrder(DeleteOrder delete)
@@ -122,13 +125,13 @@ namespace Evelyn.Extension.Simulator
             var trade = InitDeleteTrade(delete);
             trade.Message = "Internal error: found more than one order to delete";
 
-            Handler.OnTrade(
+            TryCatch(() => Handler.OnTrade(
                 trade,
                 new Description
                 {
                     Code = 1003,
                     Message = "Found more than one order to delete with ID " + delete.OrderID + "."
-                });
+                }));
         }
 
         private void CallRemovalFailure(DeleteOrder delete)
@@ -136,13 +139,13 @@ namespace Evelyn.Extension.Simulator
             var trade = InitDeleteTrade(delete);
             trade.Message = "Internal error: removal failed";
 
-            Handler.OnTrade(
+            TryCatch(() => Handler.OnTrade(
                 trade,
                 new Description
                 {
                     Code = 1002,
                     Message = "Order found but can't be removed, " + delete.OrderID + "."
-                });
+                }));
         }
 
         private Trade InitDeleteTrade(DeleteOrder delete)
@@ -190,7 +193,7 @@ namespace Evelyn.Extension.Simulator
         {
             if (_orderID.Contains(order.OrderID))
             {
-                Handler.OnTrade(
+                TryCatch(() => Handler.OnTrade(
                     new Trade
                     {
                         InstrumentID = order.InstrumentID,
@@ -212,7 +215,7 @@ namespace Evelyn.Extension.Simulator
                     {
                         Code = 1001,
                         Message = "Duplicated order with ID " + order.OrderID + "."
-                    });
+                    }));
             }
             else
             {
@@ -304,13 +307,116 @@ namespace Evelyn.Extension.Simulator
                 {
                     bucket.Orders.ForEach(order =>
                     {
-                        // TODO Trade order according to bid volume.
+                        /*
+                         * Copy by value.
+                         */
+                        Trade trade = order;
+                        trade.TradePrice = tick.BidPrice;
+
+                        /*
+                         * Trade order according to bid volume. 
+                         */
+                        if (order.LeaveQuantity <= tick.BidVolume)
+                        {
+                            /*
+                             * Completed.
+                             */
+                            trade.TradeQuantity = order.LeaveQuantity;
+                            trade.LeaveQuantity -= trade.TradeQuantity;
+                            trade.Status = OrderStatus.Completed;
+                            trade.Message = "Completed";
+
+                            /*
+                             * Update order.
+                             */
+                            order.LeaveQuantity = 0;
+                            order.Status = OrderStatus.Completed;
+                        }
+                        else
+                        {
+                            trade.TradeQuantity = (int)tick.BidVolume;
+                            trade.LeaveQuantity -= trade.TradeQuantity;
+                            trade.Status = OrderStatus.Trading;
+                            trade.Message = "Trading";
+
+                            order.LeaveQuantity = trade.LeaveQuantity;
+                            order.Status = OrderStatus.Trading;
+                        }
+
+                        trade.TradeID = trade.OrderID + (trade.Quantity - trade.LeaveQuantity).ToString("{0:D2}");
+
+                        TryCatch(() => Handler.OnTrade(trade, new Description { }));
                     });
 
-                    bucket.Orders.RemoveAll(order => order.Status == OrderStatus.Completed);
+                    bucket.Orders.RemoveAll(order => order.LeaveQuantity == 0);
                 });
 
+            /*
+             * Sort buckets by price from low to high.
+             */
+            _buySide.Where(bucket => bucket.Price >= tick.AskPrice).ToList()
+                .ForEach(bucket =>
+                {
+                    bucket.Orders.ForEach(order =>
+                    {
+                        /*
+                         * Copy by value.
+                         */
+                        Trade trade = order;
+                        trade.TradePrice = tick.AskPrice;
 
+                        /*
+                         * Trade order according to bid volume. 
+                         */
+                        if (order.LeaveQuantity <= tick.AskVolume)
+                        {
+                            /*
+                             * Completed.
+                             */
+                            trade.TradeQuantity = order.LeaveQuantity;
+                            trade.LeaveQuantity -= trade.TradeQuantity;
+                            trade.Status = OrderStatus.Completed;
+                            trade.Message = "Completed";
+
+                            /*
+                             * Update order.
+                             */
+                            order.LeaveQuantity = 0;
+                            order.Status = OrderStatus.Completed;
+                        }
+                        else
+                        {
+                            trade.TradeQuantity = (int)tick.AskVolume;
+                            trade.LeaveQuantity -= trade.TradeQuantity;
+                            trade.Status = OrderStatus.Trading;
+                            trade.Message = "Trading";
+
+                            order.LeaveQuantity = trade.LeaveQuantity;
+                            order.Status = OrderStatus.Trading;
+                        }
+
+                        /*
+                         * Last total trade quantity as suffix of trade ID.
+                         */
+                        trade.TradeID = trade.OrderID + (trade.Quantity - trade.LeaveQuantity).ToString("{0:D2}");
+
+                        TryCatch(() => Handler.OnTrade(trade, new Description { }));
+                    });
+
+                    bucket.Orders.RemoveAll(order => order.LeaveQuantity == 0);
+                });
+        }
+
+        private void TryCatch(Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogInformation("{0}\n{1}", ex.Message, ex.StackTrace);
+            }
         }
     }
 }
