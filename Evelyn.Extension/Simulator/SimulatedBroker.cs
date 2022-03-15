@@ -62,57 +62,13 @@ namespace Evelyn.Extension.Simulator
                  */
                 if (!RemoveTrade(sell.First(), delete, out removed))
                 {
-                    Handler.OnTrade(
-                        new Trade
-                        {
-                            InstrumentID = delete.InstrumentID,
-                            OrderID = delete.OrderID,
-                            TradingDay = TradingDay,
-                            TimeStamp = DateTime.Now,
-                            Price = double.MaxValue,
-                            Quantity = int.MaxValue,
-                            Direction = default(Direction),
-                            Offset = default(Offset),
-                            TradeID = String.Empty,
-                            TradePrice = double.MaxValue,
-                            TradeQuantity = int.MaxValue,
-                            LeaveQuantity = int.MaxValue,
-                            Status = OrderStatus.None,
-                            Message = "Removal failed"
-                        },
-                        new Description
-                        {
-                            Code = 1002,
-                            Message = "Order found but can't be removed, " + delete.OrderID + "."
-                        });
+                    CallRemovalFailure(delete);
                     return false;
                 }
             }
             else if (sell.Count() > 1)
             {
-                Handler.OnTrade(
-                    new Trade
-                    {
-                        InstrumentID = delete.InstrumentID,
-                        OrderID = delete.OrderID,
-                        TradingDay = TradingDay,
-                        TimeStamp = DateTime.Now,
-                        Price = double.MaxValue,
-                        Quantity = int.MaxValue,
-                        Direction = default(Direction),
-                        Offset = default(Offset),
-                        TradeID = String.Empty,
-                        TradePrice = double.MaxValue,
-                        TradeQuantity = int.MaxValue,
-                        LeaveQuantity = int.MaxValue,
-                        Status = OrderStatus.None,
-                        Message = "Found more than one order to delete"
-                    },
-                    new Description
-                    {
-                        Code = 1003,
-                        Message = "Found more than one order to delete with ID " + delete.OrderID + "."
-                    });
+                CallDupOrder(delete);
 
                 removed = new Trade();
                 return false;
@@ -124,86 +80,20 @@ namespace Evelyn.Extension.Simulator
                 {
                     if (!RemoveTrade(buy.First(), delete, out removed))
                     {
-                        Handler.OnTrade(
-                            new Trade
-                            {
-                                InstrumentID = delete.InstrumentID,
-                                OrderID = delete.OrderID,
-                                TradingDay = TradingDay,
-                                TimeStamp = DateTime.Now,
-                                Price = double.MaxValue,
-                                Quantity = int.MaxValue,
-                                Direction = default(Direction),
-                                Offset = default(Offset),
-                                TradeID = String.Empty,
-                                TradePrice = double.MaxValue,
-                                TradeQuantity = int.MaxValue,
-                                LeaveQuantity = int.MaxValue,
-                                Status = OrderStatus.None,
-                                Message = "Removal failed"
-                            },
-                            new Description
-                            {
-                                Code = 1002,
-                                Message = "Order found but can't be removed, " + delete.OrderID + "."
-                            });
+                        CallRemovalFailure(delete);
                         return false;
                     }
                 }
                 else if (buy.Count() > 1)
                 {
-                    Handler.OnTrade(
-                        new Trade
-                        {
-                            InstrumentID = delete.InstrumentID,
-                            OrderID = delete.OrderID,
-                            TradingDay = TradingDay,
-                            TimeStamp = DateTime.Now,
-                            Price = double.MaxValue,
-                            Quantity = int.MaxValue,
-                            Direction = default(Direction),
-                            Offset = default(Offset),
-                            TradeID = String.Empty,
-                            TradePrice = double.MaxValue,
-                            TradeQuantity = int.MaxValue,
-                            LeaveQuantity = int.MaxValue,
-                            Status = OrderStatus.None,
-                            Message = "Found more than one order to delete"
-                        },
-                        new Description
-                        {
-                            Code = 1003,
-                            Message = "Found more than one order to delete with ID " + delete.OrderID + "."
-                        });
+                    CallDupOrder(delete);
 
                     removed = new Trade();
                     return false;
                 }
                 else
                 {
-                    Handler.OnTrade(
-                        new Trade
-                        {
-                            InstrumentID = delete.InstrumentID,
-                            OrderID = delete.OrderID,
-                            TradingDay = TradingDay,
-                            TimeStamp = DateTime.Now,
-                            Price = double.MaxValue,
-                            Quantity = int.MaxValue,
-                            Direction = default(Direction),
-                            Offset = default(Offset),
-                            TradeID = String.Empty,
-                            TradePrice = double.MaxValue,
-                            TradeQuantity = int.MaxValue,
-                            LeaveQuantity = int.MaxValue,
-                            Status = OrderStatus.None,
-                            Message = "No such order"
-                        },
-                        new Description
-                        {
-                            Code = 1004,
-                            Message = "No such order with ID " + delete.OrderID + "."
-                        });
+                    CallNoSuchOrder(delete);
 
                     removed = new Trade();
                     return false;
@@ -211,6 +101,69 @@ namespace Evelyn.Extension.Simulator
             }
 
             return true;
+        }
+
+        private void CallNoSuchOrder(DeleteOrder delete)
+        {
+            var trade = InitDeleteTrade(delete);
+            trade.Message = "No such order";
+
+            Handler.OnTrade(
+                trade,
+                new Description
+                {
+                    Code = 1004,
+                    Message = "No such order with ID " + delete.OrderID + "."
+                });
+        }
+
+        private void CallDupOrder(DeleteOrder delete)
+        {
+            var trade = InitDeleteTrade(delete);
+            trade.Message = "Internal error: found more than one order to delete";
+
+            Handler.OnTrade(
+                trade,
+                new Description
+                {
+                    Code = 1003,
+                    Message = "Found more than one order to delete with ID " + delete.OrderID + "."
+                });
+        }
+
+        private void CallRemovalFailure(DeleteOrder delete)
+        {
+            var trade = InitDeleteTrade(delete);
+            trade.Message = "Internal error: removal failed";
+
+            Handler.OnTrade(
+                trade,
+                new Description
+                {
+                    Code = 1002,
+                    Message = "Order found but can't be removed, " + delete.OrderID + "."
+                });
+        }
+
+        private Trade InitDeleteTrade(DeleteOrder delete)
+        {
+            return new Trade
+            {
+                InstrumentID = delete.InstrumentID,
+                OrderID = delete.OrderID,
+                TradingDay = TradingDay,
+                TimeStamp = DateTime.Now,
+                Price = double.MaxValue,
+                Quantity = int.MaxValue,
+                Direction = default(Direction),
+                Offset = default(Offset),
+                TradeID = String.Empty,
+                TradePrice = double.MaxValue,
+                TradeQuantity = int.MaxValue,
+                LeaveQuantity = int.MaxValue,
+                Status = OrderStatus.None,
+                Message = String.Empty
+            };
         }
 
         private bool RemoveTrade(Bucket bucket, DeleteOrder delete, out Trade removed)
