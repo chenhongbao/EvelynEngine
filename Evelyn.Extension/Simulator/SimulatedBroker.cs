@@ -296,7 +296,21 @@ namespace Evelyn.Extension.Simulator
 
         private void MatchBook(Tick tick)
         {
-            // TODO Match book.
+            /*
+             * Sort buckets by price from high to low.
+             */
+            _sellSide.Where(bucket => bucket.Price <= tick.BidPrice).ToList()
+                .ForEach(bucket =>
+                {
+                    bucket.Orders.ForEach(order =>
+                    {
+                        // TODO Trade order according to bid volume.
+                    });
+
+                    bucket.Orders.RemoveAll(order => order.Status == OrderStatus.Completed);
+                });
+
+
         }
     }
 }
