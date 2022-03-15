@@ -91,7 +91,7 @@ namespace Evelyn.Extension.Simulator
                     instrumentID,
                     new Description
                     {
-                        Code = 1001,
+                        Code = 2001,
                         Message = "No such instrument " + instrumentID + "."
                     },
                     false);

@@ -41,6 +41,10 @@ namespace Evelyn.Extension.Simulator
         {
             if (TryDebook(delete, out var removed))
             {
+                removed.TimeStamp = DateTime.Now;
+                removed.TradeID = String.Empty;
+                removed.TradePrice = 0;
+                removed.TradeQuantity = 0;
                 removed.Status = OrderStatus.Deleted;
                 removed.Message = "Deleted";
 
@@ -73,7 +77,7 @@ namespace Evelyn.Extension.Simulator
                             TradePrice = double.MaxValue,
                             TradeQuantity = int.MaxValue,
                             LeaveQuantity = int.MaxValue,
-                            Status = OrderStatus.Deleted,
+                            Status = OrderStatus.None,
                             Message = "Removal failed"
                         },
                         new Description
@@ -101,7 +105,7 @@ namespace Evelyn.Extension.Simulator
                         TradePrice = double.MaxValue,
                         TradeQuantity = int.MaxValue,
                         LeaveQuantity = int.MaxValue,
-                        Status = OrderStatus.Deleted,
+                        Status = OrderStatus.None,
                         Message = "Found more than one order to delete"
                     },
                     new Description
@@ -135,7 +139,7 @@ namespace Evelyn.Extension.Simulator
                                 TradePrice = double.MaxValue,
                                 TradeQuantity = int.MaxValue,
                                 LeaveQuantity = int.MaxValue,
-                                Status = OrderStatus.Deleted,
+                                Status = OrderStatus.None,
                                 Message = "Removal failed"
                             },
                             new Description
@@ -163,7 +167,7 @@ namespace Evelyn.Extension.Simulator
                             TradePrice = double.MaxValue,
                             TradeQuantity = int.MaxValue,
                             LeaveQuantity = int.MaxValue,
-                            Status = OrderStatus.Deleted,
+                            Status = OrderStatus.None,
                             Message = "Found more than one order to delete"
                         },
                         new Description
@@ -192,7 +196,7 @@ namespace Evelyn.Extension.Simulator
                             TradePrice = double.MaxValue,
                             TradeQuantity = int.MaxValue,
                             LeaveQuantity = int.MaxValue,
-                            Status = OrderStatus.Deleted,
+                            Status = OrderStatus.None,
                             Message = "No such order"
                         },
                         new Description
@@ -211,7 +215,7 @@ namespace Evelyn.Extension.Simulator
 
         private bool RemoveTrade(Bucket bucket, DeleteOrder delete, out Trade removed)
         {
-            foreach(var trade in bucket.Orders)
+            foreach (var trade in bucket.Orders)
             {
                 if (trade.OrderID == delete.OrderID && trade.InstrumentID == delete.InstrumentID)
                 {
@@ -253,7 +257,7 @@ namespace Evelyn.Extension.Simulator
                     },
                     new Description
                     {
-                        Code = 1004,
+                        Code = 1001,
                         Message = "Duplicated order with ID " + order.OrderID + "."
                     });
             }
@@ -275,34 +279,48 @@ namespace Evelyn.Extension.Simulator
             }
         }
 
-        private void Enbook(NewOrder newOrder, List<Bucket> buckets)
+        private void Enbook(NewOrder order, List<Bucket> buckets)
         {
-            var foundBuckets = buckets.Where(bucket => bucket.Price == newOrder.Price);
+            var foundBuckets = buckets.Where(bucket => bucket.Price == order.Price);
             if (foundBuckets.Count() == 0)
             {
                 buckets.Add(new Bucket
                 {
-                    Price = newOrder.Price,
-                    Orders = new List<Trade>
-                    {
-                        new Trade
-                        {
-                            // TODO Move data from order to trade.
-                        }
-                    }
+                    Price = order.Price,
+                    Orders = new List<Trade> { InitializeTrade(order) }
                 });
             }
             else if (foundBuckets.Count() == 1)
             {
-                foundBuckets.First().Orders.Add(new Trade
-                {
-                    // TODO Move data from order to trade.
-                });
+                foundBuckets.First().Orders.Add(InitializeTrade(order));
             }
             else
             {
-                throw new InvalidDataException("Duplicated bucket for price " + newOrder.Price + ".");
+                throw new InvalidDataException("Duplicated bucket for price " + order.Price + ".");
             }
+        }
+
+        private Trade InitializeTrade(NewOrder order)
+        {
+            return new Trade
+            {
+                InstrumentID = order.InstrumentID,
+                ExchangeID = order.ExchangeID,
+                Symbol = order.Symbol,
+                OrderID = order.OrderID,
+                TradingDay = TradingDay,
+                TimeStamp = DateTime.Now,
+                Price = order.Price,
+                Quantity = order.Quantity,
+                Direction = order.Direction,
+                Offset = order.Offset,
+                TradeID = String.Empty,
+                TradePrice = double.MaxValue,
+                TradeQuantity = 0,
+                LeaveQuantity = order.Quantity,
+                Status = OrderStatus.Trading,
+                Message = "Trading"
+            };
         }
 
         public void Register(IOrderHandler orderHandler, IExchangeListener exchangeListener)
