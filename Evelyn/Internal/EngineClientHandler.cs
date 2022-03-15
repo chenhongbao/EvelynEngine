@@ -105,7 +105,7 @@ namespace Evelyn.Internal
                             TradePrice = double.MaxValue,
                             TradeQuantity = int.MaxValue,
                             LeaveQuantity = int.MaxValue,
-                            Status = OrderStatus.Deleted,
+                            Status = OrderStatus.None, /* Order deletion failed, and order status is unknown. */
                             Message = "Exchange disconnected."
                         },
                         new Description
@@ -156,7 +156,7 @@ namespace Evelyn.Internal
                             TradePrice = double.MaxValue,
                             TradeQuantity = int.MaxValue,
                             LeaveQuantity = int.MaxValue,
-                            Status = OrderStatus.Deleted,
+                            Status = OrderStatus.None, /* Order deletion failed, and order status is unknown. */
                             Message = "No such order."
                         },
                         new Description
