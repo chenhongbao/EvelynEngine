@@ -14,17 +14,14 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Evelyn.Model;
 
-namespace Evelyn.Extension.UnitTest
+namespace Evelyn.Extension.Simulator
 {
-    [TestClass]
-    public class SimulatedConfiguratorBadcalls : SimulatedConfiguratorData
+    internal class ExecutingOrder
     {
-        [TestInitialize]
-        public new void Initialize()
-        {
-            base.Initialize();
-        }
+        internal NewOrder OriginalOrder { get; init; }
+
+        internal int LeaveQuantity { get; set; }
     }
 }

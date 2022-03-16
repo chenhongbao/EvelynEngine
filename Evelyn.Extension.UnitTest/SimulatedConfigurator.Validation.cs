@@ -14,11 +14,9 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using Evelyn.Extension.Simulator;
 using Evelyn.Model;
 using Evelyn.Plugin;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -54,11 +52,21 @@ namespace Evelyn.Extension.UnitTest
             Assert.IsTrue(FeedHandler.Subscriptions[0].Item3);
 
             /*
+             * Then subscribe an non existing instrument and receive error response.
+             */
+            FeedSource.Subscribe("ANY_ID");
+
+            Assert.AreEqual(2, FeedHandler.Subscriptions.Count);
+            Assert.AreEqual("ANY_ID", FeedHandler.Subscriptions[1].Item1);
+            Assert.AreNotEqual(0, FeedHandler.Subscriptions[1].Item2.Code);
+            Assert.IsFalse(FeedHandler.Subscriptions[1].Item3);
+
+            /*
              * 1. Mock feeds, send the first instrument status update.
              */
             Assert.IsTrue(FeedSource.Flip());
             Assert.IsTrue(FeedSourceExchange.Connected);
-            
+
             /*
              * Feed handler receives first instrument feed.
              */
@@ -91,7 +99,7 @@ namespace Evelyn.Extension.UnitTest
             var correctTicks = Ticks.Where(tick => tick.InstrumentID == "l2205").ToList();
             Assert.AreEqual(correctTicks.Count(), FeedHandler.Ticks.Count);
 
-            for(int i = 0; i < FeedHandler.Ticks.Count; ++i)
+            for (int i = 0; i < FeedHandler.Ticks.Count; ++i)
             {
                 Assert.AreEqual(correctTicks[i], FeedHandler.Ticks[i]);
             }
@@ -120,21 +128,236 @@ namespace Evelyn.Extension.UnitTest
              */
             FeedSource.Unsubscribe("l2205");
 
-            Assert.AreEqual(2, FeedHandler.Subscriptions.Count);
-            Assert.AreEqual("l2205", FeedHandler.Subscriptions[1].Item1);
-            Assert.IsFalse(FeedHandler.Subscriptions[1].Item3);
+            Assert.AreEqual(3, FeedHandler.Subscriptions.Count);
+            Assert.AreEqual("l2205", FeedHandler.Subscriptions[2].Item1);
+            Assert.AreEqual(0, FeedHandler.Subscriptions[2].Item2.Code);
+            Assert.IsFalse(FeedHandler.Subscriptions[2].Item3);
+
+            /*
+             * Unsubscribe the same instrument again and receive error response.
+             */
+            FeedSource.Unsubscribe("l2205");
+
+            Assert.AreEqual(4, FeedHandler.Subscriptions.Count);
+            Assert.AreEqual("l2205", FeedHandler.Subscriptions[3].Item1);
+            Assert.AreNotEqual(0, FeedHandler.Subscriptions[3].Item2.Code);
+            Assert.IsFalse(FeedHandler.Subscriptions[3].Item3);
         }
 
         [TestMethod("Trade orders.")]
         public void TradeOrders()
         {
+            /*
+             * Request two orders, one is completed at one trade, and the other is completed by two trades.
+             * 
+             * 1. Request two trades.
+             * 2. Mock feeds and have the first order complete trade.
+             * 3. Mock feeds and have the second order trade a part.
+             * 4. Mock feeds and have the second order compelte trade.
+             */
+            Broker.Register(OrderHandler, BrokerExchange);
+            FeedSource.Register(FeedHandler, FeedSourceExchange);
 
+            Broker.New(new NewOrder
+            {
+                InstrumentID = "l2205",
+                ExchangeID = "DCE",
+                OrderID = Broker.NewOrderID,
+                Price = 8899,
+                Quantity = 5,
+                Direction = Direction.Buy,
+                Offset = Offset.Open
+            });
+
+            Broker.New(new NewOrder
+            {
+                InstrumentID = "l2205",
+                ExchangeID = "DCE",
+                OrderID = Broker.NewOrderID,
+                Price = 8898,
+                Quantity = 15,
+                Direction = Direction.Buy,
+                Offset = Offset.Open
+            });
+
+            /*
+             * Send first two instrument status updates.
+             */
+            Assert.IsTrue(FeedSource.Flip());
+            Assert.IsTrue(FeedSource.Flip());
+
+            /*
+             * 1. Send the first tick, no order trade.
+             */
+            Assert.IsTrue(FeedSource.Flip());
+            Assert.AreEqual(0, OrderHandler.Trades.Count);
+
+            /*
+             * 2. Send the second tick, the first order is completed, and the
+             *    second order is not traded.
+             */
+            Assert.IsTrue(FeedSource.Flip());
+            Assert.AreEqual(1, OrderHandler.Trades.Count);
+
+            var trade = OrderHandler.Trades[0].Item1;
+
+            Assert.AreEqual("l2205", trade.InstrumentID);
+            Assert.AreEqual(8899, trade.TradePrice);
+            Assert.AreEqual(5, trade.Quantity);
+            Assert.AreEqual(5, trade.TradeQuantity);
+            Assert.AreEqual(0, trade.LeaveQuantity);
+            Assert.AreEqual(OrderStatus.Completed, trade.Status);
+
+            /*
+             * 3. Send the third tick and the second order trades a portion
+             */
+            Assert.IsTrue(FeedSource.Flip());
+            Assert.AreEqual(2, OrderHandler.Trades.Count);
+
+            trade = OrderHandler.Trades[1].Item1; ;
+
+            Assert.AreEqual("l2205", trade.InstrumentID);
+            Assert.AreEqual(8898, trade.TradePrice);
+            Assert.AreEqual(15, trade.Quantity);
+            Assert.AreEqual(10, trade.TradeQuantity);
+            Assert.AreEqual(5, trade.LeaveQuantity);
+            Assert.AreEqual(OrderStatus.Trading, trade.Status);
+
+            /*
+             * 4. Send the last tick and the second order is completed.
+             */
+            Assert.IsTrue(FeedSource.Flip());
+            Assert.AreEqual(3, OrderHandler.Trades.Count);
+
+            trade = OrderHandler.Trades[2].Item1; ;
+
+            Assert.AreEqual("l2205", trade.InstrumentID);
+            Assert.AreEqual(8898, trade.TradePrice);
+            Assert.AreEqual(15, trade.Quantity);
+            Assert.AreEqual(5, trade.TradeQuantity);
+            Assert.AreEqual(0, trade.LeaveQuantity);
+            Assert.AreEqual(OrderStatus.Completed, trade.Status);
         }
 
         [TestMethod("Request but delete orders.")]
         public void DeleteOrders()
         {
+            /*
+             * Request two orders, one is untouched, and the other is proportionally traded.
+             * And the two orders are deleted.
+             */
+            Broker.Register(OrderHandler, BrokerExchange);
+            FeedSource.Register(FeedHandler, FeedSourceExchange);
 
+            var orderID1 = Broker.NewOrderID;
+            var orderID2 = Broker.NewOrderID;
+
+            Broker.New(new NewOrder
+            {
+                InstrumentID = "l2205",
+                ExchangeID = "DCE",
+                OrderID = orderID1,
+                Price = 8899,
+                Quantity = 5,
+                Direction = Direction.Buy,
+                Offset = Offset.Open
+            });
+
+            Broker.New(new NewOrder
+            {
+                InstrumentID = "l2205",
+                ExchangeID = "DCE",
+                OrderID = orderID2,
+                Price = 8898,
+                Quantity = 15,
+                Direction = Direction.Buy,
+                Offset = Offset.Open
+            });
+
+            /*
+             * Send first two instrument status updates.
+             */
+            Assert.IsTrue(FeedSource.Flip());
+            Assert.IsTrue(FeedSource.Flip());
+
+            /*
+             * Send the first tick, no order trade.
+             */
+            Assert.IsTrue(FeedSource.Flip());
+            Assert.AreEqual(0, OrderHandler.Trades.Count);
+
+            /*
+             * 1. Delete the first order.
+             */
+            Broker.Delete(new DeleteOrder { OrderID = orderID1, InstrumentID = "l2205" });
+
+            /*
+             * Handler receives the first trade with Deleted status.
+             */
+            Assert.AreEqual(1, OrderHandler.Trades.Count);
+
+            var trade = OrderHandler.Trades[0].Item1;
+
+            Assert.AreEqual("l2205", trade.InstrumentID);
+            Assert.AreEqual(orderID1, trade.OrderID);
+            Assert.AreEqual(5, trade.Quantity);
+            Assert.AreEqual(8899, trade.Price);
+            Assert.AreEqual(double.MaxValue, trade.TradePrice);
+            Assert.AreEqual(0, trade.TradeQuantity);
+            Assert.AreEqual(5, trade.LeaveQuantity);
+            Assert.AreEqual(OrderStatus.Deleted, trade.Status);
+
+            /*
+             * 2. Send the following two ticks and it trades a proportion.
+             * 
+             * Now the handler should receive the second trade response.
+             */
+            Assert.IsTrue(FeedSource.Flip());
+            Assert.IsTrue(FeedSource.Flip());
+
+            Assert.AreEqual(2, OrderHandler.Trades.Count);
+
+            /*
+             * 3. Delete the order.
+             */
+            Broker.Delete(new DeleteOrder { OrderID = orderID2, InstrumentID = "l2205" });
+
+            Assert.AreEqual(3, OrderHandler.Trades.Count);
+
+            trade = OrderHandler.Trades[2].Item1;
+
+            Assert.AreEqual("l2205", trade.InstrumentID);
+            Assert.AreEqual(orderID2, trade.OrderID);
+            Assert.AreEqual(15, trade.Quantity);
+            Assert.AreEqual(8898, trade.Price);
+            Assert.AreEqual(double.MaxValue, trade.TradePrice);
+            Assert.AreEqual(0, trade.TradeQuantity);
+            Assert.AreEqual(5, trade.LeaveQuantity);
+            Assert.AreEqual(OrderStatus.Deleted, trade.Status);
+
+            /*
+             * 4. Delete a non existing order.
+             * 
+             * Delete the second order again.
+             */
+            Broker.Delete(new DeleteOrder { OrderID = orderID2, InstrumentID = "l2205" });
+
+            Assert.AreEqual(4, OrderHandler.Trades.Count);
+
+            trade = OrderHandler.Trades[3].Item1;
+
+            Assert.AreEqual("l2205", trade.InstrumentID);
+            Assert.AreEqual(orderID2, trade.OrderID);
+            Assert.AreEqual(int.MaxValue, trade.Quantity);
+            Assert.AreEqual(double.MaxValue, trade.Price);
+            Assert.AreEqual(double.MaxValue, trade.TradePrice);
+            Assert.AreEqual(int.MaxValue, trade.TradeQuantity);
+            Assert.AreEqual(int.MaxValue, trade.LeaveQuantity);
+            Assert.AreEqual(OrderStatus.None, trade.Status);
+
+            var description = OrderHandler.Trades[3].Item2;
+
+            Assert.AreNotEqual(0, description.Code);
         }
     }
 

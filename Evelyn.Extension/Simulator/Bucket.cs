@@ -18,9 +18,9 @@ using Evelyn.Model;
 
 namespace Evelyn.Extension.Simulator
 {
-    internal struct Bucket
+    internal class Bucket
     {
         internal double Price { get; init; }
-        internal List<Trade> Orders { get; init; }
+        internal List<ExecutingOrder> Orders { get; init; } = new List<ExecutingOrder>();
     }
 }

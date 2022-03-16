@@ -44,9 +44,6 @@ namespace Evelyn.Extension.Simulator
         {
             if (TryDebook(delete, out var removed))
             {
-                removed.TimeStamp = DateTime.Now;
-                removed.TradeID = String.Empty;
-                removed.TradePrice = 0;
                 removed.TradeQuantity = 0;
                 removed.Status = OrderStatus.Deleted;
                 removed.Message = "Deleted";
@@ -171,22 +168,37 @@ namespace Evelyn.Extension.Simulator
 
         private bool RemoveTrade(Bucket bucket, DeleteOrder delete, out Trade removed)
         {
-            foreach (var trade in bucket.Orders)
+            ExecutingOrder? toRemove = null;
+            Trade removeTrade = default;
+
+            foreach (var exec in bucket.Orders)
             {
-                if (trade.OrderID == delete.OrderID && trade.InstrumentID == delete.InstrumentID)
+                if (exec.OriginalOrder.OrderID == delete.OrderID && exec.OriginalOrder.InstrumentID == delete.InstrumentID)
                 {
-                    removed = trade;
-                    return true;
+                    removeTrade = InitializeTrade(exec.OriginalOrder);
+                    removeTrade.LeaveQuantity = exec.LeaveQuantity;
+
+                    toRemove = exec;
+                    break;
                 }
             }
 
-            removed = new Trade();
-            return false;
+            if (toRemove != null)
+            {
+                bucket.Orders.Remove(toRemove);
+                removed = removeTrade;
+                return true;
+            }
+            else
+            {
+                removed = new Trade();
+                return false;
+            }
         }
 
         private IEnumerable<Bucket> FindDeleted(DeleteOrder delete, List<Bucket> buckets)
         {
-            return buckets.Where(bucket => bucket.Orders.Where(trade => trade.InstrumentID == delete.InstrumentID && trade.OrderID == delete.OrderID).Count() > 0);
+            return buckets.Where(bucket => bucket.Orders.Where(exec => exec.OriginalOrder.InstrumentID == delete.InstrumentID && exec.OriginalOrder.OrderID == delete.OrderID).Count() > 0);
         }
 
         public void New(NewOrder order)
@@ -243,12 +255,12 @@ namespace Evelyn.Extension.Simulator
                 buckets.Add(new Bucket
                 {
                     Price = order.Price,
-                    Orders = new List<Trade> { InitializeTrade(order) }
+                    Orders = new List<ExecutingOrder> { new ExecutingOrder { OriginalOrder = order, LeaveQuantity = order.Quantity } }
                 });
             }
             else if (foundBuckets.Count() == 1)
             {
-                foundBuckets.First().Orders.Add(InitializeTrade(order));
+                foundBuckets.First().Orders.Add(new ExecutingOrder { OriginalOrder = order, LeaveQuantity = order.Quantity });
             }
             else
             {
@@ -305,23 +317,23 @@ namespace Evelyn.Extension.Simulator
             _sellSide.Where(bucket => bucket.Price <= tick.BidPrice).ToList()
                 .ForEach(bucket =>
                 {
-                    bucket.Orders.ForEach(order =>
+                    bucket.Orders.ForEach(exec =>
                     {
                         /*
                          * Copy by value.
                          */
-                        Trade trade = order;
+                        Trade trade = InitializeTrade(exec.OriginalOrder);
                         trade.TradePrice = tick.BidPrice;
 
                         /*
                          * Trade order according to bid volume. 
                          */
-                        if (order.LeaveQuantity <= tick.BidVolume)
+                        if (exec.LeaveQuantity <= tick.BidVolume)
                         {
                             /*
                              * Completed.
                              */
-                            trade.TradeQuantity = order.LeaveQuantity;
+                            trade.TradeQuantity = exec.LeaveQuantity;
                             trade.LeaveQuantity -= trade.TradeQuantity;
                             trade.Status = OrderStatus.Completed;
                             trade.Message = "Completed";
@@ -329,8 +341,7 @@ namespace Evelyn.Extension.Simulator
                             /*
                              * Update order.
                              */
-                            order.LeaveQuantity = 0;
-                            order.Status = OrderStatus.Completed;
+                            exec.LeaveQuantity = 0;
                         }
                         else
                         {
@@ -339,8 +350,7 @@ namespace Evelyn.Extension.Simulator
                             trade.Status = OrderStatus.Trading;
                             trade.Message = "Trading";
 
-                            order.LeaveQuantity = trade.LeaveQuantity;
-                            order.Status = OrderStatus.Trading;
+                            exec.LeaveQuantity = trade.LeaveQuantity;
                         }
 
                         trade.TradeID = trade.OrderID + (trade.Quantity - trade.LeaveQuantity).ToString("{0:D2}");
@@ -357,42 +367,40 @@ namespace Evelyn.Extension.Simulator
             _buySide.Where(bucket => bucket.Price >= tick.AskPrice).ToList()
                 .ForEach(bucket =>
                 {
-                    bucket.Orders.ForEach(order =>
+                    bucket.Orders.ForEach(exec =>
                     {
                         /*
                          * Copy by value.
                          */
-                        Trade trade = order;
+                        Trade trade = InitializeTrade(exec.OriginalOrder);
                         trade.TradePrice = tick.AskPrice;
 
                         /*
                          * Trade order according to bid volume. 
                          */
-                        if (order.LeaveQuantity <= tick.AskVolume)
+                        if (exec.LeaveQuantity <= tick.AskVolume)
                         {
                             /*
                              * Completed.
                              */
-                            trade.TradeQuantity = order.LeaveQuantity;
-                            trade.LeaveQuantity -= trade.TradeQuantity;
+                            trade.TradeQuantity = exec.LeaveQuantity;
+                            trade.LeaveQuantity = 0;
                             trade.Status = OrderStatus.Completed;
                             trade.Message = "Completed";
 
                             /*
                              * Update order.
                              */
-                            order.LeaveQuantity = 0;
-                            order.Status = OrderStatus.Completed;
+                            exec.LeaveQuantity = 0;
                         }
                         else
                         {
+                            exec.LeaveQuantity -= (int)tick.AskVolume;
+
                             trade.TradeQuantity = (int)tick.AskVolume;
-                            trade.LeaveQuantity -= trade.TradeQuantity;
+                            trade.LeaveQuantity = exec.LeaveQuantity;
                             trade.Status = OrderStatus.Trading;
                             trade.Message = "Trading";
-
-                            order.LeaveQuantity = trade.LeaveQuantity;
-                            order.Status = OrderStatus.Trading;
                         }
 
                         /*
