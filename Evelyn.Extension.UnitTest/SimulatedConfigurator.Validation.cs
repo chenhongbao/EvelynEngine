@@ -25,76 +25,38 @@ using System.Linq;
 namespace Evelyn.Extension.UnitTest
 {
     [TestClass]
-    public class SimulatedConfiguratorValidation
+    public class SimulatedConfiguratorValidation : SimulatedConfiguratorData
     {
-        internal List<Tick> Ticks { get; init; } = new List<Tick>();
-        internal List<Instrument> Instruments { get; init; } = new List<Instrument>();
-        internal MockedExchange BrokerExchange { get; private set; } = new MockedExchange();
-        internal MockedExchange FeedSourceExchange { get; private set; } = new MockedExchange();
-        internal MockedOrderHandler OrderHandler { get; private set; } = new MockedOrderHandler();
-        internal MockedFeedHandler FeedHandler { get; private set; } = new MockedFeedHandler();
-        internal IConfigurator Configurator { get; private set; } = new SimulatedConfigurator(new List<Tick> { }, new List<Instrument> { });
-        internal DateTime BaseTime { get; init; } = DateTime.Now;
-        internal DateOnly TradingDay { get; init; } = DateOnly.FromDateTime(DateTime.Now);
-
         [TestInitialize]
-        public void Initialize()
+        public new void Initialize()
         {
-            /*
-             * Reset data.
-             */
-            BrokerExchange = new MockedExchange();
-            FeedSourceExchange = new MockedExchange();
-            OrderHandler = new MockedOrderHandler();
-            FeedHandler = new MockedFeedHandler();
-
-            Instruments.Clear();
-            Ticks.Clear();
-
-            /*
-             * Two instruments.
-             */
-            Instruments.Add(new Instrument { InstrumentID = "l2205", ExchangeID = "DCE", Symbol = "塑料2205", TradingDay = TradingDay, Status = InstrumentStatus.Continous, EnterTime = BaseTime.AddSeconds(1) });
-            Instruments.Add(new Instrument { InstrumentID = "pp2205", ExchangeID = "DCE", Symbol = "聚丙烯2205", TradingDay = TradingDay, Status = InstrumentStatus.Continous, EnterTime = BaseTime.AddSeconds(2) });
-            Instruments.Add(new Instrument { InstrumentID = "l2205", ExchangeID = "DCE", Symbol = "塑料2205", TradingDay = TradingDay, Status = InstrumentStatus.Closed, EnterTime = BaseTime.AddHours(31) });
-            Instruments.Add(new Instrument { InstrumentID = "pp2205", ExchangeID = "DCE", Symbol = "聚丙烯2205", TradingDay = TradingDay, Status = InstrumentStatus.Closed, EnterTime = BaseTime.AddHours(32) });
-
-            /*
-             * Ticks.
-             */
-            Ticks.Add(new Tick { InstrumentID = "l2205", ExchangeID = "DCE", Symbol = "塑料2205", TradingDay = TradingDay, TimeStamp = BaseTime.AddSeconds(11), LastPrice = 8900, Volume = 100, OpenInterest = 1000, PreClosePrice = 8800, PreSettlementPrice = 8800, PreOpenInterest = 990, AskPrice = 8900, AskVolume = 10, BidPrice = 8898, BidVolume = 10 });
-            Ticks.Add(new Tick { InstrumentID = "l2205", ExchangeID = "DCE", Symbol = "塑料2205", TradingDay = TradingDay, TimeStamp = BaseTime.AddSeconds(12), LastPrice = 8899, Volume = 110, OpenInterest = 1010, PreClosePrice = 8800, PreSettlementPrice = 8800, PreOpenInterest = 990, AskPrice = 8899, AskVolume = 10, BidPrice = 8898, BidVolume = 10 });
-            Ticks.Add(new Tick { InstrumentID = "l2205", ExchangeID = "DCE", Symbol = "塑料2205", TradingDay = TradingDay, TimeStamp = BaseTime.AddSeconds(13), LastPrice = 8897, Volume = 120, OpenInterest = 1020, PreClosePrice = 8800, PreSettlementPrice = 8800, PreOpenInterest = 990, AskPrice = 8898, AskVolume = 10, BidPrice = 8897, BidVolume = 10 });
-            Ticks.Add(new Tick { InstrumentID = "l2205", ExchangeID = "DCE", Symbol = "塑料2205", TradingDay = TradingDay, TimeStamp = BaseTime.AddSeconds(14), LastPrice = 8898, Volume = 130, OpenInterest = 1030, PreClosePrice = 8800, PreSettlementPrice = 8800, PreOpenInterest = 990, AskPrice = 8898, AskVolume = 10, BidPrice = 8896, BidVolume = 10 });
-
-            Ticks.Add(new Tick { InstrumentID = "pp2205", ExchangeID = "DCE", Symbol = "聚丙烯2205", TradingDay = TradingDay, TimeStamp = BaseTime.AddSeconds(21), LastPrice = 8500, Volume = 100, OpenInterest = 1000, PreClosePrice = 8800, PreSettlementPrice = 8800, PreOpenInterest = 990, AskPrice = 8500, AskVolume = 10, BidPrice = 8498, BidVolume = 10 });
-            Ticks.Add(new Tick { InstrumentID = "pp2205", ExchangeID = "DCE", Symbol = "聚丙烯2205", TradingDay = TradingDay, TimeStamp = BaseTime.AddSeconds(22), LastPrice = 8499, Volume = 110, OpenInterest = 1010, PreClosePrice = 8800, PreSettlementPrice = 8800, PreOpenInterest = 990, AskPrice = 8499, AskVolume = 10, BidPrice = 8498, BidVolume = 10 });
-            Ticks.Add(new Tick { InstrumentID = "pp2205", ExchangeID = "DCE", Symbol = "聚丙烯2205", TradingDay = TradingDay, TimeStamp = BaseTime.AddSeconds(23), LastPrice = 8497, Volume = 120, OpenInterest = 1020, PreClosePrice = 8800, PreSettlementPrice = 8800, PreOpenInterest = 990, AskPrice = 8498, AskVolume = 10, BidPrice = 8497, BidVolume = 10 });
-            Ticks.Add(new Tick { InstrumentID = "pp2205", ExchangeID = "DCE", Symbol = "聚丙烯2205", TradingDay = TradingDay, TimeStamp = BaseTime.AddSeconds(24), LastPrice = 8498, Volume = 130, OpenInterest = 1030, PreClosePrice = 8800, PreSettlementPrice = 8800, PreOpenInterest = 990, AskPrice = 8498, AskVolume = 10, BidPrice = 8496, BidVolume = 10 });
-
-            Configurator = new SimulatedConfigurator(Ticks, Instruments);
+            base.Initialize();
         }
 
         [TestMethod("Subcribe and receive feeds.")]
         public void ReceiveFeeds()
         {
-            Configurator.Configure(out var _, out var feedSource);
-
             /*
              * Subscribe an instrument from feed source and handler receives only that instrument.
              * 
              * 1. Handler receives feeds of the subscribed instrument.
              * 2. Exchange listener receives connect status notice.
+             * 3. Unsubscribe instrument and receive respones.
              */
-            feedSource.Register(FeedHandler, FeedSourceExchange);
-            feedSource.Subscribe("l2205");
+            FeedSource.Register(FeedHandler, FeedSourceExchange);
+            FeedSource.Subscribe("l2205");
 
-            var simFeedSource = (SimulatedFeedSource)feedSource;
+            /*
+             * Check receive subscription responses.
+             */
+            Assert.AreEqual(1, FeedHandler.Subscriptions.Count);
+            Assert.AreEqual("l2205", FeedHandler.Subscriptions[0].Item1);
+            Assert.IsTrue(FeedHandler.Subscriptions[0].Item3);
 
             /*
              * 1. Mock feeds, send the first instrument status update.
              */
-            Assert.IsTrue(simFeedSource.Flip());
+            Assert.IsTrue(FeedSource.Flip());
             Assert.IsTrue(FeedSourceExchange.Connected);
             
             /*
@@ -107,21 +69,20 @@ namespace Evelyn.Extension.UnitTest
             /*
              * Mock the second instrument status update.
              */
-            Assert.IsTrue(simFeedSource.Flip());
+            Assert.IsTrue(FeedSource.Flip());
 
             /*
-             * Feed handler receives second instrument feed.
+             * Feed handler doesn't receive the second instrument update because
+             * it doesn't subscribe it.
              */
-            Assert.AreEqual(2, FeedHandler.Instruments.Count);
-            Assert.AreEqual("pp2205", FeedHandler.Instruments[1].InstrumentID);
-            Assert.AreEqual(InstrumentStatus.Continous, FeedHandler.Instruments[1].Status);
+            Assert.AreEqual(1, FeedHandler.Instruments.Count);
 
             /*
              * 2. Mock feeds, ticks are received.
              */
             for (int i = 0; i < Ticks.Count; ++i)
             {
-                Assert.IsTrue(simFeedSource.Flip());
+                Assert.IsTrue(FeedSource.Flip());
             }
 
             /*
@@ -138,17 +99,30 @@ namespace Evelyn.Extension.UnitTest
             /*
              * 3. Mock last two instrument status updates.
              */
-            Assert.IsTrue(simFeedSource.Flip());
-            Assert.IsFalse(simFeedSource.Flip());
+            Assert.IsTrue(FeedSource.Flip());
+            Assert.IsTrue(FeedSource.Flip());
 
             /*
              * Check handler receives the last two instrument statuses.
              */
-            Assert.AreEqual(4, FeedHandler.Instruments.Count);
-            Assert.AreEqual("l2205", FeedHandler.Instruments[2].InstrumentID);
-            Assert.AreEqual(InstrumentStatus.Closed, FeedHandler.Instruments[2].Status);
-            Assert.AreEqual("pp2205", FeedHandler.Instruments[3].InstrumentID);
-            Assert.AreEqual(InstrumentStatus.Closed, FeedHandler.Instruments[3].Status);
+            Assert.AreEqual(2, FeedHandler.Instruments.Count);
+            Assert.AreEqual("l2205", FeedHandler.Instruments[1].InstrumentID);
+            Assert.AreEqual(InstrumentStatus.Closed, FeedHandler.Instruments[1].Status);
+
+            /*
+             * All feeds are sent, exchange is disconnected.
+             */
+            Assert.IsFalse(FeedSource.Flip());
+            Assert.IsFalse(FeedSourceExchange.Connected);
+
+            /*
+             * 4. Unsubscribe instrument.
+             */
+            FeedSource.Unsubscribe("l2205");
+
+            Assert.AreEqual(2, FeedHandler.Subscriptions.Count);
+            Assert.AreEqual("l2205", FeedHandler.Subscriptions[1].Item1);
+            Assert.IsFalse(FeedHandler.Subscriptions[1].Item3);
         }
 
         [TestMethod("Trade orders.")]

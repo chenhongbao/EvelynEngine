@@ -66,7 +66,7 @@ namespace Evelyn.Extension.Simulator
             events.Sort((a, b) => a.TimeStamp.CompareTo(b.TimeStamp));
 
             _tradingDay = ticks.Count > 0 ? ticks.First().TradingDay
-                : instruments.Count > 0 ? instruments.First().TradingDay : throw new ArgumentException("No elements in both arguments.");
+                : instruments.Count > 0 ? instruments.First().TradingDay : DateOnly.MaxValue;
 
             return events;
         }
@@ -84,6 +84,15 @@ namespace Evelyn.Extension.Simulator
             if (_instrumentID.Contains(instrumentID))
             {
                 _subscribed.Add(instrumentID);
+
+                Handler.OnSubscribed(
+                    instrumentID,
+                    new Description
+                    {
+                        Code = 0,
+                        Message = "OK"
+                    },
+                    true);
             }
             else
             {
@@ -111,6 +120,17 @@ namespace Evelyn.Extension.Simulator
                     },
                     false);
             }
+            else
+            {
+                Handler.OnSubscribed(
+                    instrumentID,
+                    new Description
+                    {
+                        Code = 0,
+                        Message = "OK"
+                    },
+                    false);
+            }
         }
 
         public bool Flip()
@@ -133,12 +153,19 @@ namespace Evelyn.Extension.Simulator
 
                     if (evt.Type == typeof(Tick))
                     {
-                        Handler.OnFeed((Tick)evt.Object);
+                        if (_subscribed.Contains(((Tick)evt.Object).InstrumentID))
+                        {
+                            Handler.OnFeed((Tick)evt.Object);
+                        }
+
                         _broker.Match((Tick)evt.Object);
                     }
                     else if (evt.Type == typeof(Instrument))
                     {
-                        Handler.OnFeed((Instrument)evt.Object);
+                        if (_subscribed.Contains(((Instrument)evt.Object).InstrumentID))
+                        {
+                            Handler.OnFeed((Instrument)evt.Object);
+                        }
                     }
                     else
                     {

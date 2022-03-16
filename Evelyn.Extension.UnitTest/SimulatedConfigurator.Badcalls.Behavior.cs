@@ -19,7 +19,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Evelyn.Extension.UnitTest
 {
     [TestClass]
-    public class SimulatedConfiguratorBadcalls : SimulatedConfiguratorValidation
+    public class SimulatedConfiguratorBadcalls : SimulatedConfiguratorData
     {
         [TestInitialize]
         public new void Initialize()
