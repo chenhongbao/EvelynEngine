@@ -25,6 +25,11 @@ namespace Evelyn.Extension
         {
             // TODO Record ticks.
 
+            return GenerateNone(out ohlc);
+        }
+
+        private bool GenerateNone(out OHLC ohlc)
+        {
             ohlc = new OHLC();
             return false;
         }
