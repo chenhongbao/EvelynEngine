@@ -94,7 +94,7 @@ namespace Evelyn.Extension.Client
         }
     }
 
-    public static class AlgorithmClientExtension
+    public static class AlgorithmClientExtensions
     {
         public static IEvelyn RegisterLocalClient(this IEvelyn engine, AlgorithmClient client)
         {
