@@ -22,12 +22,14 @@ namespace Evelyn.Extension.UnitTest
     [TestClass]
     public class FeedRecorderValidation
     {
-        internal Tick Sample { get; private set; } = new Tick();
+        internal Tick SampleTick { get; private set; } = new Tick();
+        internal OHLC SampleOHLC { get; private set; } = new OHLC();
+        internal Instrument SampleInstrument { get; private set; } = new Instrument();
 
         [TestInitialize]
         public void Initialize()
         {
-            Sample = new Tick
+            SampleTick = new Tick
             {
                 InstrumentID = "l2205",
                 ExchangeID = "DCE",
@@ -51,35 +53,79 @@ namespace Evelyn.Extension.UnitTest
                 BidPrice = 8990,
                 BidVolume = 10
             };
+
+            SampleOHLC = new OHLC
+            {
+                InstrumentID = "l2205",
+                ExchangeID = "DCE",
+                /* No symbol */
+                TradingDay = System.DateOnly.FromDateTime(System.DateTime.Now),
+                TimeStamp = System.DateTime.Now,
+                OpenPrice = 1,
+                HighPrice = 3,
+                LowPrice = 1,
+                ClosePrice = 2,
+                OpenInterest = 10,
+                Volume = 5,
+                Time = System.TimeSpan.FromMinutes(1)
+            };
+
+            SampleInstrument = new Instrument
+            {
+                InstrumentID = "l2205",
+                ExchangeID = "DCE",
+                Symbol = "塑料2205",
+                TradingDay = System.DateOnly.FromDateTime(System.DateTime.Now),
+                Status = InstrumentStatus.Continous,
+                EnterTime = System.DateTime.Now
+            };
         }
 
-        [TestMethod("Formatter and parser work.")]
-        public void FormatterAndParser()
+        [TestMethod("Tick formatter and parser.")]
+        public void TickFormatterParser()
         {
-            var line = FeedRecorder.Format(Sample);
-            
-            Assert.IsTrue(FeedRecorder.Parse(line, out var tick));
-            Assert.AreEqual(Sample.InstrumentID, tick.InstrumentID);
-            Assert.AreEqual(Sample.ExchangeID, tick.ExchangeID);
-            Assert.AreEqual(Sample.Symbol, tick.Symbol);
-            Assert.AreEqual(Sample.TradingDay, tick.TradingDay);
-            Assert.AreEqual(Sample.TimeStamp, tick.TimeStamp);
+            var line = FeedRecorder.Format(SampleTick);
+
+            Assert.IsTrue(FeedRecorder.Parse(line, out Tick tick));
+            Assert.AreEqual(SampleTick.InstrumentID, tick.InstrumentID);
+            Assert.AreEqual(SampleTick.ExchangeID, tick.ExchangeID);
+            Assert.AreEqual(SampleTick.Symbol, tick.Symbol);
+            Assert.AreEqual(SampleTick.TradingDay, tick.TradingDay);
+            Assert.AreEqual(SampleTick.TimeStamp, tick.TimeStamp);
             Assert.IsNull(tick.AveragePrice);
-            Assert.AreEqual(Sample.LastPrice, tick.LastPrice);
-            Assert.AreEqual(Sample.OpenPrice, tick.OpenPrice);
-            Assert.AreEqual(Sample.HighPrice, tick.HighPrice);
-            Assert.AreEqual(Sample.LowPrice, tick.LowPrice);
+            Assert.AreEqual(SampleTick.LastPrice, tick.LastPrice);
+            Assert.AreEqual(SampleTick.OpenPrice, tick.OpenPrice);
+            Assert.AreEqual(SampleTick.HighPrice, tick.HighPrice);
+            Assert.AreEqual(SampleTick.LowPrice, tick.LowPrice);
             Assert.IsNull(tick.ClosePrice);
             Assert.IsNull(tick.SettlementPrice);
-            Assert.AreEqual(Sample.Volume, tick.Volume);
-            Assert.AreEqual(Sample.OpenInterest, tick.OpenInterest);
-            Assert.AreEqual(Sample.PreClosePrice, tick.PreClosePrice);
-            Assert.AreEqual(Sample.PreSettlementPrice, tick.PreSettlementPrice);
-            Assert.AreEqual(Sample.PreOpenInterest, tick.PreOpenInterest);
-            Assert.AreEqual(Sample.AskPrice, tick.AskPrice);
-            Assert.AreEqual(Sample.AskVolume, tick.AskVolume);
-            Assert.AreEqual(Sample.BidPrice, tick.BidPrice);
-            Assert.AreEqual(Sample.BidVolume, tick.BidVolume);
+            Assert.AreEqual(SampleTick.Volume, tick.Volume);
+            Assert.AreEqual(SampleTick.OpenInterest, tick.OpenInterest);
+            Assert.AreEqual(SampleTick.PreClosePrice, tick.PreClosePrice);
+            Assert.AreEqual(SampleTick.PreSettlementPrice, tick.PreSettlementPrice);
+            Assert.AreEqual(SampleTick.PreOpenInterest, tick.PreOpenInterest);
+            Assert.AreEqual(SampleTick.AskPrice, tick.AskPrice);
+            Assert.AreEqual(SampleTick.AskVolume, tick.AskVolume);
+            Assert.AreEqual(SampleTick.BidPrice, tick.BidPrice);
+            Assert.AreEqual(SampleTick.BidVolume, tick.BidVolume);
+        }
+
+        [TestMethod("OHLC formatter and parser.")]
+        public void OHLCFormatterParser()
+        {
+            var line = FeedRecorder.Format(SampleOHLC);
+
+            Assert.IsTrue(FeedRecorder.Parse(line, out OHLC ohlc));
+            Assert.AreEqual(SampleOHLC, ohlc);
+        }
+
+        [TestMethod("Instrument formatter and parser.")]
+        public void InstrumentFormatterParser()
+        {
+            var line = FeedRecorder.Format(SampleInstrument);
+
+            Assert.IsTrue(FeedRecorder.Parse(line, out Instrument instrument));
+            Assert.AreEqual(SampleInstrument, instrument);
         }
     }
 }
