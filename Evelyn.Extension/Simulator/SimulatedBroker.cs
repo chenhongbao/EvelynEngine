@@ -323,7 +323,7 @@ namespace Evelyn.Extension.Simulator
                          * Copy by value.
                          */
                         Trade trade = InitializeTrade(exec.OriginalOrder);
-                        trade.TradePrice = tick.BidPrice;
+                        trade.TradePrice = tick.BidPrice ?? throw new InvalidDataException("Bid price has no value.");
 
                         /*
                          * Trade order according to bid volume. 
@@ -373,7 +373,7 @@ namespace Evelyn.Extension.Simulator
                          * Copy by value.
                          */
                         Trade trade = InitializeTrade(exec.OriginalOrder);
-                        trade.TradePrice = tick.AskPrice;
+                        trade.TradePrice = tick.AskPrice ?? throw new InvalidDataException("Ask price has no value.");
 
                         /*
                          * Trade order according to bid volume. 

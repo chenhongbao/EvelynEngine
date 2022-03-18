@@ -107,11 +107,7 @@ namespace Evelyn.Model
             set => _preOpenInterest = value;
         }
 
-        public double AskPrice
-        {
-            get => _askPrice ?? throw new NullReferenceException("Ask price has no value.");
-            set => _askPrice = value;
-        }
+        public double? AskPrice { get; set; } = null!;
 
         public long AskVolume
         {
@@ -119,11 +115,7 @@ namespace Evelyn.Model
             set => _askVolume = value;
         }
 
-        public double BidPrice
-        {
-            get => _bidPrice ?? throw new NullReferenceException("Bid price has no value.");
-            set => _bidPrice = value;
-        }
+        public double? BidPrice { get; set; } = null;
 
         public long BidVolume
         {
