@@ -20,21 +20,46 @@ using System.Collections.Concurrent;
 
 namespace Evelyn.Extension
 {
-    public class TickRecorder : IOHLCGenerator
+    public class FeedRecorder : IAlgorithm
     {
         public readonly ConcurrentDictionary<string, FileStream> _fileStream = new ConcurrentDictionary<string, FileStream>();
 
-        public bool Generate(Tick tick, out OHLC ohlc)
+        public void OnFeed(Tick tick)
         {
-            using (StreamWriter sw = new StreamWriter(_fileStream.GetOrAdd(tick.InstrumentID, instrumentID => GetFileStream(instrumentID))))
+            using (StreamWriter sw = new StreamWriter(_fileStream.GetOrAdd(tick.InstrumentID + ".tick", instrumentID => GetFileStream(instrumentID, "tick"))))
             {
                 sw.WriteLine("{0}", Format(tick));
             }
-
-            return GenerateNone(out ohlc);
         }
 
-        public static bool ParseTick(string line, out Tick tick)
+        public void OnFeed(OHLC ohlc)
+        {
+            using (StreamWriter sw = new StreamWriter(_fileStream.GetOrAdd(ohlc.InstrumentID + ".ohlc", instrumentID => GetFileStream(instrumentID, "ohlc"))))
+            {
+                sw.WriteLine("{0}", Format(ohlc));
+            }
+        }
+
+        public void OnFeed(Instrument instrument)
+        {
+            using (StreamWriter sw = new StreamWriter(_fileStream.GetOrAdd(instrument.InstrumentID + ".inst", instrumentID => GetFileStream(instrumentID, "inst"))))
+            {
+                sw.WriteLine("{0}", Format(instrument));
+            }
+        }
+
+        public static string Format(OHLC ohlc)
+        {
+            return string.Format("{0}");
+        }
+
+        public static string Format(Instrument instrument)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public static bool Parse(string line, out Tick tick)
         {
             tick = new Tick();
             var splits = line.Split(",");
@@ -134,10 +159,10 @@ namespace Evelyn.Extension
             return string.Format("{0:yyyyMMdd HH:mm:ss.fffffff}", value);
         }
 
-        private FileStream GetFileStream(string instrumentID)
+        private FileStream GetFileStream(string instrumentID, string type)
         {
             var directory = Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, ".Recorder", "Tick"));
-            return new FileStream(Path.Combine(directory.FullName, instrumentID + ".txt"), FileMode.Append, FileAccess.Write);
+            return new FileStream(Path.Combine(directory.FullName, instrumentID + "." + type + ".txt"), FileMode.Append, FileAccess.Write);
         }
 
         private bool GenerateNone(out OHLC ohlc)
@@ -145,13 +170,29 @@ namespace Evelyn.Extension
             ohlc = new OHLC();
             return false;
         }
+
+        public void OnLoad(IOperator op)
+        {
+        }
+
+        public void OnUnload()
+        {
+        }
+
+        public void OnSubscribed(string instrumentID, Description description, bool subscribed)
+        {
+        }
+
+        public void OnTrade(Trade trade, Description description)
+        {
+        }
     }
 
     public static class TickRecorderExtensions
     {
-        public static IEvelyn RegisterRecorder(this IEvelyn engine, TickRecorder recorder)
+        public static IEvelyn RegisterRecorder(this IEvelyn engine, FeedRecorder recorder, params string[] instrumentID)
         {
-            return engine.GenerateOHLC(recorder);
+            return engine.RegisterLocalClient("FEED_RECORDER_" + Guid.NewGuid().ToString("N"), recorder, instrumentID);
         }
     }
 }

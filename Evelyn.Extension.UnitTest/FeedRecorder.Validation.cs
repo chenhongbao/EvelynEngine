@@ -20,7 +20,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Evelyn.Extension.UnitTest
 {
     [TestClass]
-    public class TickRecorderValidation
+    public class FeedRecorderValidation
     {
         internal Tick Sample { get; private set; } = new Tick();
 
@@ -56,9 +56,9 @@ namespace Evelyn.Extension.UnitTest
         [TestMethod("Formatter and parser work.")]
         public void FormatterAndParser()
         {
-            var line = TickRecorder.Format(Sample);
+            var line = FeedRecorder.Format(Sample);
             
-            Assert.IsTrue(TickRecorder.ParseTick(line, out var tick));
+            Assert.IsTrue(FeedRecorder.Parse(line, out var tick));
             Assert.AreEqual(Sample.InstrumentID, tick.InstrumentID);
             Assert.AreEqual(Sample.ExchangeID, tick.ExchangeID);
             Assert.AreEqual(Sample.Symbol, tick.Symbol);
