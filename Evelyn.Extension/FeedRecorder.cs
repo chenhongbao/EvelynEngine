@@ -22,11 +22,9 @@ namespace Evelyn.Extension
 {
     public class FeedRecorder : IAlgorithm
     {
-        public readonly ConcurrentDictionary<string, FileStream> _fileStream = new ConcurrentDictionary<string, FileStream>();
-
         public void OnFeed(Tick tick)
         {
-            using (StreamWriter sw = new StreamWriter(_fileStream.GetOrAdd(tick.InstrumentID + ".tick", instrumentID => GetFileStream(instrumentID, "tick"))))
+            using (StreamWriter sw = new StreamWriter(GetFile(tick.InstrumentID, "tick"), append: true))
             {
                 sw.WriteLine("{0}", Format(tick));
             }
@@ -34,7 +32,7 @@ namespace Evelyn.Extension
 
         public void OnFeed(OHLC ohlc)
         {
-            using (StreamWriter sw = new StreamWriter(_fileStream.GetOrAdd(ohlc.InstrumentID + ".ohlc", instrumentID => GetFileStream(instrumentID, "ohlc"))))
+            using (StreamWriter sw = new StreamWriter(GetFile(ohlc.InstrumentID, "ohlc"), append: true))
             {
                 sw.WriteLine("{0}", Format(ohlc));
             }
@@ -42,7 +40,7 @@ namespace Evelyn.Extension
 
         public void OnFeed(Instrument instrument)
         {
-            using (StreamWriter sw = new StreamWriter(_fileStream.GetOrAdd(instrument.InstrumentID + ".inst", instrumentID => GetFileStream(instrumentID, "inst"))))
+            using (StreamWriter sw = new StreamWriter(GetFile(instrument.InstrumentID, "inst"), append: true))
             {
                 sw.WriteLine("{0}", Format(instrument));
             }
@@ -262,10 +260,10 @@ namespace Evelyn.Extension
             return string.Format("{0:yyyyMMdd HH:mm:ss.fffffff}", value);
         }
 
-        private FileStream GetFileStream(string instrumentID, string type)
+        private string GetFile(string instrumentID, string type)
         {
             var directory = Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, ".Recorder", "Tick"));
-            return new FileStream(Path.Combine(directory.FullName, instrumentID + "." + type + ".txt"), FileMode.Append, FileAccess.Write);
+            return Path.Combine(directory.FullName, instrumentID + "." + type + ".txt");
         }
 
         private bool GenerateNone(out OHLC ohlc)
