@@ -49,7 +49,7 @@ namespace Evelyn.Extension.Client
         public void OnFeed(Tick tick)
         {
             bool passed = true;
-            if (_filters.Select(filter => passed && (passed = filter.DoFeed(tick))).Last())
+            if (_filters.Count() == 0 || _filters.Select(filter => passed && (passed = filter.DoFeed(tick))).Last())
             {
                 _algorithm.OnFeed(tick);
             }
@@ -58,7 +58,7 @@ namespace Evelyn.Extension.Client
         public void OnFeed(OHLC ohlc)
         {
             bool passed = true;
-            if (_filters.Select(filter => passed && (passed = filter.DoFeed(ohlc))).Last())
+            if (_filters.Count() == 0 || _filters.Select(filter => passed && (passed = filter.DoFeed(ohlc))).Last())
             {
                 _algorithm.OnFeed(ohlc);
             }
@@ -67,7 +67,7 @@ namespace Evelyn.Extension.Client
         public void OnFeed(Instrument instrument)
         {
             bool passed = true;
-            if (_filters.Select(filter => passed && (passed = filter.DoFeed(instrument))).Last())
+            if (_filters.Count() == 0 || _filters.Select(filter => passed && (passed = filter.DoFeed(instrument))).Last())
             {
                 _algorithm.OnFeed(instrument);
             }

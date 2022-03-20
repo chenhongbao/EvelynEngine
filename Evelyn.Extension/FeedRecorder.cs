@@ -187,9 +187,9 @@ namespace Evelyn.Extension
                 tick.PreClosePrice = ParseDouble(splits[14]) ?? throw new InvalidDataException("Invalid pre close price " + splits[14] + ".");
                 tick.PreSettlementPrice = ParseDouble(splits[15]) ?? throw new ArgumentException("Invalid pre settlement price " + splits[15] + ".");
                 tick.PreOpenInterest = ParseLong(splits[16]);
-                tick.AskPrice = ParseDouble(splits[17]) ?? throw new InvalidDataException("Invalid ask price " + splits[17] + ".");
+                tick.AskPrice = ParseDouble(splits[17]);
                 tick.AskVolume = ParseLong(splits[18]);
-                tick.BidPrice = ParseDouble(splits[19]) ?? throw new InvalidDataException("Invalid bid price " + splits[18] + ".");
+                tick.BidPrice = ParseDouble(splits[19]);
                 tick.BidVolume = ParseLong(splits[20]);
 
                 return true;
@@ -262,7 +262,7 @@ namespace Evelyn.Extension
 
         private string GetFile(string instrumentID, string type)
         {
-            var directory = Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, ".Recorder", "Tick"));
+            var directory = Directory.CreateDirectory(Path.Combine(Environment.CurrentDirectory, ".Recorder", "Feed"));
             return Path.Combine(directory.FullName, instrumentID + "." + type + ".txt");
         }
 
