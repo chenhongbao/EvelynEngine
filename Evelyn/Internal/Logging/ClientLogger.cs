@@ -22,6 +22,8 @@ namespace Evelyn.Internal
 {
     internal class ClientLogger : ILogger
     {
+        private int _logCounter = 0;
+
         internal ConcurrentQueue<ClientLog> Logs { get; init; } = new ConcurrentQueue<ClientLog>();
 
         public IDisposable BeginScope<TState>(TState state)
@@ -33,7 +35,13 @@ namespace Evelyn.Internal
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
-            Logs.Enqueue(new ClientLog { LogLevel = logLevel, LogID = eventId, Message = formatter(state, exception), Timestamp = DateTime.Now });
+            Logs.Enqueue(new ClientLog
+            {
+                LogLevel = logLevel,
+                LogID = eventId == default ? new EventId(Interlocked.Increment(ref _logCounter), logLevel.ToString()) : eventId,
+                Message = formatter(state, exception),
+                Timestamp = DateTime.Now
+            });
         }
     }
 }
