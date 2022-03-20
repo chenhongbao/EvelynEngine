@@ -14,7 +14,6 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using Evelyn.Internal.Logging;
 using Evelyn.Model;
 using Evelyn.Plugin;
 using Microsoft.Extensions.Logging;
@@ -26,11 +25,12 @@ namespace Evelyn.Internal
     {
         private readonly ConcurrentDictionary<string, Client> _clients = new ConcurrentDictionary<string, Client>();
 
+        private ILogger? _logger;
         private EngineBroker? _broker;
         private EngineFeedSource? _feedSource;
         private EngineFeedHandler? _feedHandler;
 
-        private ILogger Logger { get; init; } = Loggers.CreateLogger(nameof(EngineClientHandler));
+        private ILogger Logger => _logger ?? throw new NullReferenceException("Logger has no value.");
 
         internal EngineBroker Broker => _broker ?? throw new NullReferenceException("Engine broker has no value.");
         internal EngineFeedSource FeedSource => _feedSource ?? throw new NullReferenceException("Enginefeed source has no value.");
@@ -358,8 +358,9 @@ namespace Evelyn.Internal
             }
         }
 
-        internal void Configure(EngineBroker broker, EngineFeedSource feedSource, EngineFeedHandler feedHandler)
+        internal void Configure(EngineBroker broker, EngineFeedSource feedSource, EngineFeedHandler feedHandler, ILogger logger)
         {
+            _logger = logger;
             _broker = broker;
             _feedSource = feedSource;
             _feedHandler = feedHandler;

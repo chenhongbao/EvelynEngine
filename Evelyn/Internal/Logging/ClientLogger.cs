@@ -18,7 +18,7 @@ using Evelyn.Model.Logging;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 
-namespace Evelyn.Internal
+namespace Evelyn.Internal.Logging
 {
     internal class ClientLogger : ILogger
     {

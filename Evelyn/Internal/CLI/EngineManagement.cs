@@ -15,6 +15,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Internal;
+using Evelyn.Internal.Logging;
 using Evelyn.Model;
 using Evelyn.Model.CLI;
 using Evelyn.Model.Logging;

@@ -16,6 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Model;
 using Evelyn.Plugin;
+using Microsoft.Extensions.Logging;
 
 namespace Evelyn
 {
@@ -26,6 +27,8 @@ namespace Evelyn
         public void Configure(IConfigurator configurator);
 
         public IEvelyn GenerateOHLC(IOHLCGenerator generator);
+
+        public IEvelyn RegisterLoggerProvider(ILoggerProvider provider);
 
         public IEvelyn RegisterRemoteClient(IClientService clientService);
 

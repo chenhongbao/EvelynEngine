@@ -22,19 +22,19 @@ using Microsoft.Extensions.Logging.Debug;
 
 namespace Evelyn.Internal.Logging
 {
-    public class Loggers
+    public class EvelynLoggerProvider : ILoggerProvider
     {
         public static string Indent { get; set; } = "\u0020\u0020\u0020\u0020";
 
         public static TextWriter? Writer = null;
 
-        internal static ILogger CreateLogger(string loggerName)
+        ILogger ILoggerProvider.CreateLogger(string categoryName)
         {
-#if DEBUG
-            return new DebugLoggerProvider().CreateLogger(loggerName);
-#else
-            return new EvelynLogger(loggerName, Writer);
-#endif
+            return new EvelynLogger(categoryName, Writer);
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

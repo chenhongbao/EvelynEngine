@@ -14,7 +14,6 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using Evelyn.Internal.Logging;
 using Evelyn.Model;
 using Evelyn.Plugin;
 using Microsoft.Extensions.Logging;
@@ -25,11 +24,18 @@ namespace Evelyn.Internal
     {
         private readonly EngineClientHandler _clientHandler;
 
-        private ILogger Logger { get; init; } = Loggers.CreateLogger(nameof(EngineOrderHandler));
+        private ILogger? _logger;
+
+        private ILogger Logger => _logger ?? throw new NullReferenceException("Logger has no value.");
 
         internal EngineOrderHandler(EngineClientHandler clientHandler)
         {
             _clientHandler = clientHandler;
+        }
+
+        internal void Configure(ILogger logger)
+        {
+            _logger = logger;
         }
 
         public void OnTrade(Trade trade, Description description)

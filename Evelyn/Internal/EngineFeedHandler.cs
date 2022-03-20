@@ -14,7 +14,6 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using Evelyn.Internal.Logging;
 using Evelyn.Model;
 using Evelyn.Plugin;
 using Microsoft.Extensions.Logging;
@@ -29,6 +28,8 @@ namespace Evelyn.Internal
         private readonly ConcurrentDictionary<string, bool> _subscriptionResponses = new ConcurrentDictionary<string, bool>();
         private readonly ConcurrentDictionary<string, Instrument> _instruments = new ConcurrentDictionary<string, Instrument>();
         private readonly ConcurrentDictionary<string, ScheduledJob> _scheduledJobs = new ConcurrentDictionary<string, ScheduledJob>();
+
+        private ILogger? _logger;
         
         /*
          * Must be min value here to mark the current tick time is at the begining and none of time condition
@@ -37,7 +38,7 @@ namespace Evelyn.Internal
         private DateTime _trackTime = DateTime.MinValue;
         private int _jobCounter = 0;
 
-        private ILogger Logger { get; } = Loggers.CreateLogger(nameof(EngineFeedHandler));
+        private ILogger Logger => _logger ?? throw new NullReferenceException("Logger has no value.");
 
         internal IReadOnlyCollection<IOHLCGenerator> OHLCGenerators => _ohlcGenerators;
         internal IReadOnlyDictionary<string, bool> SubscriptionResponses => _subscriptionResponses;
@@ -47,6 +48,11 @@ namespace Evelyn.Internal
         internal EngineFeedHandler(EngineClientHandler clientHandler)
         {
             _clientHandler = clientHandler;
+        }
+
+        internal void Configure(ILogger logger)
+        {
+            _logger = logger;
         }
 
         public void OnFeed(Tick tick)

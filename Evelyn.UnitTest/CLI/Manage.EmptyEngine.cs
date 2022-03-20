@@ -28,7 +28,6 @@ namespace Evelyn.UnitTest.CLI
         internal IEvelyn Engine { get; private set; } = IEvelyn.NewInstance;
         internal MockedConfigurator Configurator { get; private set; } = new MockedConfigurator();
         internal MockedManagementService ManagementService { get; private set; } = new MockedManagementService();
-        internal DateOnly TradingDay { get; } = DateOnly.FromDateTime(DateTime.Now);
 
         [TestInitialize]
         public new void Initialize()

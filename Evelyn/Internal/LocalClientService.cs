@@ -14,7 +14,6 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using Evelyn.Internal.Logging;
 using Evelyn.Model;
 using Evelyn.Plugin;
 using Microsoft.Extensions.Logging;
@@ -25,11 +24,19 @@ namespace Evelyn.Internal
     internal class LocalClientService : IClientService
     {
         private EngineClientHandler? _clientHandler;
+        private ILogger? _logger;
+
         private readonly ConcurrentDictionary<string, ConfiguringClient> _savedClients = new ConcurrentDictionary<string, ConfiguringClient>();
 
         internal EngineClientHandler ClientHandler => _clientHandler ?? throw new NullReferenceException("Client handler has no value.");
-        internal ILogger Logger { get; private init; } = Loggers.CreateLogger(nameof(LocalClientService));
+        internal ILogger Logger => _logger ?? throw new NullReferenceException("Logger has no value.");
         private bool IsConfigured { get; set; } = false;
+
+        internal void Configure(IClientHandler clientHandler, ILogger logger)
+        {
+            _logger = logger;
+            Configure(clientHandler);
+        }
 
         public void Configure(IClientHandler clientHandler)
         {

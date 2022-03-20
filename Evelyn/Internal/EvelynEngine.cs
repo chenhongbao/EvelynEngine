@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using Evelyn.CLI;
 using Evelyn.Model;
 using Evelyn.Plugin;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Debug;
 
 namespace Evelyn.Internal
 {
@@ -33,10 +35,12 @@ namespace Evelyn.Internal
         private readonly ISet<IClientService> _registeredClientServices = new HashSet<IClientService>();
 
         private IConfigurator? _configurator;
+        private ILoggerProvider? _loggerProvider;
 
         internal EngineBroker Broker => _broker;
         internal EngineFeedSource FeedSource => _feedSource;
         internal EngineClientHandler Handler => _clientHandler;
+        internal ILoggerProvider LoggerProvider => _loggerProvider ?? new DebugLoggerProvider();
 
         internal EvelynEngine()
         {
@@ -76,11 +80,14 @@ namespace Evelyn.Internal
             _configurator = configurator;
             _configurator.Configure(out IBroker broker, out IFeedSource feedSource);
 
+            _orderHandler.Configure(LoggerProvider.CreateLogger(nameof(EngineOrderHandler)));
+            _feedHandler.Configure(LoggerProvider.CreateLogger(nameof(EngineFeedHandler)));
+
             _feedSource.Configure(feedSource, _feedHandler, new FeedSourceExchange(_feedSource));
             _broker.Configure(broker, _orderHandler, new BrokerExchange());
-            _clientHandler.Configure(_broker, _feedSource, _feedHandler);
+            _clientHandler.Configure(_broker, _feedSource, _feedHandler, LoggerProvider.CreateLogger(nameof(EngineClientHandler)));
 
-            _localService.Configure(_clientHandler);
+            _localService.Configure(_clientHandler, LoggerProvider.CreateLogger(nameof(LocalClientService)));
             _registeredClientServices.ToList().ForEach(service => service.Configure(_clientHandler));
             _registerManagementServices.ToList().ForEach(service => service.Configure(_management));
         }
@@ -112,6 +119,12 @@ namespace Evelyn.Internal
         public IEvelyn RegisterManagement(IManagementService managementService)
         {
             _registerManagementServices.Add(managementService);
+            return this;
+        }
+
+        public IEvelyn RegisterLoggerProvider(ILoggerProvider provider)
+        {
+            _loggerProvider = provider;
             return this;
         }
     }

@@ -30,7 +30,7 @@ namespace Evelyn.Internal.Logging
         {
             _name = scopeName;
             _scopes = scopes;
-            _messageIndent = GetIndent(Loggers.Indent, scopeLevels);
+            _messageIndent = GetIndent(EvelynLoggerProvider.Indent, scopeLevels);
             _writer = writer;
             if (scopeLevels > 0)
             {

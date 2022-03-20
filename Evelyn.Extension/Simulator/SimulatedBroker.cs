@@ -33,9 +33,7 @@ namespace Evelyn.Extension.Simulator
         private int _orderCounter = 0;
 
         internal IExchangeListener Exchange => _exchange ?? throw new NullReferenceException("Exchange has no value.");
-
         private IOrderHandler Handler => _handler ?? throw new NullReferenceException("Handler has no value.");
-        private ILogger Logger { get; init; } = Loggers.CreateLogger(nameof(SimulatedBroker));
 
         public string NewOrderID => Interlocked.Increment(ref _orderCounter).ToString();
         public DateOnly TradingDay => _tradingDay;
@@ -417,7 +415,7 @@ namespace Evelyn.Extension.Simulator
             }
             catch (Exception ex)
             {
-                Logger.LogInformation("{0}\n{1}", ex.Message, ex.StackTrace);
+                Console.Error.WriteLine(ex.ToString());
             }
         }
     }
