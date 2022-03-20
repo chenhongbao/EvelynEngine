@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 
-namespace Evelyn.Internal.Logging
+namespace Evelyn.Extension.Logging
 {
     internal class LogScope : IDisposable
     {
