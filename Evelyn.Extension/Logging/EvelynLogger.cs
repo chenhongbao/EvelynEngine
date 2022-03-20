@@ -21,18 +21,20 @@ namespace Evelyn.Extension.Logging
 {
     internal class EvelynLogger : ILogger
     {
-        private readonly TextWriter _writer;
+        private readonly TextWriter? _writer;
+        private readonly string _loggerName;
         private readonly ConcurrentStack<LogScope> _scopes = new ConcurrentStack<LogScope>();
 
         internal EvelynLogger(string loggerName, TextWriter? writer = null)
         {
-            _writer = writer ?? new StreamWriter(loggerName.Replace('\\', '.').Replace('/', '.') + "." + GetHashCode() + ".log");
-            _scopes.Push(new LogScope(string.Empty, 0, _scopes, _writer));
+            _loggerName = loggerName;
+            _writer = writer;
+            _scopes.Push(new LogScope(string.Empty, 0, _scopes, loggerName, _writer));
         }
 
         public IDisposable BeginScope<TState>(TState state)
         {
-            var scope = new LogScope(state?.ToString() ?? String.Empty, _scopes.Count, _scopes, _writer);
+            var scope = new LogScope(state?.ToString() ?? String.Empty, _scopes.Count, _scopes, _loggerName, _writer);
             _scopes.Push(scope);
             return new LogScopeDisposer(scope);
         }

@@ -22,20 +22,22 @@ namespace Evelyn.Extension.Logging
     internal class LogScope : IDisposable
     {
         private readonly string _name;
+        private readonly string _loggerName;
         private readonly string _messageIndent;
-        private readonly TextWriter _writer;
+        private readonly int _scopeLevels;
         private readonly ConcurrentStack<LogScope> _scopes;
 
-        internal LogScope(string scopeName, int scopeLevels, ConcurrentStack<LogScope> scopes, TextWriter writer)
+        private bool _writeScopeName = false;
+        private TextWriter? _writer;
+
+        internal LogScope(string scopeName, int scopeLevels, ConcurrentStack<LogScope> scopes, string loggerName, TextWriter? writer)
         {
             _name = scopeName;
+            _loggerName = loggerName;
             _scopes = scopes;
+            _scopeLevels = scopeLevels;
             _messageIndent = GetIndent(EvelynLoggerProvider.Indent, scopeLevels);
             _writer = writer;
-            if (scopeLevels > 0)
-            {
-                _writer.WriteLine("#{0}{1}", _messageIndent.Substring(0, _messageIndent.Length - 1), _name);
-            }
         }
 
         public void Dispose()
@@ -52,6 +54,17 @@ namespace Evelyn.Extension.Logging
 
         internal void Log(LogLevel logLevel, EventId eventId, string message)
         {
+            if (_writer == null)
+            {
+                _writer = new StreamWriter(_loggerName.Replace('\\', '.').Replace('/', '.') + "." + GetHashCode() + ".log");
+            }
+
+            if (!_writeScopeName && _scopeLevels > 0)
+            {
+                _writer.WriteLine("#{0}{1}", _messageIndent.Substring(0, _messageIndent.Length - 1), _name);
+                _writeScopeName = true;
+            }
+
             _writer.WriteLine(FormatLog(logLevel, eventId, message));
         }
 
