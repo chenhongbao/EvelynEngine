@@ -270,6 +270,13 @@ namespace Evelyn.UnitTest.CLI
                     Code = 0,
                     Message = "Order is trading."
                 });
+
+            /*
+             * Mock logging.
+             */
+            ClientA.MockLog("{0} -> {1}", DateTime.Now.ToString(), "Client A is logging.");
+            ClientA.MockLog("{0} -> {1}", DateTime.Now.ToString(), "Client A is logging.");
+            ClientB.MockLog("{0} -> {1}", DateTime.Now.ToString(), "Client B is logging.");
         }
 
         [TestMethod("Query engine information when engine is fulfilled.")]
@@ -541,6 +548,26 @@ namespace Evelyn.UnitTest.CLI
             trade = OrderB1Trade;
             trade.OrderID = "MOCKED_ORDER_1";
             Assert.AreEqual(trade, clientBOrder1.Trades[0]);
+        }
+
+        [TestMethod("Query logs.")]
+        public void QueryLogs()
+        {
+            var logsA = ManagementService.Management.QueryClientLog("MOCKED_CLIENT_A", DateTime.MinValue);
+
+            /*
+             * Check there are two logs.
+             */
+            Assert.AreEqual("MOCKED_CLIENT_A", logsA.Result.ClientID);
+            Assert.AreEqual(2, logsA.Result.Logs.Count);
+
+            var logsB = ManagementService.Management.QueryClientLog("MOCKED_CLIENT_B", DateTime.MinValue);
+
+            /*
+             * Check there are two logs.
+             */
+            Assert.AreEqual("MOCKED_CLIENT_B", logsB.Result.ClientID);
+            Assert.AreEqual(1, logsB.Result.Logs.Count);
         }
     }
 }

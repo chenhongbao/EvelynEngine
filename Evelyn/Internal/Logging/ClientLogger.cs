@@ -33,7 +33,7 @@ namespace Evelyn.Internal
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
-            Logs.Enqueue(new ClientLog { LogLevel = logLevel, LogID = eventId, Message = formatter(state, exception) });
+            Logs.Enqueue(new ClientLog { LogLevel = logLevel, LogID = eventId, Message = formatter(state, exception), Timestamp = DateTime.Now });
         }
     }
 }

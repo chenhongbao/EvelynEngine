@@ -65,7 +65,7 @@ namespace Evelyn.CLI
             if (_engine.Handler.Clients.TryGetValue(clientID, out var client))
             {
                 information.Logs = ((ClientLogger)client.Logger).Logs
-                    .Where(log => log.LogLevel == logLevel && log.Timestamp.CompareTo(afterTime) > 0)
+                    .Where(log => (log.LogLevel == logLevel || logLevel == LogLevel.None) && log.Timestamp.CompareTo(afterTime) > 0)
                     .ToList();
                 information.Logs.Sort((lhs, rhs) => lhs.Timestamp.CompareTo(rhs.Timestamp));
 

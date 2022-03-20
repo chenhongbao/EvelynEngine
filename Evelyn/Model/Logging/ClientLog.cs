@@ -20,9 +20,13 @@ namespace Evelyn.Model.Logging
 {
     public struct ClientLog
     {
-        public EventId LogID { get; set; }
-        public LogLevel LogLevel { get; set; }
-        public string Message { get; set; }
-        public DateTime Timestamp { get; set; }
+        public ClientLog()
+        {
+        }
+
+        public EventId LogID { get; set; } = default(EventId);
+        public LogLevel LogLevel { get; set; } = default(LogLevel);
+        public string Message { get; set; } = string.Empty;
+        public DateTime Timestamp { get; set; } = DateTime.Now;
     }
 }

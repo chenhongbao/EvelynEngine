@@ -140,6 +140,7 @@ namespace Evelyn.Extension.Simulator
                 if (!_connected)
                 {
                     _connected = true;
+                    _broker.Exchange.OnConnected(_connected);
                     Exchange.OnConnected(_connected);
                 }
 
@@ -176,6 +177,7 @@ namespace Evelyn.Extension.Simulator
                 {
                     _eventEnumerator.Reset();
                     _connected = false;
+                    _broker.Exchange.OnConnected(_connected);
                     Exchange.OnConnected(_connected);
                 }
 

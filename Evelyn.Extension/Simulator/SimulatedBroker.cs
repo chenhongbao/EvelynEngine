@@ -31,10 +31,10 @@ namespace Evelyn.Extension.Simulator
         private IExchangeListener? _exchange;
         private DateOnly _tradingDay = DateOnly.MaxValue;
         private int _orderCounter = 0;
-        private bool _connected = false;
+
+        internal IExchangeListener Exchange => _exchange ?? throw new NullReferenceException("Exchange has no value.");
 
         private IOrderHandler Handler => _handler ?? throw new NullReferenceException("Handler has no value.");
-        private IExchangeListener Exchange => _exchange ?? throw new NullReferenceException("Exchange has no value.");
         private ILogger Logger { get; init; } = Loggers.CreateLogger(nameof(SimulatedBroker));
 
         public string NewOrderID => Interlocked.Increment(ref _orderCounter).ToString();
@@ -300,12 +300,6 @@ namespace Evelyn.Extension.Simulator
         internal void Match(Tick tick)
         {
             _tradingDay = tick.TradingDay;
-            if (!_connected)
-            {
-                _connected = true;
-                Exchange.OnConnected(_connected);
-            }
-
             MatchBook(tick);
         }
 
