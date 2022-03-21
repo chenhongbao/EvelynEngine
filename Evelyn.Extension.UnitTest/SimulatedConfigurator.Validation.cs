@@ -64,7 +64,7 @@ namespace Evelyn.Extension.UnitTest
             /*
              * 1. Mock feeds, send the first instrument status update.
              */
-            Assert.IsTrue(FeedSource.Flip());
+            Assert.IsTrue(FeedSource.Flop());
             Assert.IsTrue(FeedSourceExchange.Connected);
 
             /*
@@ -77,7 +77,7 @@ namespace Evelyn.Extension.UnitTest
             /*
              * Mock the second instrument status update.
              */
-            Assert.IsTrue(FeedSource.Flip());
+            Assert.IsTrue(FeedSource.Flop());
 
             /*
              * Feed handler doesn't receive the second instrument update because
@@ -90,7 +90,7 @@ namespace Evelyn.Extension.UnitTest
              */
             for (int i = 0; i < Ticks.Count; ++i)
             {
-                Assert.IsTrue(FeedSource.Flip());
+                Assert.IsTrue(FeedSource.Flop());
             }
 
             /*
@@ -107,8 +107,8 @@ namespace Evelyn.Extension.UnitTest
             /*
              * 3. Mock last two instrument status updates.
              */
-            Assert.IsTrue(FeedSource.Flip());
-            Assert.IsTrue(FeedSource.Flip());
+            Assert.IsTrue(FeedSource.Flop());
+            Assert.IsTrue(FeedSource.Flop());
 
             /*
              * Check handler receives the last two instrument statuses.
@@ -120,7 +120,7 @@ namespace Evelyn.Extension.UnitTest
             /*
              * All feeds are sent, exchange is disconnected.
              */
-            Assert.IsFalse(FeedSource.Flip());
+            Assert.IsFalse(FeedSource.Flop());
             Assert.IsFalse(FeedSourceExchange.Connected);
 
             /*
@@ -183,20 +183,20 @@ namespace Evelyn.Extension.UnitTest
             /*
              * Send first two instrument status updates.
              */
-            Assert.IsTrue(FeedSource.Flip());
-            Assert.IsTrue(FeedSource.Flip());
+            Assert.IsTrue(FeedSource.Flop());
+            Assert.IsTrue(FeedSource.Flop());
 
             /*
              * 1. Send the first tick, no order trade.
              */
-            Assert.IsTrue(FeedSource.Flip());
+            Assert.IsTrue(FeedSource.Flop());
             Assert.AreEqual(0, OrderHandler.Trades.Count);
 
             /*
              * 2. Send the second tick, the first order is completed, and the
              *    second order is not traded.
              */
-            Assert.IsTrue(FeedSource.Flip());
+            Assert.IsTrue(FeedSource.Flop());
             Assert.AreEqual(1, OrderHandler.Trades.Count);
 
             var trade = OrderHandler.Trades[0].Item1;
@@ -211,7 +211,7 @@ namespace Evelyn.Extension.UnitTest
             /*
              * 3. Send the third tick and the second order trades a portion
              */
-            Assert.IsTrue(FeedSource.Flip());
+            Assert.IsTrue(FeedSource.Flop());
             Assert.AreEqual(2, OrderHandler.Trades.Count);
 
             trade = OrderHandler.Trades[1].Item1; ;
@@ -226,7 +226,7 @@ namespace Evelyn.Extension.UnitTest
             /*
              * 4. Send the last tick and the second order is completed.
              */
-            Assert.IsTrue(FeedSource.Flip());
+            Assert.IsTrue(FeedSource.Flop());
             Assert.AreEqual(3, OrderHandler.Trades.Count);
 
             trade = OrderHandler.Trades[2].Item1; ;
@@ -277,13 +277,13 @@ namespace Evelyn.Extension.UnitTest
             /*
              * Send first two instrument status updates.
              */
-            Assert.IsTrue(FeedSource.Flip());
-            Assert.IsTrue(FeedSource.Flip());
+            Assert.IsTrue(FeedSource.Flop());
+            Assert.IsTrue(FeedSource.Flop());
 
             /*
              * Send the first tick, no order trade.
              */
-            Assert.IsTrue(FeedSource.Flip());
+            Assert.IsTrue(FeedSource.Flop());
             Assert.AreEqual(0, OrderHandler.Trades.Count);
 
             /*
@@ -292,8 +292,10 @@ namespace Evelyn.Extension.UnitTest
             Broker.Delete(new DeleteOrder { OrderID = orderID1, InstrumentID = "l2205" });
 
             /*
+             * Trigger the broker deleting order.
              * Handler receives the first trade with Deleted status.
              */
+            Assert.IsTrue(FeedSource.Flop());
             Assert.AreEqual(1, OrderHandler.Trades.Count);
 
             var trade = OrderHandler.Trades[0].Item1;
@@ -308,13 +310,11 @@ namespace Evelyn.Extension.UnitTest
             Assert.AreEqual(OrderStatus.Deleted, trade.Status);
 
             /*
-             * 2. Send the following two ticks and it trades a proportion.
+             * 2. Send the following ticks and it trades a proportion.
              * 
              * Now the handler should receive the second trade response.
              */
-            Assert.IsTrue(FeedSource.Flip());
-            Assert.IsTrue(FeedSource.Flip());
-
+            Assert.IsTrue(FeedSource.Flop());
             Assert.AreEqual(2, OrderHandler.Trades.Count);
 
             /*
@@ -322,6 +322,10 @@ namespace Evelyn.Extension.UnitTest
              */
             Broker.Delete(new DeleteOrder { OrderID = orderID2, InstrumentID = "l2205" });
 
+            /*
+             * Trigger deletion.
+             */
+            Assert.IsTrue(FeedSource.Flop());
             Assert.AreEqual(3, OrderHandler.Trades.Count);
 
             trade = OrderHandler.Trades[2].Item1;
@@ -342,6 +346,10 @@ namespace Evelyn.Extension.UnitTest
              */
             Broker.Delete(new DeleteOrder { OrderID = orderID2, InstrumentID = "l2205" });
 
+            /*
+             * Trigger deletion.
+             */
+            Assert.IsTrue(FeedSource.Flop());
             Assert.AreEqual(4, OrderHandler.Trades.Count);
 
             trade = OrderHandler.Trades[3].Item1;

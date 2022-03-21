@@ -133,8 +133,13 @@ namespace Evelyn.Extension.Simulator
             }
         }
 
-        public bool Flip()
+        public bool Flop()
         {
+            /*
+             * Delete order because deletion doesn't need feed.
+             */
+            _broker.Delete();
+
             lock (_events)
             {
                 if (!_connected)
@@ -154,12 +159,15 @@ namespace Evelyn.Extension.Simulator
 
                     if (evt.Type == typeof(Tick))
                     {
+                        /*
+                         * Match orders because the existing orders are inserted before the current tick.
+                         */
+                        _broker.Match((Tick)evt.Object);
+
                         if (_subscribed.Contains(((Tick)evt.Object).InstrumentID))
                         {
                             Handler.OnFeed((Tick)evt.Object);
                         }
-
-                        _broker.Match((Tick)evt.Object);
                     }
                     else if (evt.Type == typeof(Instrument))
                     {

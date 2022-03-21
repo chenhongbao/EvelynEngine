@@ -26,6 +26,7 @@ namespace Evelyn.Extension.Simulator
         private readonly List<Bucket> _sellSide = new List<Bucket>();
         private readonly List<Bucket> _buySide = new List<Bucket>();
         private readonly ISet<string> _orderID = new HashSet<string>();
+        private readonly Queue<DeleteOrder> _deletion = new Queue<DeleteOrder>();
 
         private IOrderHandler? _handler;
         private IExchangeListener? _exchange;
@@ -40,14 +41,7 @@ namespace Evelyn.Extension.Simulator
 
         public void Delete(DeleteOrder delete)
         {
-            if (TryDebook(delete, out var removed))
-            {
-                removed.TradeQuantity = 0;
-                removed.Status = OrderStatus.Deleted;
-                removed.Message = "Deleted";
-
-                TryCatch(() => Handler.OnTrade(removed, new Description { Code = 0, Message = "OK" }));
-            }
+            _deletion.Enqueue(delete);
         }
 
         private bool TryDebook(DeleteOrder delete, out Trade removed)
@@ -191,6 +185,22 @@ namespace Evelyn.Extension.Simulator
             {
                 removed = new Trade();
                 return false;
+            }
+        }
+
+        internal void Delete()
+        {
+            while (_deletion.Count > 0)
+            {
+                var delete = _deletion.Dequeue();
+                if (TryDebook(delete, out var removed))
+                {
+                    removed.TradeQuantity = 0;
+                    removed.Status = OrderStatus.Deleted;
+                    removed.Message = "Deleted";
+
+                    TryCatch(() => Handler.OnTrade(removed, new Description { Code = 0, Message = "OK" }));
+                }
             }
         }
 
