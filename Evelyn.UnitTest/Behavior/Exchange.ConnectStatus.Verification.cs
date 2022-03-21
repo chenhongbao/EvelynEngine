@@ -97,7 +97,7 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * Check feed source receives susbcription requests for the given instruments.
              */
-            Assert.AreEqual(02, Configurator.FeedSource.SubscribedInstruments.Count);
+            Assert.AreEqual(2, Configurator.FeedSource.SubscribedInstruments.Count);
 
             var i0 = Configurator.FeedSource.SubscribedInstruments[0];
             var i1 = Configurator.FeedSource.SubscribedInstruments[1];
