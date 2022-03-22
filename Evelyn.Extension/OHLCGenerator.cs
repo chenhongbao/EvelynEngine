@@ -37,7 +37,7 @@ namespace Evelyn.Extension
     {
         private long _volume;
         private DateTime _timeStamp;
-        private bool _initialized = false;
+        
         private string _instrumentID = String.Empty;
         private string _exchangeID = String.Empty;
         private string _symbol = String.Empty;
@@ -49,36 +49,29 @@ namespace Evelyn.Extension
         private double _closePrice;
         private long _openInterest;
 
+        private bool _initialized = false;
+        private bool _resetFields = false;
+
         public bool Generate(Tick tick, out OHLC ohlc)
         {
             if (!_initialized)
             {
                 ResetValues(tick);
+
                 _volume = tick.Volume;
                 _timeStamp = tick.TimeStamp;
+
                 _initialized = true;
+                _resetFields = true;
             }
 
-            /*
-             * Let's assure the input ticks have correct fields. So here no need
-             * to tackle the any wrong data.
-             */
+            var generated = false;
 
-            if (tick.TimeStamp.Minute == _timeStamp.Minute)
+            if (tick.TimeStamp.Minute != _timeStamp.Minute)
             {
-                _timeStamp = tick.TimeStamp;
-                _closePrice = tick.LastPrice;
-                _openInterest = tick.OpenInterest;
-                _currentVolume = tick.Volume;
+                _resetFields = false;
 
-                _highPrice = _highPrice < tick.LastPrice ? tick.LastPrice : _highPrice;
-                _lowPrice = _lowPrice > tick.LastPrice ? tick.LastPrice : _lowPrice;
-
-                ohlc = default(OHLC);
-                return false;
-            }
-            else
-            {
+                generated = true;
                 ohlc = new OHLC
                 {
                     InstrumentID = _instrumentID,
@@ -94,16 +87,38 @@ namespace Evelyn.Extension
                     Volume = _currentVolume - _volume,
                     Time = TimeSpan.FromMinutes(1)
                 };
-
-                ResetValues(tick);
-
-                _volume = _currentVolume;
-                _timeStamp = tick.TimeStamp;
-                _openInterest = tick.OpenInterest;
-                _currentVolume = tick.Volume;
-
-                return true;
             }
+            else
+            {
+                ohlc = new OHLC();
+            }
+
+            if (tick.Volume != _currentVolume)
+            {
+                if (!_resetFields)
+                {
+                    _resetFields = true;
+
+                    ResetValues(tick);
+
+                    _volume = _currentVolume;
+                    _openInterest = tick.OpenInterest;
+                    _currentVolume = tick.Volume;
+                }
+                else
+                {
+                    _closePrice = tick.LastPrice;
+                    _openInterest = tick.OpenInterest;
+                    _currentVolume = tick.Volume;
+
+                    _highPrice = _highPrice < tick.LastPrice ? tick.LastPrice : _highPrice;
+                    _lowPrice = _lowPrice > tick.LastPrice ? tick.LastPrice : _lowPrice;
+                }
+            }
+
+            _timeStamp = tick.TimeStamp;
+
+            return generated;
         }
 
         private void ResetValues(Tick tick)
