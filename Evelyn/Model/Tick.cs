@@ -27,7 +27,8 @@ namespace Evelyn.Model
         private long? _preOpenInterest = null;
         private double? _preClosePrice = null;
         private double? _preSettlementPrice = null;
-
+        private long? _askVolume = null;
+        private long? _bidVolume = null;
         public Tick()
         {
         }
