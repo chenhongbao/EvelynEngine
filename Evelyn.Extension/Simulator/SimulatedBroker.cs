@@ -14,10 +14,8 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using Evelyn.Internal.Logging;
 using Evelyn.Model;
 using Evelyn.Plugin;
-using Microsoft.Extensions.Logging;
 
 namespace Evelyn.Extension.Simulator
 {
@@ -285,7 +283,7 @@ namespace Evelyn.Extension.Simulator
                 Symbol = order.Symbol,
                 OrderID = order.OrderID,
                 TradingDay = TradingDay,
-                TimeStamp = DateTime.Now,
+                TimeStamp = DateTime.MaxValue,
                 Price = order.Price,
                 Quantity = order.Quantity,
                 Direction = order.Direction,
@@ -294,8 +292,8 @@ namespace Evelyn.Extension.Simulator
                 TradePrice = double.MaxValue,
                 TradeQuantity = 0,
                 LeaveQuantity = order.Quantity,
-                Status = OrderStatus.Trading,
-                Message = "Trading"
+                Status = OrderStatus.None,
+                Message = "None"
             };
         }
 
@@ -356,6 +354,7 @@ namespace Evelyn.Extension.Simulator
                         }
 
                         trade.TradeID = trade.OrderID + (trade.Quantity - trade.LeaveQuantity).ToString("{0:D2}");
+                        trade.TimeStamp = tick.TimeStamp;
 
                         TryCatch(() => Handler.OnTrade(trade, new Description { }));
                     });
@@ -409,6 +408,7 @@ namespace Evelyn.Extension.Simulator
                          * Last total trade quantity as suffix of trade ID.
                          */
                         trade.TradeID = trade.OrderID + (trade.Quantity - trade.LeaveQuantity).ToString("{0:D2}");
+                        trade.TimeStamp = tick.TimeStamp;
 
                         TryCatch(() => Handler.OnTrade(trade, new Description { }));
                     });
