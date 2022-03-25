@@ -21,5 +21,7 @@ namespace Evelyn.Plugin
         public void OnLoad(IOperator op);
 
         public void OnUnload();
+
+        public string OnCommand(string command);
     }
 }

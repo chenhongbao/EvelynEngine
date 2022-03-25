@@ -222,5 +222,44 @@ namespace Evelyn.CLI
                 };
             }
         }
+
+        public ManagementResult<string> SendCommand(string clientID, string command)
+        {
+            if (_engine.Handler.Clients.TryGetValue(clientID, out var client))
+            {
+                try
+                {
+                    return new ManagementResult<string>
+                    {
+                        Description = new Description { Code = 0 },
+                        Result = client.Algorithm.OnCommand(command)
+                    };
+                }
+                catch (NullReferenceException ex)
+                {
+                    return new ManagementResult<string>
+                    {
+                        Description = new Description
+                        {
+                            Code = 26,
+                            Message = "No such local client " + client
+                        },
+                        Result = String.Empty
+                    };
+                }
+            }
+            else
+            {
+                return new ManagementResult<string>
+                {
+                    Description = new Description
+                    {
+                        Code = 27,
+                        Message = "No such client " + clientID
+                    },
+                    Result = String.Empty
+                };
+            }
+        }
     }
 }

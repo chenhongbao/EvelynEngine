@@ -92,6 +92,11 @@ namespace Evelyn.Extension.Client
         {
             _algorithm.OnUnload();
         }
+
+        public string OnCommand(string command)
+        {
+            return _algorithm.OnCommand(command);
+        }
     }
 
     public static class AlgorithmClientExtensions

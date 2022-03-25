@@ -70,6 +70,12 @@ namespace Evelyn.UnitTest.Mock
             IsLoaded = false;
         }
 
+
+        public string OnCommand(string command)
+        {
+            return command;
+        }
+
         #region Mocking Methods
         internal List<Tick> ReceivedTicks { get; } = new List<Tick>();
         internal List<OHLC> ReceivedOHLCs { get; } = new List<OHLC>();

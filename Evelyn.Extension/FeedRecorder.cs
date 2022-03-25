@@ -287,6 +287,11 @@ namespace Evelyn.Extension
         public void OnTrade(Trade trade, Description description)
         {
         }
+
+        public string OnCommand(string command)
+        {
+            return String.Empty;
+        }
     }
 
     public static class TickRecorderExtensions

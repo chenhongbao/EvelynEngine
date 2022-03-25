@@ -542,5 +542,39 @@ namespace Evelyn.UnitTest.CLI
             trade.OrderID = "MOCKED_ORDER_1";
             Assert.AreEqual(trade, clientBOrder1.Trades[0]);
         }
+
+        [TestMethod("Send command to client.")]
+        public void SendCommand()
+        {
+            /*
+             * Send command to client.
+             * 
+             * 1. Send command to correct client.
+             * 2. Send command to an unknown client and receive error.
+             * 3. Send command to a remote client and receive error.
+             */
+            var result = ManagementService.Management.SendCommand("MOCKED_CLIENT_A", "MOCKED_CLIENT_A_COMMAND");
+
+            Assert.AreEqual(0, result.Description.Code);
+            Assert.AreEqual("MOCKED_CLIENT_A_COMMAND", result.Result);
+
+            /*
+             * 2. Send command to an unknown client.
+             */
+            result = ManagementService.Management.SendCommand("UNKNOWN_CLIENT", "UNKNOWN_CLIENT_COMMAND");
+
+            Assert.AreEqual(27, result.Description.Code);
+            Assert.AreEqual(string.Empty, result.Result);
+
+            /*
+             * 3. Mock a remote client and send a command.
+             */
+            ClientService.GetClientOrCreate("REMOTE_CLIENT");
+
+            result = ManagementService.Management.SendCommand("REMOTE_CLIENT", "REMOTE_CLIENT_COMMAND");
+
+            Assert.AreEqual(26, result.Description.Code);
+            Assert.AreEqual(string.Empty, result.Result);
+        }
     }
 }
