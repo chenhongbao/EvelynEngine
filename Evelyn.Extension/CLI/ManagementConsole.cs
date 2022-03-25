@@ -36,7 +36,7 @@ namespace Evelyn.Extension.CLI
             return ParseCommand(Console.ReadLine());
         }
 
-        private Command? ParseCommand(string? line)
+        internal Command? ParseCommand(string? line)
         {
             if (line == null)
             {
