@@ -21,7 +21,7 @@ namespace Evelyn.Extension.CLI
 {
     public class ConsoleManagementService : IManagementService
     {
-        private ManagementConsole? _console;
+        private readonly ManagementConsole _console = new ManagementConsole();
         private IManagement? _manage;
 
         public void Configure(IManagement management)
@@ -32,7 +32,6 @@ namespace Evelyn.Extension.CLI
             }
 
             _manage = management;
-            _console = new ManagementConsole(_manage);
 
             ThreadPool.QueueUserWorkItem(state =>
             {

@@ -23,13 +23,6 @@ namespace Evelyn.Extension.CLI
 {
     internal class ManagementConsole
     {
-        private readonly IManagement _manage;
-
-        internal ManagementConsole(IManagement manage)
-        {
-            _manage = manage;
-        }
-
         internal Command? ReadCommand()
         {
             Console.Write(">>");
