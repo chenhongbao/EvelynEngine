@@ -102,6 +102,8 @@ namespace Evelyn.Extension.CLI
                         buffer.Append(line[index]);
                     }
                 }
+
+                ++index;
             }
 
             argument = buffer.ToString();
@@ -115,6 +117,7 @@ namespace Evelyn.Extension.CLI
             while(index < line.Length && line[index] != '\u0020')
             {
                 buffer.Append(line[index]);
+                ++index;
             }
 
             method = buffer.ToString();

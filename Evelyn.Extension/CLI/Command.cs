@@ -29,111 +29,223 @@ namespace Evelyn.Extension.CLI
 
         internal ManagementResult<object> Invoke(IManagement manage)
         {
-            var method = manage.GetType().GetMethod(Method);
-            if (method == null)
+            switch (Method)
             {
-                return new ManagementResult<object>
-                {
-                    Result = new Object(),
-                    Description = new Description
-                    {
-                        Code = 28,
-                        Message = "No method \'" + Method + "\'"
-                    }
-                };
-            }
+                case "AlterClient":
 
-            var paramInfo = method.GetParameters();
-            if (paramInfo.Length != Arguments.Length)
-            {
-                return new ManagementResult<object>
-                {
-                    Result = new Object(),
-                    Description = new Description
+                    if (Arguments.Length < 2)
                     {
-                        Code = 29,
-                        Message = "Invalid parameters, require (" + ParameterString(paramInfo) + ")"
+                        return new ManagementResult<object>
+                        {
+                            Result = new object(),
+                            Description = new Description
+                            {
+                                Code = 28,
+                                Message = "Need at least 2 parameters"
+                            }
+                        };
                     }
-                };
-            }
-
-            List<object> args = new List<object>();
-            for (int index = 0; index < Arguments.Length; ++index)
-            {
-                if (paramInfo[index].ParameterType == typeof(DateTime))
-                {
-                    var param = ParseAllDateTimes(Arguments[index]);
-                    if (param != null)
+                    else
                     {
-                        args.Add(param);
+                        var result = manage.AlterClient(Arguments[0], Arguments.ToList().GetRange(1, Arguments.Length - 1).ToArray());
+                        return new ManagementResult<object>
+                        {
+                            Result = result.Result,
+                            Description = result.Description
+                        };
+                    }
+
+                case "QueryEngineInformation":
+
+                    if (Arguments.Length != 0)
+                    {
+                        return new ManagementResult<object>
+                        {
+                            Result = new object(),
+                            Description = new Description
+                            {
+                                Code = 29,
+                                Message = "Need no parameter"
+                            }
+                        };
+                    }
+                    else
+                    {
+                        var result = manage.QueryEngineInformation();
+                        return new ManagementResult<object>
+                        {
+                            Result = result.Result,
+                            Description = result.Description
+                        };
+
+                    }
+
+                case "QueryClients":
+
+                    if (Arguments.Length != 0)
+                    {
+                        return new ManagementResult<object>
+                        {
+                            Result = new object(),
+                            Description = new Description
+                            {
+                                Code = 29,
+                                Message = "Need no parameter"
+                            }
+                        };
+                    }
+                    else
+                    {
+                        var result = manage.QueryClients();
+                        return new ManagementResult<object>
+                        {
+                            Result = result.Result,
+                            Description = result.Description
+                        };
+
+                    }
+
+                case "QueryClientOrder":
+
+                    if (Arguments.Length != 2)
+                    {
+                        return new ManagementResult<object>
+                        {
+                            Result = new object(),
+                            Description = new Description
+                            {
+                                Code = 30,
+                                Message = "Need exactly 2 parameters"
+                            }
+                        };
+                    }
+                    else
+                    {
+                        var result = manage.QueryClientOrder(Arguments[0], Arguments[1]);
+                        return new ManagementResult<object>
+                        {
+                            Result = result.Result,
+                            Description = result.Description
+                        };
+
+                    }
+
+                case "QueryClientLog":
+
+                    if (Arguments.Length == 2)
+                    {
+                        var datetime = ParseAllDateTimes(Arguments[1]);
+                        if ( datetime == null)
+                        {
+                            return new ManagementResult<object>
+                            {
+                                Result = new object(),
+                                Description = new Description
+                                {
+                                    Code = 31,
+                                    Message = "Can't parse date time \'" + Arguments[1] + "\'"
+                                }
+                            };
+                        }
+                        else
+                        {
+                            var result = manage.QueryClientLog(Arguments[0], (DateTime)datetime);
+                            return new ManagementResult<object>
+                            {
+                                Result = result.Result,
+                                Description = result.Description
+                            };
+                        }
+                    }
+                    else if (Arguments.Length == 3)
+                    {
+                        var datetime = ParseAllDateTimes(Arguments[1]);
+                        if (datetime == null)
+                        {
+                            return new ManagementResult<object>
+                            {
+                                Result = new object(),
+                                Description = new Description
+                                {
+                                    Code = 31,
+                                    Message = "Can't parse date time \'" + Arguments[1] + "\'"
+                                }
+                            };
+                        }
+                        else
+                        {
+                            var logLevel = ParseLogLevel(Arguments[2]);
+                            if (logLevel == null)
+                            {
+                                return new ManagementResult<object>
+                                {
+                                    Result = new object(),
+                                    Description = new Description
+                                    {
+                                        Code = 32,
+                                        Message = "Can't parse log level \'" + Arguments[2] + "\'"
+                                    }
+                                };
+                            }
+                            else
+                            {
+                                var result = manage.QueryClientLog(Arguments[0], (DateTime)datetime, (LogLevel)logLevel);
+                                return new ManagementResult<object>
+                                {
+                                    Result = result.Result,
+                                    Description = result.Description
+                                };
+                            }
+                        }
                     }
                     else
                     {
                         return new ManagementResult<object>
                         {
-                            Result = new Object(),
+                            Result = new object(),
                             Description = new Description
                             {
                                 Code = 30,
-                                Message = "Can't parse parameter \'" + Arguments[index] + "\' as " + paramInfo[index].ParameterType.Name
+                                Message = "Need 2 or 3 parameters"
                             }
                         };
                     }
-                }
-                else if (paramInfo[index].ParameterType == typeof(LogLevel))
-                {
-                    var param = ParseLogLevel(Arguments[index]);
-                    if (param != null)
-                    {
-                        args.Add(param);
-                    }
-                    else
+
+                case "SendCommand":
+
+                    if (Arguments.Length != 2)
                     {
                         return new ManagementResult<object>
                         {
-                            Result = new Object(),
+                            Result = new object(),
                             Description = new Description
                             {
                                 Code = 30,
-                                Message = "Can't parse parameter \'" + Arguments[index] + "\' as " + paramInfo[index].ParameterType.Name
+                                Message = "Need exactly 2 parameters"
                             }
                         };
                     }
-                }
-                else if (paramInfo[index].ParameterType == typeof(string[]))
-                {
-                    args.Add(Arguments[index]);
-                }
-                else
-                {
+                    else
+                    {
+                        var result = manage.SendCommand(Arguments[0], Arguments[1]);
+                        return new ManagementResult<object>
+                        {
+                            Result = result.Result,
+                            Description = result.Description
+                        };
+
+                    }
+
+                default:
                     return new ManagementResult<object>
                     {
-                        Result = new Object(),
+                        Result = new object(),
                         Description = new Description
                         {
-                            Code = 31,
-                            Message = "Unsupported parameter type " + paramInfo[index].ParameterType.Name
+                            Code = 28,
+                            Message = "Unsupported function \'" + Method + "\'"
                         }
                     };
-                }
-            }
-
-            var result = method.Invoke(manage, args.ToArray());
-            if (result != null)
-            {
-                return (ManagementResult<object>)result;
-            }
-            else
-            {
-                return new ManagementResult<object>
-                {
-                    Result = new object(),
-                    Description = new Description
-                    {
-                        Code = 32,
-                        Message = "Method returns null"
-                    }
-                };
             }
         }
 
