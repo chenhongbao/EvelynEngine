@@ -290,7 +290,7 @@ namespace Evelyn.Extension
 
         public string OnCommand(string command)
         {
-            return String.Empty;
+            return command;
         }
     }
 

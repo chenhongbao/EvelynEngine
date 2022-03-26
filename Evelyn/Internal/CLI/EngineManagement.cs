@@ -235,14 +235,14 @@ namespace Evelyn.CLI
                         Result = client.Algorithm.OnCommand(command)
                     };
                 }
-                catch (NullReferenceException ex)
+                catch (NullReferenceException)
                 {
                     return new ManagementResult<string>
                     {
                         Description = new Description
                         {
                             Code = 26,
-                            Message = "No such local client " + client
+                            Message = "Client is not local client, " + client
                         },
                         Result = String.Empty
                     };
