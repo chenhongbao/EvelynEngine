@@ -71,7 +71,7 @@ namespace Evelyn.Extension.UnitTest
             var logsB = ManagementService.Management.QueryClientLog("MOCKED_CLIENT_B", DateTime.MinValue);
 
             /*
-             * Check there are two logs.
+             * Check there are one logs.
              */
             Assert.AreEqual("MOCKED_CLIENT_B", logsB.Result.ClientID);
             Assert.AreEqual(1, logsB.Result.Logs.Count);
