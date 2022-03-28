@@ -336,7 +336,14 @@ namespace Evelyn.Internal
                      */
                     try
                     {
-                        FeedHandler.OnSubscribed(instrumentID, new Description { Code = 102, Message = " No such subscription for " + instrumentID + "." }, false);
+                        FeedHandler.OnSubscribed(
+                            instrumentID,
+                            new Description
+                            {
+                                Code = 102,
+                                Message = " No such subscription for " + instrumentID + "."
+                            },
+                            false);
                     }
                     catch (Exception ex)
                     {

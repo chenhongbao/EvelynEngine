@@ -64,7 +64,14 @@ namespace Evelyn.Internal
                      */
                     if (Handler.HasSubscriptionResponse(instrument, isSubscribed: true))
                     {
-                        Handler.OnSubscribed(instrument, new Description { Code = 0, Message = String.Empty }, true);
+                        Handler.OnSubscribed(
+                            instrument,
+                            new Description
+                            {
+                                Code = 0,
+                                Message = String.Empty
+                            },
+                            true);
                     }
                 });
 
@@ -115,7 +122,14 @@ namespace Evelyn.Internal
                              * responses are correctly sent. After the real unsubscription request is sent to 
                              * feed source, the last client receives the real response.
                              */
-                            Handler.OnSubscribed(instrument, new Description { Code = 0, Message = String.Empty }, false);
+                            Handler.OnSubscribed(
+                                instrument,
+                                new Description
+                                {
+                                    Code = 0,
+                                    Message = String.Empty
+                                },
+                                false);
                         }
                     }
                 });

@@ -40,6 +40,11 @@ namespace Evelyn.Internal
 
         public void OnTrade(Trade trade, Description description)
         {
+            if (description.Code != 0)
+            {
+                Logger.LogError("Trade error {0}/{1}.", description.Code, description.Message);
+            }
+
             foreach (var client in _clientHandler.Clients.Values)
             {
                 foreach (var order in client.Orders.Values)

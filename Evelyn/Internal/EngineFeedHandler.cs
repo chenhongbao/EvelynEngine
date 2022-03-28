@@ -30,7 +30,7 @@ namespace Evelyn.Internal
         private readonly ConcurrentDictionary<string, ScheduledJob> _scheduledJobs = new ConcurrentDictionary<string, ScheduledJob>();
 
         private ILogger? _logger;
-        
+
         /*
          * Must be min value here to mark the current tick time is at the begining and none of time condition
          * order will not be triggered.
@@ -204,6 +204,11 @@ namespace Evelyn.Internal
 
         public void OnSubscribed(string instrumentID, Description description, bool subscribed)
         {
+            if (description.Code != 0)
+            {
+                Logger.LogWarning("{0} error {1}/{2}.", subscribed ? "Subscription" : "Unsubscription", description.Code, description.Message);
+            }
+
             foreach (var client in _clientHandler.Clients.Values)
             {
                 if (client.Subscription.WaitSubscriptionResponse(instrumentID))
