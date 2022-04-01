@@ -44,26 +44,20 @@ namespace Evelyn.Extension.Simulator
 
         private IReadOnlyList<FeedEvent> MergeEvents(List<Tick> ticks, List<Instrument> instruments)
         {
-            /*
-             * Filter repeated values.
-             */
-            var distinctTicks = ticks.Distinct();
-            var distinctInstruments = instruments.Distinct();
-
-            distinctTicks.Select(tick => tick.InstrumentID).Distinct()
-                .Union(distinctInstruments.Select(instrument => instrument.InstrumentID).Distinct()).Distinct()
+            ticks.Select(tick => tick.InstrumentID).Distinct()
+                .Union(instruments.Select(instrument => instrument.InstrumentID).Distinct()).Distinct()
                 .ToList().ForEach(instrumentID => _instrumentID.Add(instrumentID));
 
             var events = new List<FeedEvent>();
 
-            events.AddRange(distinctTicks.Select(tick => new FeedEvent
+            events.AddRange(ticks.Select(tick => new FeedEvent
             {
                 Object = tick,
                 Type = typeof(Tick),
                 TimeStamp = tick.TimeStamp
             }).ToList());
 
-            events.AddRange(distinctInstruments.Select(instrument => new FeedEvent
+            events.AddRange(instruments.Select(instrument => new FeedEvent
             {
                 Object = instrument,
                 Type = typeof(Instrument),
@@ -72,8 +66,8 @@ namespace Evelyn.Extension.Simulator
 
             events.Sort((a, b) => a.TimeStamp.CompareTo(b.TimeStamp));
 
-            _tradingDay = distinctTicks.Count() > 0 ? distinctTicks.First().TradingDay
-                : distinctInstruments.Count() > 0 ? distinctInstruments.First().TradingDay : DateOnly.MaxValue;
+            _tradingDay = ticks.Count() > 0 ? ticks.First().TradingDay
+                : instruments.Count() > 0 ? instruments.First().TradingDay : DateOnly.MaxValue;
 
             return events;
         }
