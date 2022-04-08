@@ -178,6 +178,11 @@ namespace Evelyn.Extension.UnitTest
              */
             Assert.AreEqual(1, FeedHandler.OHLCs.Count);
             Assert.AreEqual("l2205", FeedHandler.OHLCs.First().InstrumentID);
+
+            /*
+             * Check feed handler receives no tick.
+             */
+            Assert.AreEqual(0, FeedHandler.Ticks.Count);
         }
 
         [TestMethod("Trade orders.")]
