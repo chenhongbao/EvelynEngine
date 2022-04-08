@@ -35,16 +35,17 @@ namespace Evelyn.Extension.Simulator
         internal IFeedHandler Handler => _feed ?? throw new NullReferenceException("Feed handler has no value.");
         internal IExchangeListener Exchange => _exchange ?? throw new NullReferenceException("Exchange listener has no value.");
 
-        public SimulatedFeedSource(SimulatedBroker broker, List<Tick> ticks, List<Instrument> instruments)
+        public SimulatedFeedSource(SimulatedBroker broker, List<Tick> ticks, List<OHLC> ohlcs, List<Instrument> instruments)
         {
             _broker = broker;
-            _events = MergeEvents(ticks, instruments);
+            _events = MergeEvents(ticks, ohlcs, instruments);
             _eventEnumerator = _events.GetEnumerator();
         }
 
-        private IReadOnlyList<FeedEvent> MergeEvents(List<Tick> ticks, List<Instrument> instruments)
+        private IReadOnlyList<FeedEvent> MergeEvents(List<Tick> ticks, List<OHLC> ohlcs, List<Instrument> instruments)
         {
             ticks.Select(tick => tick.InstrumentID).Distinct()
+                .Union(ohlcs.Select(ohlc => ohlc.InstrumentID).Distinct())
                 .Union(instruments.Select(instrument => instrument.InstrumentID).Distinct()).Distinct()
                 .ToList().ForEach(instrumentID => _instrumentID.Add(instrumentID));
 
@@ -62,6 +63,13 @@ namespace Evelyn.Extension.Simulator
                 Object = instrument,
                 Type = typeof(Instrument),
                 TimeStamp = instrument.EnterTime
+            }).ToList());
+
+            events.AddRange(ohlcs.Select(ohlc => new FeedEvent
+            {
+                Object = ohlc,
+                Type = typeof(OHLC),
+                TimeStamp = ohlc.TimeStamp
             }).ToList());
 
             events.Sort((a, b) => a.TimeStamp.CompareTo(b.TimeStamp));
@@ -170,6 +178,15 @@ namespace Evelyn.Extension.Simulator
                         if (_subscribed.Contains(((Tick)evt.Object).InstrumentID))
                         {
                             Handler.OnFeed((Tick)evt.Object);
+                        }
+                    }
+                    else if (evt.Type == typeof(OHLC))
+                    {
+                        _tradingDay = ((OHLC)evt.Object).TradingDay;
+
+                        if (_subscribed.Contains(((OHLC)evt.Object).InstrumentID))
+                        {
+                            Handler.OnFeed((OHLC)evt.Object);
                         }
                     }
                     else if (evt.Type == typeof(Instrument))

@@ -14,6 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Extension.Simulator;
 using Evelyn.Model;
 using Evelyn.Plugin;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -25,15 +26,26 @@ namespace Evelyn.Extension.UnitTest
     [TestClass]
     public class SimulatedConfiguratorValidation : SimulatedConfiguratorData
     {
+        private SimulatedBroker Broker { get; set; } = null;
+        private SimulatedFeedSource FeedSource { get; set; } = null;
+
         [TestInitialize]
         public new void Initialize()
         {
             base.Initialize();
         }
 
-        [TestMethod("Subcribe and receive feeds.")]
-        public void ReceiveFeeds()
+        [TestMethod("Subcribe and receive ticks.")]
+        public void ReceiveTicks()
         {
+            new SimulatedConfigurator(Ticks, Instruments).Configure(out var broker, out var feedSource);
+
+            Broker = (SimulatedBroker)broker;
+            Broker.Register(OrderHandler, BrokerExchange);
+
+            FeedSource = (SimulatedFeedSource)feedSource;
+            FeedSource.Register(FeedHandler, FeedSourceExchange);
+
             /*
              * Subscribe an instrument from feed source and handler receives only that instrument.
              * 
@@ -144,9 +156,41 @@ namespace Evelyn.Extension.UnitTest
             Assert.IsFalse(FeedHandler.Subscriptions[3].Item3);
         }
 
+        [TestMethod("Subscribe and receive OHLC.")]
+        public void ReceiveOHLC()
+        {
+            /*
+             * Subscribe for instrument and receive OHLC.
+             */
+            new SimulatedConfigurator(OHLCs, Instruments).Configure(out var broker, out var feedSource);
+
+            Broker = (SimulatedBroker)broker;
+            Broker.Register(OrderHandler, BrokerExchange);
+
+            FeedSource = (SimulatedFeedSource)feedSource;
+            FeedSource.Register(FeedHandler, FeedSourceExchange);
+            FeedSource.Subscribe("l2205");
+
+            while (FeedSource.Flop()) ;
+
+            /*
+             * Check feed handler receives only l2205 OHLC.
+             */
+            Assert.AreEqual(1, FeedHandler.OHLCs.Count);
+            Assert.AreEqual("l2205", FeedHandler.OHLCs.First().InstrumentID);
+        }
+
         [TestMethod("Trade orders.")]
         public void TradeOrders()
         {
+            new SimulatedConfigurator(Ticks, Instruments).Configure(out var broker, out var feedSource);
+
+            Broker = (SimulatedBroker)broker;
+            Broker.Register(OrderHandler, BrokerExchange);
+
+            FeedSource = (SimulatedFeedSource)feedSource;
+            FeedSource.Register(FeedHandler, FeedSourceExchange);
+
             /*
              * Request two orders, one is completed at one trade, and the other is completed by two trades.
              * 
@@ -155,8 +199,6 @@ namespace Evelyn.Extension.UnitTest
              * 3. Mock feeds and have the second order trade a part.
              * 4. Mock feeds and have the second order compelte trade.
              */
-            Broker.Register(OrderHandler, BrokerExchange);
-            FeedSource.Register(FeedHandler, FeedSourceExchange);
 
             Broker.New(new NewOrder
             {
@@ -242,12 +284,18 @@ namespace Evelyn.Extension.UnitTest
         [TestMethod("Request but delete orders.")]
         public void DeleteOrders()
         {
+            new SimulatedConfigurator(Ticks, Instruments).Configure(out var broker, out var feedSource);
+
+            Broker = (SimulatedBroker)broker;
+            Broker.Register(OrderHandler, BrokerExchange);
+
+            FeedSource = (SimulatedFeedSource)feedSource;
+            FeedSource.Register(FeedHandler, FeedSourceExchange);
+
             /*
              * Request two orders, one is untouched, and the other is proportionally traded.
              * And the two orders are deleted.
              */
-            Broker.Register(OrderHandler, BrokerExchange);
-            FeedSource.Register(FeedHandler, FeedSourceExchange);
 
             var orderID1 = Broker.NewOrderID;
             var orderID2 = Broker.NewOrderID;
@@ -388,7 +436,7 @@ namespace Evelyn.Extension.UnitTest
 
         public void OnFeed(OHLC ohlc)
         {
-            throw new System.NotImplementedException();
+            OHLCs.Add(ohlc);
         }
 
         public void OnFeed(Instrument instrument)
@@ -403,6 +451,7 @@ namespace Evelyn.Extension.UnitTest
 
         internal List<Instrument> Instruments { get; init; } = new List<Instrument>();
         internal List<Tick> Ticks { get; init; } = new List<Tick>();
+        internal List<OHLC> OHLCs { get; init; } = new List<OHLC>();
         internal List<(string, Description, bool)> Subscriptions = new List<(string, Description, bool)>();
     }
 

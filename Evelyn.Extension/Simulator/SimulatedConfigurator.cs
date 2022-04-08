@@ -22,6 +22,7 @@ namespace Evelyn.Extension.Simulator
     public class SimulatedConfigurator : IConfigurator
     {
         private readonly List<Tick> _ticks = new List<Tick>();
+        private readonly List<OHLC> _ohlcs = new List<OHLC>();
         private readonly List<Instrument> _instruments = new List<Instrument>();
         private SimulatedFeedSource? _feedSource;
 
@@ -31,11 +32,17 @@ namespace Evelyn.Extension.Simulator
             _instruments.AddRange(instruments);
         }
 
+        public SimulatedConfigurator(List<OHLC> ohlcs, List<Instrument> instruments)
+        {
+            _ohlcs.AddRange(ohlcs);
+            _instruments.AddRange(instruments);
+        }
+
         public void Configure(out IBroker broker, out IFeedSource feedSource)
         {
             broker = new SimulatedBroker();
 
-            _feedSource = new SimulatedFeedSource((SimulatedBroker)broker, _ticks, _instruments);
+            _feedSource = new SimulatedFeedSource((SimulatedBroker)broker, _ticks, _ohlcs, _instruments);
             feedSource = _feedSource;
         }
 

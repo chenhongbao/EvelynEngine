@@ -1,24 +1,34 @@
-﻿using Evelyn.Extension.Simulator;
+﻿/*
+Copyright (C) 2022  Chen Hongbao<chenhongbao@outlook.com>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 using Evelyn.Model;
-using Evelyn.Plugin;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Evelyn.Extension.UnitTest
 {
     public class SimulatedConfiguratorData
     {
         internal List<Tick> Ticks { get; init; } = new List<Tick>();
+        internal List<OHLC> OHLCs { get; init; } = new List<OHLC>();
         internal List<Instrument> Instruments { get; init; } = new List<Instrument>();
         internal MockedExchange BrokerExchange { get; private set; } = new MockedExchange();
         internal MockedExchange FeedSourceExchange { get; private set; } = new MockedExchange();
         internal MockedOrderHandler OrderHandler { get; private set; } = new MockedOrderHandler();
         internal MockedFeedHandler FeedHandler { get; private set; } = new MockedFeedHandler();
-        internal SimulatedBroker Broker { get; private set; } = new SimulatedBroker();
-        internal SimulatedFeedSource FeedSource { get; private set; } = new SimulatedFeedSource(new SimulatedBroker(), new List<Tick> { }, new List<Instrument> { });
         internal DateTime BaseTime { get; init; } = DateTime.Now;
         internal DateOnly TradingDay { get; init; } = DateOnly.FromDateTime(DateTime.Now);
 
@@ -56,13 +66,11 @@ namespace Evelyn.Extension.UnitTest
             Ticks.Add(new Tick { InstrumentID = "pp2205", ExchangeID = "DCE", Symbol = "聚丙烯2205", TradingDay = TradingDay, TimeStamp = BaseTime.AddSeconds(23), LastPrice = 8497, Volume = 120, OpenInterest = 1020, PreClosePrice = 8800, PreSettlementPrice = 8800, PreOpenInterest = 990, AskPrice = 8498, AskVolume = 10, BidPrice = 8497, BidVolume = 10 });
             Ticks.Add(new Tick { InstrumentID = "pp2205", ExchangeID = "DCE", Symbol = "聚丙烯2205", TradingDay = TradingDay, TimeStamp = BaseTime.AddSeconds(24), LastPrice = 8498, Volume = 130, OpenInterest = 1030, PreClosePrice = 8800, PreSettlementPrice = 8800, PreOpenInterest = 990, AskPrice = 8498, AskVolume = 10, BidPrice = 8496, BidVolume = 10 });
 
-            new SimulatedConfigurator(Ticks, Instruments).Configure(out var broker, out var feedSource);
-
-            Broker = (SimulatedBroker) broker;
-            Broker.Register(OrderHandler, BrokerExchange);
-
-            FeedSource = (SimulatedFeedSource)feedSource;
-            FeedSource.Register(FeedHandler, FeedSourceExchange);
+            /*
+             * OHLC
+             */
+            OHLCs.Add(new OHLC { InstrumentID = "l2205", ExchangeID = "DCE", Symbol = "塑料2205", TradingDay = TradingDay, TimeStamp = BaseTime.AddMinutes(1), OpenPrice = 8900, HighPrice = 8900, LowPrice = 8897, ClosePrice = 8898, OpenInterest = 1030, Volume = 30, Time = TimeSpan.FromMinutes(1) });
+            OHLCs.Add(new OHLC { InstrumentID = "pp2205", ExchangeID = "DCE", Symbol = "聚丙烯2205", TradingDay = TradingDay, TimeStamp = BaseTime.AddMinutes(1), OpenPrice = 8500, HighPrice = 8500, LowPrice = 8497, ClosePrice = 8498, OpenInterest = 1030, Volume = 30, Time = TimeSpan.FromMinutes(1) });
         }
     }
 }
