@@ -290,7 +290,7 @@ namespace Evelyn.Internal
             /*
              * Response to subscription of the instrument shall be routed to this client.
              */
-            client.Subscription.MarkSubscriptionResponse(instrumentID, waitResponse: true);
+            client.Subscription.MarkWaitingSubscriptionResponse(instrumentID, waitResponse: true);
 
             if (isSubscribed)
             {

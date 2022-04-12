@@ -211,12 +211,12 @@ namespace Evelyn.Internal
 
             foreach (var client in _clientHandler.Clients.Values)
             {
-                if (client.Subscription.WaitSubscriptionResponse(instrumentID))
+                if (client.Subscription.IsWaitingSubscriptionResponse(instrumentID))
                 {
                     TryCatch(() =>
                     {
                         client.Service.SendSubscribe(instrumentID, description, subscribed, client.ClientID);
-                        client.Subscription.MarkSubscriptionResponse(instrumentID, waitResponse: false);
+                        client.Subscription.MarkWaitingSubscriptionResponse(instrumentID, waitResponse: false);
                     });
                 }
             }

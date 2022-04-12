@@ -63,7 +63,9 @@ namespace Evelyn.Internal
                  * Call IClientHandler methods to handle the instruments, so all kinds of subscription go through the same logic.
                  * For every new subscribed instrument, susbcribe it, and for those not in the altered instruments' list, unsubscribe.
                  */
-                instrumentID.ToList().ForEach(instrument => _clientHandler.OnSubscribe(instrument, true, clientID));
+                instrumentID.Where(instrument => !client.Subscription.Instruments.Contains(instrument)).ToList()
+                    .ForEach(instrument => _clientHandler.OnSubscribe(instrument, true, clientID));
+
                 client.Subscription.Instruments
                     .Where(instrument => !instrumentID.Contains(instrument)).ToList()
                     .ForEach(instrument => _clientHandler.OnSubscribe(instrument, false, clientID));

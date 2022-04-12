@@ -43,12 +43,12 @@ namespace Evelyn.Internal
             }
         }
 
-        internal bool WaitSubscriptionResponse(string instrumentID)
+        internal bool IsWaitingSubscriptionResponse(string instrumentID)
         {
             return _responses.ContainsKey(instrumentID);
         }
 
-        internal void MarkSubscriptionResponse(string instrumentID, bool waitResponse)
+        internal void MarkWaitingSubscriptionResponse(string instrumentID, bool waitResponse)
         {
             if (waitResponse)
             {
