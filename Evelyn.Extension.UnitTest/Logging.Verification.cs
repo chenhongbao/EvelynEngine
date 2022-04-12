@@ -19,6 +19,7 @@ using Evelyn.UnitTest.Mock;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
@@ -113,6 +114,42 @@ namespace Evelyn.Extension.UnitTest
              * Check each scope has an extra indentation, and default scope has no indentation.
              */
             System.Console.Error.WriteLine(EvelynLoggerProvider.Writer.ToString());
+        }
+
+        [TestMethod("EvelynLogger writes to log files.")]
+        public void WriteLogFile()
+        {
+            var loggerName = "UnitTest";
+
+            if (File.Exists(loggerName + ".log"))
+            {
+                File.Delete(loggerName + ".log");
+            }
+
+            var logger = new EvelynLoggerProvider().CreateLogger(loggerName);
+
+            var logs = new List<string>();
+            for (int i = 0; i < 10; i++)
+            {
+                logs.Add(string.Format("LOG INFORMATION {0}, {1, 4}", DateTime.Now, i));
+            }
+
+            logs.ForEach(log => logger.LogInformation(log));
+
+            /*
+             * Check the existence of the log files and its content.
+             */
+            Assert.IsTrue(File.Exists(loggerName + ".log"));
+            using (StreamReader reader = new StreamReader(loggerName + ".log"))
+            {
+                var content = reader.ReadToEnd();
+                logs.ForEach(log => Assert.IsTrue(content.Contains(log)));
+            }
+
+            /*
+             Delete log file.
+            */
+            File.Delete(loggerName + ".log");
         }
     }
 }

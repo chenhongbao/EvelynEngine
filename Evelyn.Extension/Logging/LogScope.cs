@@ -56,16 +56,27 @@ namespace Evelyn.Extension.Logging
         {
             if (_writer == null)
             {
-                _writer = new StreamWriter(_loggerName.Replace('\\', '.').Replace('/', '.') + "." + GetHashCode() + ".log");
+                using (var writer = new StreamWriter(_loggerName.Replace('\\', '.').Replace('/', '.') + ".log", append: true))
+                {
+                    WriteLog(writer, logLevel, eventId, message);
+                }
             }
+            else
+            {
+                WriteLog(_writer, logLevel, eventId, message);
+            }
+        }
 
+        private void WriteLog(TextWriter writer, LogLevel logLevel, EventId eventId, string message)
+        {
             if (!_writeScopeName && _scopeLevels > 0)
             {
-                _writer.WriteLine("#{0}{1}", _messageIndent.Substring(0, _messageIndent.Length - 1), _name);
+                writer.WriteLine("#{0}{1}", _messageIndent.Substring(0, _messageIndent.Length - 1), _name);
                 _writeScopeName = true;
             }
 
-            _writer.WriteLine(FormatLog(logLevel, eventId, message));
+            writer.WriteLine(FormatLog(logLevel, eventId, message));
+            writer.Flush();
         }
 
         private string FormatLog(LogLevel logLevel, EventId eventId, string message)

@@ -24,7 +24,7 @@ namespace Evelyn.Extension.Logging
 
         public static TextWriter? Writer = null;
 
-        ILogger ILoggerProvider.CreateLogger(string categoryName)
+        public ILogger CreateLogger(string categoryName)
         {
             return new EvelynLogger(categoryName, Writer);
         }
