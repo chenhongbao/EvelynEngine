@@ -37,9 +37,14 @@ namespace Evelyn
         public IEvelyn RegisterLocalClient(string clientID, IAlgorithm algorithm, params string[] instrumentID);
 
         /// <summary>
-        /// Alter instrument subscription for the client with the clientID. If an instrument
-        /// in the following array hasn't been subscribed, it is subscribed. And for those
-        /// not in that array, all are unsubscribed.
+        /// Change instrument subscription for the specified client with the client ID.
+        /// <para>
+        /// <list type="bullet">
+        /// <item>If an instrument has been subscribed and is in the given instruments' array, no more subscription for the same instrument.</item>
+        /// <item>If an instrument has been subscribed but not in the given instruments' array, the instrument is <b>un</b>subscribed for the client.</item>
+        /// <item>If an instrument hasn't been subscribed but in the given instruments' array, the instrument is subscribed for the client.</item>
+        /// </list>
+        /// </para>
         /// </summary>
         /// <param name="clientID">Client ID.</param>
         /// <param name="instrumentID">Subscribed instruments for client.</param>
