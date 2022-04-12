@@ -78,7 +78,7 @@ namespace Evelyn.UnitTest.Behavior
             Assert.IsTrue((i0 == "l2205" && i1 == "pp2205") || (i1 == "l2205" && i0 == "pp2205"));
         }
 
-        [TestMethod("Subscribe for an instrument many times.")]
+        [TestMethod("Different clients subscribe for the same instrument.")]
         public void SubscribeManyTimes()
         {
             /*
@@ -454,6 +454,56 @@ namespace Evelyn.UnitTest.Behavior
 
             Assert.AreEqual("l2205", ClientA.ReceivedUnsubscribe.Item1);
             Assert.AreEqual(0, ClientA.ReceivedUnsubscribe.Item2.Code);
+        }
+
+        [TestMethod("Same client susbcribes for the same instrument many times.")]
+        public void SameClientSubscribeManyTimes()
+        {
+            /*
+             * Alter client method filters the duplicated subscription for the same instrument
+             * and no error return.
+             * 
+             * 1. Client subscribes for instrument l2205 and receives correct response.
+             * 2. Client susbcribes for l2205 again and receives no response.
+             * 3. Feed source receives no request neither.
+             */
+            Engine.RegisterLocalClient("MOCKED_CLIENT_A", ClientA, "l2205")
+                .Configure(Configurator);
+
+            Configurator.FeedSource.MockedConnect(true);
+
+            /*
+             * 1. Feed source receives the susbcription request and sends response.
+             */
+            Assert.AreEqual(1, Configurator.FeedSource.SubscribedInstruments.Count);
+            Assert.AreEqual("l2205", Configurator.FeedSource.SubscribedInstruments[0]);
+
+            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0 }, true);
+
+            /*
+             * Client A receives the response.
+             */
+            Assert.AreEqual("l2205", ClientA.ReceivedSubscribe.Item1);
+            Assert.AreEqual(0, ClientA.ReceivedSubscribe.Item2.Code);
+
+            /*
+             * 2. Client susbcribes for the same instrument by altering client.
+             */
+            Configurator.FeedSource.SubscribedInstruments.Clear();
+            ClientA.ReceivedSubscribe = default;
+
+            Engine.AlterClient("MOCKED_CLIENT_A", "l2205");
+
+            /*
+             * Client receives no response this time.
+             */
+            Assert.AreEqual(default(string), ClientA.ReceivedSubscribe.Item1);
+            Assert.AreEqual(default(int), ClientA.ReceivedSubscribe.Item2.Code);
+
+            /*
+             * 3. Feed source receives no more request.
+             */
+            Assert.AreEqual(0, Configurator.FeedSource.SubscribedInstruments.Count);
         }
     }
 }
