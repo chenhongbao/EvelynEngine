@@ -806,5 +806,38 @@ namespace Evelyn.UnitTest.Behavior
              */
             Assert.AreEqual(0, mockedClientFake.ReceivedTrades.Count);
         }
+
+        [TestMethod("Deregister client.")]
+        public void CallDeregisterClient()
+        {
+            IEvelyn engine = IEvelyn.NewInstance;
+
+            var mockedClient = new MockedLocalClient();
+            var mockedClientFake = new MockedLocalClient();
+            var mockedConfigurator = new MockedConfigurator();
+
+            /*
+             * Prepare engine for ordering.
+             */
+            engine.RegisterLocalClient("MockedClient", mockedClient, "l2205")
+                .RegisterLocalClient("MockedClientFake", mockedClientFake, "pp2205")
+                .Configure(mockedConfigurator);
+
+            mockedConfigurator.Broker.MockedConnect(true);
+
+            /*
+             * Deregister client and the client will be removed from engine.
+             */
+            engine.DeregisterClient("MockedClientFake");
+
+            try
+            {
+                engine.AlterClient("MockedClientFake", "pp2205");
+                Assert.Fail("Should throw exception.");
+            }
+            catch
+            {
+            }
+        }
     }
 }

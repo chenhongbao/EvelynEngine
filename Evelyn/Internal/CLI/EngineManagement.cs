@@ -62,7 +62,12 @@ namespace Evelyn.CLI
         {
             try
             {
-                return new ManagementResult<bool> { Result = _engine.Exit(), Description = new Description { Code = 0 } };
+                _engine.Handler.Clients.Values.ToList().ForEach(client =>
+                {
+                    _engine.AlterClient(client.ClientID);
+                    _engine.DeregisterClient(client.ClientID);
+                });
+                return new ManagementResult<bool> { Result = true, Description = new Description { Code = 0 } };
             }
             catch (Exception e)
             {

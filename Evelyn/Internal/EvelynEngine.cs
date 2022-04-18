@@ -130,18 +130,28 @@ namespace Evelyn.Internal
             return this;
         }
 
-        public bool Exit()
+        public void DeregisterClient(string clientID)
         {
-            _clientHandler.Clients.Values.ToList().ForEach(client =>
+            var client =_clientHandler.Clients.Values.ToList().Find(client => client.ClientID == clientID);
+            if (client == default)
             {
-                /*
-                 * Pause the client and call unload callback.
-                 */
-                AlterClient(client.ClientID);
-                client.Algorithm?.OnUnload();
-            });
-
-            return true;
+                throw new ArgumentException("No such client with ID \'" + clientID + "\'.");
+            }
+            else
+            {
+                try
+                {
+                    /*
+                     * Remove client from list and if it is local client, call Unload callback.
+                     */
+                    _clientHandler.OnClientDisconnect(client.ClientID);
+                    client.Algorithm?.OnUnload();
+                }
+                catch (Exception ex)
+                {
+                    LoggerProvider.CreateLogger(nameof(EvelynEngine)).LogWarning("{0}\n{1}", ex.Message, ex.StackTrace);
+                }
+            }
         }
     }
 }

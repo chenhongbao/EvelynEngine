@@ -575,5 +575,19 @@ namespace Evelyn.UnitTest.CLI
             Assert.AreEqual(26, result.Description.Code);
             Assert.AreEqual(string.Empty, result.Result);
         }
+
+        [TestMethod("Exit System.")]
+        public void CallExitSystem()
+        {
+            /*
+             * Exit system and following altering client ops should failed.
+             */
+            Assert.IsTrue(ManagementService.Management.ExitSystem().Result);
+
+            var r = ManagementService.Management.AlterClient("MOCKED_CLIENT_A", "ANY_INSTRUMENT_ID");
+
+            Assert.AreEqual("MOCKED_CLIENT_A", r.Result.ClientID);
+            Assert.AreNotEqual(0, r.Description.Code);
+        }
     }
 }
