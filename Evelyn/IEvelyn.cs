@@ -24,14 +24,13 @@ namespace Evelyn
     {
         public static IEvelyn NewInstance => new Internal.EvelynEngine();
 
+        public IConfigurator Configurator { get; }
+
+        public bool Exit();
         public void Configure(IConfigurator configurator);
-
         public IEvelyn GenerateOHLC(IOHLCGenerator generator);
-
         public IEvelyn RegisterLoggerProvider(ILoggerProvider provider);
-
         public IEvelyn RegisterRemoteClient(IClientService clientService);
-
         public IEvelyn RegisterManagement(IManagementService managementService);
 
         public IEvelyn RegisterLocalClient(string clientID, IAlgorithm algorithm, params string[] instrumentID);
@@ -57,7 +56,5 @@ namespace Evelyn
         /// <param name="instruments">Registered instruments.</param>
         /// <returns><see cref="IEvelyn"/> instance.</returns>
         public IEvelyn RegisterInstrument(params Instrument[] instruments);
-
-        public IConfigurator Configurator { get; }
     }
 }

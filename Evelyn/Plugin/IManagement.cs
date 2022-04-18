@@ -14,6 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Model;
 using Evelyn.Model.CLI;
 using Microsoft.Extensions.Logging;
 
@@ -21,6 +22,7 @@ namespace Evelyn.Plugin
 {
     public interface IManagement
     {
+        public ManagementResult<bool> ExitSystem();
         public ManagementResult<AlterClientResult> AlterClient(string clientID, params string[] instrumentID);
 
         public ManagementResult<EngineInformation> QueryEngineInformation();

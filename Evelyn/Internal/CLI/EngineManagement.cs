@@ -58,6 +58,18 @@ namespace Evelyn.CLI
             }
         }
 
+        public ManagementResult<bool> ExitSystem()
+        {
+            try
+            {
+                return new ManagementResult<bool> { Result = _engine.Exit(), Description = new Description { Code = 0 } };
+            }
+            catch (Exception e)
+            {
+                return new ManagementResult<bool> { Result = false, Description = new Description { Code = 31, Message = e.Message } };
+            }
+        }
+
         public ManagementResult<ClientLogInformation> QueryClientLog(string clientID, DateTime afterTime, LogLevel logLevel = LogLevel.None)
         {
             var description = new Description();

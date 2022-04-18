@@ -60,7 +60,7 @@ namespace Evelyn.Extension.UnitTest
             Assert.AreEqual("2022-03-25 16:44", Service.Command.Item2);
         }
 
-        [TestMethod("Call alter client.")]
+        [TestMethod("Alter client.")]
         public void CallAlterClient()
         {
             /*
@@ -79,7 +79,7 @@ namespace Evelyn.Extension.UnitTest
             Assert.AreEqual(28, result?.Description.Code);
         }
 
-        [TestMethod("Call query client logs.")]
+        [TestMethod("Query client logs.")]
         public void CallQueryClientLog()
         {
             /*
@@ -107,7 +107,7 @@ namespace Evelyn.Extension.UnitTest
             Assert.AreEqual(LogLevel.None, Service.QueryLogs.Item3);
         }
 
-        [TestMethod("Call query client order.")]
+        [TestMethod("Query client order.")]
         public void CallQueryClientOrder()
         {
             /*
@@ -118,7 +118,7 @@ namespace Evelyn.Extension.UnitTest
             Assert.AreEqual("ORDER_ID", Service.ClientOrder.Item2);
         }
 
-        [TestMethod("Call query engine.")]
+        [TestMethod("Query engine.")]
         public void CallQueryEngine()
         {
             /*
@@ -135,7 +135,7 @@ namespace Evelyn.Extension.UnitTest
             Assert.AreEqual(29, result?.Description.Code);
         }
 
-        [TestMethod("Call query clients.")]
+        [TestMethod("Query clients.")]
         public void CallQueryClients()
         {
             /*
@@ -151,6 +151,17 @@ namespace Evelyn.Extension.UnitTest
             Assert.IsNotNull(result);
             Assert.AreEqual(29, result?.Description.Code);
         }
+
+        [TestMethod("Exit system.")]
+        public void CallExitSystem()
+        {
+            Assert.IsNotNull(MngConsole.ParseCommand("ExitSystem")?.Invoke(Service));
+
+            /*
+             * Check method called.
+             */
+            Assert.IsTrue(Service.Exit);
+        }
     }
 
     internal class MockedManagement : IManagement
@@ -161,11 +172,18 @@ namespace Evelyn.Extension.UnitTest
         internal (string, string) ClientOrder { get; set; }
         internal bool Engine { get; set; } = false;
         internal bool Clients { get; set; } = false;
+        internal bool Exit { get; set; } = false;
 
         public ManagementResult<AlterClientResult> AlterClient(string clientID, params string[] instrumentID)
         {
             Alter = (clientID, instrumentID);
             return new ManagementResult<AlterClientResult>();
+        }
+
+        public ManagementResult<bool> ExitSystem()
+        {
+            Exit = true;
+            return new ManagementResult<bool> { Result = true };
         }
 
         public ManagementResult<ClientLogInformation> QueryClientLog(string clientID, DateTime afterTime, LogLevel logLevel = LogLevel.None)

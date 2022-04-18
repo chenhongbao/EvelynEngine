@@ -135,7 +135,7 @@ namespace Evelyn.Extension.CLI
                     if (Arguments.Length == 2)
                     {
                         var datetime = ParseAllDateTimes(Arguments[1]);
-                        if ( datetime == null)
+                        if (datetime == null)
                         {
                             return new ManagementResult<object>
                             {
@@ -228,6 +228,78 @@ namespace Evelyn.Extension.CLI
                     else
                     {
                         var result = manage.SendCommand(Arguments[0], Arguments[1]);
+                        return new ManagementResult<object>
+                        {
+                            Result = result.Result,
+                            Description = result.Description
+                        };
+
+                    }
+
+                case "ExitSystem":
+                    {
+                        var timeToExit = TimeSpan.FromSeconds(1);
+
+                        var result = manage.ExitSystem();
+                        if (result.Result)
+                        {
+                            var timer = new System.Timers.Timer();
+
+                            timer.Elapsed += (source, args) => Environment.Exit(0);
+                            timer.Interval = timeToExit.TotalMilliseconds;
+                            timer.AutoReset = false;
+                            timer.Enabled = true;
+                        }
+
+                        return new ManagementResult<object>
+                        {
+                            Result = result.Result ? "System exits in " + timeToExit.TotalMilliseconds + "ms." : "Sytem doesn't exit.",
+                            Description = result.Description
+                        };
+                    }
+
+                case "PauseClient":
+
+                    if (Arguments.Length != 1)
+                    {
+                        return new ManagementResult<object>
+                        {
+                            Result = new object(),
+                            Description = new Description
+                            {
+                                Code = 30,
+                                Message = "Need exactly 1 parameter"
+                            }
+                        };
+                    }
+                    else
+                    {
+                        var result = manage.PauseClient(Arguments[0]);
+                        return new ManagementResult<object>
+                        {
+                            Result = result.Result,
+                            Description = result.Description
+                        };
+
+                    }
+
+                case "ResumeClient":
+
+                    if (Arguments.Length != 1)
+                    {
+                        return new ManagementResult<object>
+                        {
+                            Result = new object(),
+                            Description = new Description
+                            {
+                                Code = 30,
+                                Message = "Need exactly 1 parameter"
+                            }
+                        };
+                    }
+                    else
+                    {
+                        var result = manage.ResumeClient(Arguments[0]);
                         return new ManagementResult<object>
                         {
                             Result = result.Result,

@@ -129,5 +129,19 @@ namespace Evelyn.Internal
             _loggerProvider = provider;
             return this;
         }
+
+        public bool Exit()
+        {
+            _clientHandler.Clients.Values.ToList().ForEach(client =>
+            {
+                /*
+                 * Pause the client and call unload callback.
+                 */
+                AlterClient(client.ClientID);
+                client.Algorithm?.OnUnload();
+            });
+
+            return true;
+        }
     }
 }

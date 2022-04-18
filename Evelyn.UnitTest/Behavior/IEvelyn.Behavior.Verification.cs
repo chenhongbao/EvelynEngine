@@ -37,12 +37,12 @@ namespace Evelyn.UnitTest.Behavior
             IEvelyn engine = IEvelyn.NewInstance;
 
             var mockedClientService = new MockedClientService();
-            var mockedConfiguator = new MockedConfigurator();
+            var mockedConfigurator = new MockedConfigurator();
 
             engine.RegisterRemoteClient(mockedClientService)
-                .Configure(mockedConfiguator);
+                .Configure(mockedConfigurator);
 
-            mockedConfiguator.FeedSource.MockedConnect(true);
+            mockedConfigurator.FeedSource.MockedConnect(true);
 
             /*
              * Engine forwards market data from feed source to client.
@@ -64,13 +64,13 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * Feed source receives the request.
              */
-            Assert.AreEqual(1, mockedConfiguator.FeedSource.SubscribedInstruments.Count);
-            Assert.AreEqual("l2205", mockedConfiguator.FeedSource.SubscribedInstruments[0]);
+            Assert.AreEqual(1, mockedConfigurator.FeedSource.SubscribedInstruments.Count);
+            Assert.AreEqual("l2205", mockedConfigurator.FeedSource.SubscribedInstruments[0]);
 
             /*
              * Feed source sends subscription response.
              */
-            mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, true);
+            mockedConfigurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, true);
 
             Assert.AreEqual("l2205", client.ReceivedSubscribe.Item1);
             Assert.AreEqual(0, client.ReceivedSubscribe.Item2.Code);
@@ -80,9 +80,9 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * 2. Feed source receives market data and input them into engine. Engine forwards the market data accordingly.
              */
-            MockedTicks.ForEach(tick => mockedConfiguator.FeedSource.MockedReceive(tick));
-            MockedOHLCs.ForEach(ohlc => mockedConfiguator.FeedSource.MockedReceive(ohlc));
-            MockedInstruments.ForEach(instrument => mockedConfiguator.FeedSource.MockedReceive(instrument));
+            MockedTicks.ForEach(tick => mockedConfigurator.FeedSource.MockedReceive(tick));
+            MockedOHLCs.ForEach(ohlc => mockedConfigurator.FeedSource.MockedReceive(ohlc));
+            MockedInstruments.ForEach(instrument => mockedConfigurator.FeedSource.MockedReceive(instrument));
 
             /*
              * 3. Check receiving correct market data.
@@ -99,10 +99,10 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * Feed source receives unsubscription request.
              */
-            Assert.AreEqual(1, mockedConfiguator.FeedSource.UnsubscribedInstruments.Count);
-            Assert.AreEqual("l2205", mockedConfiguator.FeedSource.UnsubscribedInstruments[0]);
+            Assert.AreEqual(1, mockedConfigurator.FeedSource.UnsubscribedInstruments.Count);
+            Assert.AreEqual("l2205", mockedConfigurator.FeedSource.UnsubscribedInstruments[0]);
 
-            mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, false);
+            mockedConfigurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, false);
 
             /*
              * Client receives unsubscription response.
@@ -119,9 +119,9 @@ namespace Evelyn.UnitTest.Behavior
             client.ReceivedOHLCs.Clear();
             client.ReceivedInstruments.Clear();
 
-            MockedTicks.ForEach(tick => mockedConfiguator.FeedSource.MockedReceive(tick));
-            MockedOHLCs.ForEach(ohlc => mockedConfiguator.FeedSource.MockedReceive(ohlc));
-            MockedInstruments.ForEach(instrument => mockedConfiguator.FeedSource.MockedReceive(instrument));
+            MockedTicks.ForEach(tick => mockedConfigurator.FeedSource.MockedReceive(tick));
+            MockedOHLCs.ForEach(ohlc => mockedConfigurator.FeedSource.MockedReceive(ohlc));
+            MockedInstruments.ForEach(instrument => mockedConfigurator.FeedSource.MockedReceive(instrument));
 
             Assert.AreEqual(0, client.ReceivedTicks.Count);
             Assert.AreEqual(0, client.ReceivedOHLCs.Count);
