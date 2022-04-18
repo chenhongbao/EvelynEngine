@@ -184,6 +184,12 @@ namespace Evelyn.Internal
                 return;
             }
 
+            // TODO Feed source and broker are not both connected at the same moment.
+            //
+            //      When feed source is connected, client calls broker in feeds' callback method, which
+            //      in turn requires the broker to be connected. But this condition cannot be guaranteed.
+            //      So there is chance that client requests order but engine reports exchange disconnected.
+
             if (!Broker.IsConnected)
             {
                 /*
