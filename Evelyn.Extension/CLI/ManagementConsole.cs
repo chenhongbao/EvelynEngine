@@ -132,7 +132,18 @@ namespace Evelyn.Extension.CLI
             }
             else
             {
-                Console.WriteLine(JsonSerializer.Serialize(result.Result, EvelynJsonSerialization.Options).Replace("\n", "\n\u0020\u0020"));
+                if (result.Result is string)
+                {
+                    Console.WriteLine(result.Result);
+                }
+                else if (!(result.Result is object))
+                {
+                    Console.WriteLine(result.Result?.ToString());
+                }
+                else
+                {
+                    Console.WriteLine(JsonSerializer.Serialize(result.Result, EvelynJsonSerialization.Options).Replace("\n", "\n\u0020\u0020"));
+                }
             }
         }
     }
