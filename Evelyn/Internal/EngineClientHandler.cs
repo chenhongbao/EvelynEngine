@@ -110,8 +110,8 @@ namespace Evelyn.Internal
                         },
                         new Description
                         {
-                            Code = 1,
-                            Message = "Exchange is disconnected."
+                            Code = ErrorCodes.ExchangeDisconnected,
+                            Message = "Broker is disconnected."
                         },
                         clientID);
                 }
@@ -161,7 +161,7 @@ namespace Evelyn.Internal
                         },
                         new Description
                         {
-                            Code = 2,
+                            Code = ErrorCodes.NoSuchOrder,
                             Message = "No such order with ID " + deleteOrder.OrderID + "."
                         },
                         clientID);
@@ -217,8 +217,8 @@ namespace Evelyn.Internal
                         },
                         new Description
                         {
-                            Code = 11,
-                            Message = "Exchange is disconnected."
+                            Code = ErrorCodes.ExchangeDisconnected,
+                            Message = "Feed source is disconnected."
                         },
                         clientID);
                 }
@@ -258,8 +258,8 @@ namespace Evelyn.Internal
                             },
                             new Description
                             {
-                                Code = 12,
-                                Message = "Duplicated order ID."
+                                Code = ErrorCodes.DuplicatedOrder,
+                                Message = "Duplicated order ID " + newOrder.OrderID + "."
                             },
                             clientID);
                     }
@@ -310,7 +310,7 @@ namespace Evelyn.Internal
                         FeedHandler.OnSubscribed(
                             instrumentID, new Description
                             {
-                                Code = 101,
+                                Code = ErrorCodes.DuplicatedSubscription,
                                 Message = "Duplicated subscription for " + instrumentID + "."
                             },
                             true);
@@ -346,7 +346,7 @@ namespace Evelyn.Internal
                             instrumentID,
                             new Description
                             {
-                                Code = 102,
+                                Code = ErrorCodes.NoSuchSubscription,
                                 Message = " No such subscription for " + instrumentID + "."
                             },
                             false);

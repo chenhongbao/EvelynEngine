@@ -14,6 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Internal;
 using Evelyn.Model;
 using Evelyn.Plugin;
 
@@ -49,7 +50,7 @@ namespace Evelyn.Extension.CLI
                             Result = new object(),
                             Description = new Description
                             {
-                                Code = -1,
+                                Code = ErrorCodes.CommandThrowsException,
                                 Message = ex.Message,
                             }
                         });

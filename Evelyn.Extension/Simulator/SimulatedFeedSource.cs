@@ -14,6 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Internal;
 using Evelyn.Model;
 using Evelyn.Plugin;
 
@@ -98,7 +99,7 @@ namespace Evelyn.Extension.Simulator
                     instrumentID,
                     new Description
                     {
-                        Code = 0,
+                        Code = ErrorCodes.OK,
                         Message = "OK"
                     },
                     true);
@@ -109,7 +110,7 @@ namespace Evelyn.Extension.Simulator
                     instrumentID,
                     new Description
                     {
-                        Code = 2001,
+                        Code = ErrorCodes.NoSuchInstrument,
                         Message = "No such instrument " + instrumentID + "."
                     },
                     false);
@@ -124,7 +125,7 @@ namespace Evelyn.Extension.Simulator
                     instrumentID,
                     new Description
                     {
-                        Code = 1002,
+                        Code = ErrorCodes.NoSuchSubscription,
                         Message = "No such subscribed instrument " + instrumentID + "."
                     },
                     false);
@@ -135,7 +136,7 @@ namespace Evelyn.Extension.Simulator
                     instrumentID,
                     new Description
                     {
-                        Code = 0,
+                        Code = ErrorCodes.OK,
                         Message = "OK"
                     },
                     false);

@@ -70,7 +70,7 @@ namespace Evelyn.Extension.UnitTest
 
             Assert.AreEqual(2, FeedHandler.Subscriptions.Count);
             Assert.AreEqual("ANY_ID", FeedHandler.Subscriptions[1].Item1);
-            Assert.AreNotEqual(0, FeedHandler.Subscriptions[1].Item2.Code);
+            Assert.AreNotEqual(ErrorCodes.OK, FeedHandler.Subscriptions[1].Item2.Code);
             Assert.IsFalse(FeedHandler.Subscriptions[1].Item3);
 
             /*
@@ -142,7 +142,7 @@ namespace Evelyn.Extension.UnitTest
 
             Assert.AreEqual(3, FeedHandler.Subscriptions.Count);
             Assert.AreEqual("l2205", FeedHandler.Subscriptions[2].Item1);
-            Assert.AreEqual(0, FeedHandler.Subscriptions[2].Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, FeedHandler.Subscriptions[2].Item2.Code);
             Assert.IsFalse(FeedHandler.Subscriptions[2].Item3);
 
             /*
@@ -152,7 +152,7 @@ namespace Evelyn.Extension.UnitTest
 
             Assert.AreEqual(4, FeedHandler.Subscriptions.Count);
             Assert.AreEqual("l2205", FeedHandler.Subscriptions[3].Item1);
-            Assert.AreNotEqual(0, FeedHandler.Subscriptions[3].Item2.Code);
+            Assert.AreNotEqual(ErrorCodes.OK, FeedHandler.Subscriptions[3].Item2.Code);
             Assert.IsFalse(FeedHandler.Subscriptions[3].Item3);
         }
 
@@ -418,7 +418,7 @@ namespace Evelyn.Extension.UnitTest
 
             var description = OrderHandler.Trades[3].Item2;
 
-            Assert.AreNotEqual(0, description.Code);
+            Assert.AreNotEqual(ErrorCodes.OK, description.Code);
         }
     }
 

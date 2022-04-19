@@ -40,7 +40,7 @@ namespace Evelyn.Internal
 
         public void OnTrade(Trade trade, Description description)
         {
-            if (description.Code != 0)
+            if (description.Code != ErrorCodes.OK)
             {
                 Logger.LogError("Trade error {0}/{1}.", description.Code, description.Message);
             }

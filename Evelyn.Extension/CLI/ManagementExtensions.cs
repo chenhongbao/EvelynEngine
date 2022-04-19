@@ -14,6 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Internal;
 using Evelyn.Model;
 using Evelyn.Model.CLI;
 using Evelyn.Plugin;
@@ -32,7 +33,11 @@ namespace Evelyn.Extension.CLI
                 return new ManagementResult<bool>
                 {
                     Result = false,
-                    Description = new Description { Code = 32, Message = "No such client with ID " + clientID }
+                    Description = new Description
+                    {
+                        Code = ErrorCodes.NoSuchClient,
+                        Message = "No such client with ID " + clientID + "."
+                    }
                 };
             }
             else
@@ -42,7 +47,7 @@ namespace Evelyn.Extension.CLI
                 var r = management.AlterClient(clientID);
                 return new ManagementResult<bool>
                 {
-                    Result = (r.Description.Code == 0),
+                    Result = (r.Description.Code == ErrorCodes.OK),
                     Description = r.Description
                 };
             }
@@ -57,7 +62,7 @@ namespace Evelyn.Extension.CLI
 
                 return new ManagementResult<bool>
                 {
-                    Result = r.Description.Code == 0,
+                    Result = (r.Description.Code == ErrorCodes.OK),
                     Description = r.Description
                 };
             }
@@ -66,7 +71,11 @@ namespace Evelyn.Extension.CLI
                 return new ManagementResult<bool>
                 {
                     Result = false,
-                    Description = new Description { Code = 32, Message = "No pausing client with ID " + clientID }
+                    Description = new Description
+                    {
+                        Code = ErrorCodes.NoSuchClient,
+                        Message = "No pausing client with ID " + clientID +"."
+                    }
                 };
             }
         }

@@ -14,6 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Internal;
 using Evelyn.Model;
 using Evelyn.Model.CLI;
 using Evelyn.Plugin;
@@ -40,8 +41,8 @@ namespace Evelyn.Extension.CLI
                             Result = new object(),
                             Description = new Description
                             {
-                                Code = 28,
-                                Message = "Need at least 2 parameters"
+                                Code = ErrorCodes.NeedMoreParameters,
+                                Message = "Need at least 2 parameters."
                             }
                         };
                     }
@@ -64,8 +65,8 @@ namespace Evelyn.Extension.CLI
                             Result = new object(),
                             Description = new Description
                             {
-                                Code = 29,
-                                Message = "Need no parameter"
+                                Code = ErrorCodes.NeedExtactParameters,
+                                Message = "Need no parameter."
                             }
                         };
                     }
@@ -89,8 +90,8 @@ namespace Evelyn.Extension.CLI
                             Result = new object(),
                             Description = new Description
                             {
-                                Code = 29,
-                                Message = "Need no parameter"
+                                Code = ErrorCodes.NeedExtactParameters,
+                                Message = "Need no parameter."
                             }
                         };
                     }
@@ -114,8 +115,8 @@ namespace Evelyn.Extension.CLI
                             Result = new object(),
                             Description = new Description
                             {
-                                Code = 30,
-                                Message = "Need exactly 2 parameters"
+                                Code = ErrorCodes.NeedExtactParameters,
+                                Message = "Need exactly 2 parameters."
                             }
                         };
                     }
@@ -142,8 +143,8 @@ namespace Evelyn.Extension.CLI
                                 Result = new object(),
                                 Description = new Description
                                 {
-                                    Code = 31,
-                                    Message = "Can't parse date time \'" + Arguments[1] + "\'"
+                                    Code = ErrorCodes.ParsingFormatError,
+                                    Message = "Can't parse date time \'" + Arguments[1] + "\'."
                                 }
                             };
                         }
@@ -167,8 +168,8 @@ namespace Evelyn.Extension.CLI
                                 Result = new object(),
                                 Description = new Description
                                 {
-                                    Code = 31,
-                                    Message = "Can't parse date time \'" + Arguments[1] + "\'"
+                                    Code = ErrorCodes.ParsingFormatError,
+                                    Message = "Can't parse date time \'" + Arguments[1] + "\'."
                                 }
                             };
                         }
@@ -182,8 +183,8 @@ namespace Evelyn.Extension.CLI
                                     Result = new object(),
                                     Description = new Description
                                     {
-                                        Code = 32,
-                                        Message = "Can't parse log level \'" + Arguments[2] + "\'"
+                                        Code = ErrorCodes.ParsingFormatError,
+                                        Message = "Can't parse log level \'" + Arguments[2] + "\'."
                                     }
                                 };
                             }
@@ -205,8 +206,8 @@ namespace Evelyn.Extension.CLI
                             Result = new object(),
                             Description = new Description
                             {
-                                Code = 30,
-                                Message = "Need 2 or 3 parameters"
+                                Code = ErrorCodes.NeedExtactParameters,
+                                Message = "Need 2 or 3 parameters."
                             }
                         };
                     }
@@ -220,8 +221,8 @@ namespace Evelyn.Extension.CLI
                             Result = new object(),
                             Description = new Description
                             {
-                                Code = 30,
-                                Message = "Need exactly 2 parameters"
+                                Code = ErrorCodes.NeedExtactParameters,
+                                Message = "Need exactly 2 parameters."
                             }
                         };
                     }
@@ -267,8 +268,8 @@ namespace Evelyn.Extension.CLI
                             Result = new object(),
                             Description = new Description
                             {
-                                Code = 30,
-                                Message = "Need exactly 1 parameter"
+                                Code = ErrorCodes.NeedExtactParameters,
+                                Message = "Need exactly 1 parameter."
                             }
                         };
                     }
@@ -292,8 +293,8 @@ namespace Evelyn.Extension.CLI
                             Result = new object(),
                             Description = new Description
                             {
-                                Code = 30,
-                                Message = "Need exactly 1 parameter"
+                                Code = ErrorCodes.NeedExtactParameters,
+                                Message = "Need exactly 1 parameter."
                             }
                         };
                     }
@@ -314,8 +315,8 @@ namespace Evelyn.Extension.CLI
                         Result = new object(),
                         Description = new Description
                         {
-                            Code = 28,
-                            Message = "Unsupported function \'" + Method + "\'"
+                            Code = ErrorCodes.UnsupportedFunction,
+                            Message = "Unsupported function \'" + Method + "\'."
                         }
                     };
             }

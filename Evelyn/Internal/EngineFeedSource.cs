@@ -68,7 +68,7 @@ namespace Evelyn.Internal
                             instrument,
                             new Description
                             {
-                                Code = 0,
+                                Code = ErrorCodes.OK,
                                 Message = String.Empty
                             },
                             true);
@@ -126,7 +126,7 @@ namespace Evelyn.Internal
                                 instrument,
                                 new Description
                                 {
-                                    Code = 0,
+                                    Code = ErrorCodes.OK,
                                     Message = String.Empty
                                 },
                                 false);

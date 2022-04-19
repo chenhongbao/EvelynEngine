@@ -210,7 +210,7 @@ namespace Evelyn.Internal
 
         public void OnSubscribed(string instrumentID, Description description, bool subscribed)
         {
-            if (description.Code != 0)
+            if (description.Code != ErrorCodes.OK)
             {
                 Logger.LogWarning("{0} error {1}/{2}.", subscribed ? "Subscription" : "Unsubscription", description.Code, description.Message);
             }

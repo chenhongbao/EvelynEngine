@@ -14,6 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Internal;
 using Evelyn.Model;
 using Evelyn.Plugin;
 
@@ -102,7 +103,7 @@ namespace Evelyn.Extension.Simulator
                 trade,
                 new Description
                 {
-                    Code = 1004,
+                    Code = ErrorCodes.SimBrokerNoSuchOrder,
                     Message = "No such order with ID " + delete.OrderID + "."
                 }));
         }
@@ -116,7 +117,7 @@ namespace Evelyn.Extension.Simulator
                 trade,
                 new Description
                 {
-                    Code = 1003,
+                    Code = ErrorCodes.SimBrokerDuplicatedOrders,
                     Message = "Found more than one order to delete with ID " + delete.OrderID + "."
                 }));
         }
@@ -130,7 +131,7 @@ namespace Evelyn.Extension.Simulator
                 trade,
                 new Description
                 {
-                    Code = 1002,
+                    Code = ErrorCodes.SimBrokerDeletionFail,
                     Message = "Order found but can't be removed, " + delete.OrderID + "."
                 }));
         }
@@ -197,7 +198,7 @@ namespace Evelyn.Extension.Simulator
                     removed.Status = OrderStatus.Deleted;
                     removed.Message = "Deleted";
 
-                    TryCatch(() => Handler.OnTrade(removed, new Description { Code = 0, Message = "OK" }));
+                    TryCatch(() => Handler.OnTrade(removed, new Description { Code = ErrorCodes.OK, Message = "OK" }));
                 }
             }
         }
@@ -231,7 +232,7 @@ namespace Evelyn.Extension.Simulator
                     },
                     new Description
                     {
-                        Code = 1001,
+                        Code = ErrorCodes.SimBrokerDuplicatedOrders,
                         Message = "Duplicated order with ID " + order.OrderID + "."
                     }));
             }

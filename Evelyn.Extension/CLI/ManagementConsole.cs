@@ -14,6 +14,8 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Internal;
+using Evelyn.Model;
 using Evelyn.Model.CLI;
 using Evelyn.Plugin;
 using System.Text;
@@ -157,7 +159,7 @@ namespace Evelyn.Extension.CLI
 
         private string FormatEcho(ManagementResult<object> result)
         {
-            if (result.Description.Code != 0)
+            if (result.Description.Code != ErrorCodes.OK)
             {
                 return string.Format("\u0020\u0020{0}", JsonSerializer.Serialize(result.Description, EvelynJsonSerialization.Options).Replace("\n", "\n\u0020\u0020"));
             }

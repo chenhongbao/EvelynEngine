@@ -51,6 +51,11 @@ namespace Evelyn.Internal
             _management = new EngineManagement(this);
             _orderHandler = new EngineOrderHandler(_clientHandler);
             _feedHandler = new EngineFeedHandler(_clientHandler);
+
+            /*
+             * Initialize error codes.
+             */
+            ErrorCodes.Initialize();
         }
 
         public IConfigurator Configurator => _configurator ?? throw new NullReferenceException("Engine is not configured yet.");

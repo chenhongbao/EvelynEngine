@@ -51,7 +51,7 @@ namespace Evelyn.CLI
                     Result = new AlterClientResult { ClientID = clientID },
                     Description = new Description
                     {
-                        Code = 21,
+                        Code = ErrorCodes.AlterClientThrowsException,
                         Message = ex.Message
                     }
                 };
@@ -70,7 +70,10 @@ namespace Evelyn.CLI
                 return new ManagementResult<bool>
                 {
                     Result = true,
-                    Description = new Description { Code = 0 }
+                    Description = new Description
+                    {
+                        Code = ErrorCodes.OK
+                    }
                 };
             }
             catch (Exception e)
@@ -80,7 +83,7 @@ namespace Evelyn.CLI
                     Result = false,
                     Description = new Description
                     {
-                        Code = 31,
+                        Code = ErrorCodes.ExitSystemThrowsException,
                         Message = e.Message
                     }
                 };
@@ -89,7 +92,6 @@ namespace Evelyn.CLI
 
         public ManagementResult<ClientLogInformation> QueryClientLog(string clientID, DateTime afterTime, LogLevel logLevel = LogLevel.None)
         {
-            var description = new Description();
             var information = new ClientLogInformation { ClientID = clientID, Level = logLevel, LastLogTime = DateTime.MaxValue };
 
             if (_engine.Handler.Clients.TryGetValue(clientID, out var client))
@@ -103,20 +105,30 @@ namespace Evelyn.CLI
                 {
                     information.LastLogTime = information.Logs.Last().Timestamp;
                 }
+
+                return new ManagementResult<ClientLogInformation>
+                {
+                    Result = information,
+                    Description = new Description
+                    {
+                        Code = ErrorCodes.OK
+                    }
+                };
             }
             else
             {
                 information.Logs = new List<ClientLog>();
 
-                description.Code = 22;
-                description.Message = "No such client with ID " + clientID + ".";
+                return new ManagementResult<ClientLogInformation>
+                {
+                    Result = information,
+                    Description = new Description
+                    {
+                        Code = ErrorCodes.NoSuchClient,
+                        Message = "No such client with ID " + clientID + "."
+                    }
+                };
             }
-
-            return new ManagementResult<ClientLogInformation>
-            {
-                Result = information,
-                Description = description
-            };
         }
 
         public ManagementResult<ClientOrderInformation> QueryClientOrder(string clientID, string orderID)
@@ -147,7 +159,7 @@ namespace Evelyn.CLI
                         },
                         Description = new Description
                         {
-                            Code = 23,
+                            Code = ErrorCodes.NoSuchOrder,
                             Message = "No such order with ID " + orderID + "."
                         }
                     };
@@ -163,7 +175,7 @@ namespace Evelyn.CLI
                     },
                     Description = new Description
                     {
-                        Code = 24,
+                        Code = ErrorCodes.NoSuchClient,
                         Message = "No such client with ID " + clientID + "."
                     }
                 };
@@ -245,7 +257,7 @@ namespace Evelyn.CLI
                     Result = new EngineInformation(),
                     Description = new Description
                     {
-                        Code = 25,
+                        Code = ErrorCodes.QueryEngineThrowsException,
                         Message = ex.Message
                     }
                 };
@@ -264,8 +276,8 @@ namespace Evelyn.CLI
                         {
                             Description = new Description
                             {
-                                Code = 26,
-                                Message = "Client is not local client, " + client
+                                Code = ErrorCodes.NoLocalClient,
+                                Message = "Client is not local client with ID " + clientID + "."
                             },
                             Result = String.Empty
                         };
@@ -274,7 +286,10 @@ namespace Evelyn.CLI
                     {
                         return new ManagementResult<string>
                         {
-                            Description = new Description { Code = 0 },
+                            Description = new Description
+                            {
+                                Code = ErrorCodes.OK
+                            },
                             Result = client.Algorithm.OnCommand(command)
                         };
                     }
@@ -285,8 +300,8 @@ namespace Evelyn.CLI
                     {
                         Description = new Description
                         {
-                            Code = 27,
-                            Message = "Invoke command throws exception: " + ex.Message
+                            Code = ErrorCodes.CommandThrowsException,
+                            Message = "Invoke command throws exception: " + ex.Message + "."
                         },
                         Result = String.Empty
                     };
@@ -298,8 +313,8 @@ namespace Evelyn.CLI
                 {
                     Description = new Description
                     {
-                        Code = 28,
-                        Message = "No such client " + clientID
+                        Code = ErrorCodes.NoSuchClient,
+                        Message = "No such client " + clientID + "."
                     },
                     Result = String.Empty
                 };

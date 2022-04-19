@@ -15,6 +15,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using Evelyn.Extension.CLI;
+using Evelyn.Internal;
+using Evelyn.Model;
 using Evelyn.Model.CLI;
 using Evelyn.Plugin;
 using Microsoft.Extensions.Logging;
@@ -76,7 +78,7 @@ namespace Evelyn.Extension.UnitTest
              */
             var result = MngConsole.ParseCommand("AlterClient CLIENT_ID")?.Invoke(Service);
             Assert.IsNotNull(result);
-            Assert.AreEqual(28, result?.Description.Code);
+            Assert.AreNotEqual(ErrorCodes.OK, result?.Description.Code);
         }
 
         [TestMethod("Query client logs.")]
@@ -132,7 +134,7 @@ namespace Evelyn.Extension.UnitTest
              */
             var result = MngConsole.ParseCommand("QueryEngineInformation UN_USED_PARAMETER")?.Invoke(Service);
             Assert.IsNotNull(result);
-            Assert.AreEqual(29, result?.Description.Code);
+            Assert.AreNotEqual(ErrorCodes.OK, result?.Description.Code);
         }
 
         [TestMethod("Query clients.")]
@@ -149,7 +151,7 @@ namespace Evelyn.Extension.UnitTest
              */
             var result = MngConsole.ParseCommand("QueryClients UN_USED_PARAMETER")?.Invoke(Service);
             Assert.IsNotNull(result);
-            Assert.AreEqual(29, result?.Description.Code);
+            Assert.AreNotEqual(ErrorCodes.OK, result?.Description.Code);
         }
 
         [TestMethod("Exit system.")]
