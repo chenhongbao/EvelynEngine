@@ -14,6 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Model;
 using Evelyn.Plugin;
 
 namespace Evelyn.Extension.CLI
@@ -37,7 +38,22 @@ namespace Evelyn.Extension.CLI
                 Command? cmd;
                 while ((cmd = _console.ReadCommand()) != null)
                 {
-                    _console.WriteResult(cmd.Invoke(_manage));
+                    try
+                    {
+                        _console.WriteResult(cmd.Invoke(_manage));
+                    }
+                    catch (Exception ex)
+                    {
+                        _console.WriteResult(new Model.CLI.ManagementResult<object>
+                        {
+                            Result = new object(),
+                            Description = new Description
+                            {
+                                Code = -1,
+                                Message = ex.Message,
+                            }
+                        });
+                    }
                 }
             });
         }
