@@ -359,27 +359,5 @@ namespace Evelyn.Extension.CLI
                 return null;
             }
         }
-
-        private string ParameterString(ParameterInfo[] parameters)
-        {
-            if (parameters.Length == 0)
-            {
-                return string.Empty;
-            }
-            else if (parameters.Length == 1)
-            {
-                return parameters[0].ParameterType.Name;
-            }
-            else
-            {
-                var str = parameters[0].ParameterType.Name;
-                for (int index = 1; index < parameters.Length; ++index)
-                {
-                    str += ", " + parameters[index].ParameterType.Name;
-                }
-
-                return str;
-            }
-        }
     }
 }

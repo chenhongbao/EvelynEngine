@@ -40,11 +40,11 @@ namespace Evelyn.Extension.CLI
                 {
                     try
                     {
-                        _console.WriteResult(cmd.Invoke(_manage));
+                        _console.WriteResult(cmd, cmd.Invoke(_manage));
                     }
                     catch (Exception ex)
                     {
-                        _console.WriteResult(new Model.CLI.ManagementResult<object>
+                        _console.WriteResult(cmd, new Model.CLI.ManagementResult<object>
                         {
                             Result = new object(),
                             Description = new Description

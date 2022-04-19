@@ -124,7 +124,7 @@ namespace Evelyn.Extension.CLI
             return index;
         }
 
-        internal void WriteResult(ManagementResult<object> result)
+        internal void WriteResult(Command cmd, ManagementResult<object> result)
         {
             var echo = FormatEcho(result);
 
@@ -139,7 +139,19 @@ namespace Evelyn.Extension.CLI
             var file = Path.Combine(Directory.CreateDirectory(".ManagementConsole").FullName, "Query.log");
             using (StreamWriter writer = new StreamWriter(file, append: true))
             {
-                writer.WriteLine("{0}{1}{2}", DateTime.Now, Environment.NewLine, echo);
+                writer.WriteLine(">>{0}{1}{2}", FormatCommand(cmd), Environment.NewLine, echo);
+            }
+        }
+        
+        private string FormatCommand(Command cmd)
+        {
+            if (cmd.Arguments.Count() == 0)
+            {
+                return cmd.Method;
+            }
+            else
+            {
+                return string.Format("{0}\u0020{1}", cmd.Method, cmd.Arguments.Aggregate((lhs, rhs) => string.Format("{0}\u0020{1}", lhs, rhs)));
             }
         }
 
