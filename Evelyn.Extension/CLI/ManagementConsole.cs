@@ -126,23 +126,42 @@ namespace Evelyn.Extension.CLI
 
         internal void WriteResult(ManagementResult<object> result)
         {
+            var echo = FormatEcho(result);
+
+            /*
+             * Write to console.
+             */
+            Console.WriteLine(echo);
+
+            /*
+             * Write console output to log file.
+             */
+            var file = Path.Combine(Directory.CreateDirectory(".ManagementConsole").FullName, "Query.log");
+            using (StreamWriter writer = new StreamWriter(file, append: true))
+            {
+                writer.WriteLine("{0}{1}{2}", DateTime.Now, Environment.NewLine, echo);
+            }
+        }
+
+        private string FormatEcho(ManagementResult<object> result)
+        {
             if (result.Description.Code != 0)
             {
-                Console.WriteLine("\u0020\u0020{0}", JsonSerializer.Serialize(result.Description, EvelynJsonSerialization.Options).Replace("\n", "\n\u0020\u0020"));
+                return string.Format("\u0020\u0020{0}", JsonSerializer.Serialize(result.Description, EvelynJsonSerialization.Options).Replace("\n", "\n\u0020\u0020"));
             }
             else
             {
                 if (result.Result is string)
                 {
-                    Console.WriteLine(result.Result);
+                    return (string)result.Result;
                 }
                 else if (!(result.Result is object))
                 {
-                    Console.WriteLine(result.Result?.ToString());
+                    return result.Result?.ToString() ?? "{null}";
                 }
                 else
                 {
-                    Console.WriteLine("\u0020\u0020{0}", JsonSerializer.Serialize(result.Result, EvelynJsonSerialization.Options).Replace("\n", "\n\u0020\u0020"));
+                    return string.Format("\u0020\u0020{0}", JsonSerializer.Serialize(result.Result, EvelynJsonSerialization.Options).Replace("\n", "\n\u0020\u0020"));
                 }
             }
         }
