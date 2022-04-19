@@ -77,7 +77,7 @@ namespace Evelyn.Internal
             }
         }
 
-        public void Configure(IConfigurator configurator)
+        public IEvelyn Configure(IConfigurator configurator)
         {
             _configurator = configurator;
             _configurator.Configure(out IBroker broker, out IFeedSource feedSource);
@@ -92,6 +92,8 @@ namespace Evelyn.Internal
             _localService.Configure(_clientHandler, LoggerProvider.CreateLogger(nameof(LocalClientService)));
             _registeredClientServices.ToList().ForEach(service => service.Configure(_clientHandler));
             _registerManagementServices.ToList().ForEach(service => service.Configure(_management));
+
+            return this;
         }
 
         public IEvelyn RegisterLocalClient(string clientID, IAlgorithm algorithm, params string[] instrumentID)
@@ -130,7 +132,7 @@ namespace Evelyn.Internal
             return this;
         }
 
-        public void DeregisterClient(string clientID)
+        public IEvelyn DeregisterClient(string clientID)
         {
             var client =_clientHandler.Clients.Values.ToList().Find(client => client.ClientID == clientID);
             if (client == default)
@@ -151,6 +153,8 @@ namespace Evelyn.Internal
                 {
                     LoggerProvider.CreateLogger(nameof(EvelynEngine)).LogWarning("{0}\n{1}", ex.Message, ex.StackTrace);
                 }
+
+                return this;
             }
         }
     }

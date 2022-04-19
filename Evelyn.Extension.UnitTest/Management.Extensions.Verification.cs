@@ -38,8 +38,6 @@ namespace Evelyn.Extension.UnitTest
         {
             base.Initialize();
 
-            Engine = IEvelyn.NewInstance;
-
             ClientA = new MockedLocalClient();
             ClientB = new MockedLocalClient();
             Configurator = new MockedConfigurator();
@@ -47,7 +45,8 @@ namespace Evelyn.Extension.UnitTest
             /*
              * Engine is fully configured.
              */
-            Engine.RegisterRemoteClient(ClientService)
+            Engine = IEvelyn.NewInstance
+                .RegisterRemoteClient(ClientService)
                 .RegisterLocalClient("MOCKED_CLIENT_A", ClientA, "l2205", "pp2205")
                 .RegisterLocalClient("MOCKED_CLIENT_B", ClientB, "l2205")
                 .RegisterManagement(ManagementService)

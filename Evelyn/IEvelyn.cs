@@ -26,8 +26,8 @@ namespace Evelyn
 
         public IConfigurator Configurator { get; }
 
-        public void DeregisterClient(string clientID);
-        public void Configure(IConfigurator configurator);
+        public IEvelyn DeregisterClient(string clientID);
+        public IEvelyn Configure(IConfigurator configurator);
         public IEvelyn GenerateOHLC(IOHLCGenerator generator);
         public IEvelyn RegisterLoggerProvider(ILoggerProvider provider);
         public IEvelyn RegisterRemoteClient(IClientService clientService);

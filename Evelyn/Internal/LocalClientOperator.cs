@@ -63,6 +63,7 @@ namespace Evelyn.Internal
             {
                 case TriggerType.Time:
                 case TriggerType.StateChange:
+                case TriggerType.Combined:
 
                     _clientHandler.FeedHandler.ScheduleJob(_clientID, newOrder.FullName(), () => _clientHandler.OnNewOrder(newOrder, _clientID), newOrder.InstrumentID, optionOrDefault);
                     break;

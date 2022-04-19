@@ -34,12 +34,11 @@ namespace Evelyn.UnitTest.Behavior
         [TestMethod("Run feed source for client service.")]
         public void RunFeedSourceForClientService()
         {
-            IEvelyn engine = IEvelyn.NewInstance;
-
             var mockedClientService = new MockedClientService();
             var mockedConfigurator = new MockedConfigurator();
 
-            engine.RegisterRemoteClient(mockedClientService)
+            IEvelyn engine = IEvelyn.NewInstance
+                .RegisterRemoteClient(mockedClientService)
                 .Configure(mockedConfigurator);
 
             mockedConfigurator.FeedSource.MockedConnect(true);
@@ -131,12 +130,11 @@ namespace Evelyn.UnitTest.Behavior
         [TestMethod("Un/Subscribe instrument more than once.")]
         public void DuplicatedSubscription()
         {
-            IEvelyn engine = IEvelyn.NewInstance;
-
             var mockedClientService = new MockedClientService();
             var mockedConfiguator = new MockedConfigurator();
 
-            engine.RegisterRemoteClient(mockedClientService)
+            IEvelyn engine = IEvelyn.NewInstance
+                .RegisterRemoteClient(mockedClientService)
                 .Configure(mockedConfiguator);
 
             mockedConfiguator.FeedSource.MockedConnect(true);
@@ -239,12 +237,11 @@ namespace Evelyn.UnitTest.Behavior
             var BaseTime = DateTime.Now;
             var TradingDay = DateOnly.FromDateTime(BaseTime);
 
-            IEvelyn engine = IEvelyn.NewInstance;
-
             var mockedClientService = new MockedClientService();
             var mockedConfigurator = new MockedConfigurator();
 
-            engine.RegisterRemoteClient(mockedClientService)
+            IEvelyn engine = IEvelyn.NewInstance
+                .RegisterRemoteClient(mockedClientService)
                 .RegisterInstrument(
                 new Instrument
                 {
@@ -442,13 +439,12 @@ namespace Evelyn.UnitTest.Behavior
         [TestMethod("Call OHLC generator.")]
         public void CallOHLCGenerator()
         {
-            IEvelyn engine = IEvelyn.NewInstance;
-
             var mockedOHLCGenerator = new MockedOHLCGenerator();
             var mockedClientService = new MockedClientService();
             var mockedConfiguator = new MockedConfigurator();
 
-            engine.GenerateOHLC(mockedOHLCGenerator)
+            IEvelyn engine = IEvelyn.NewInstance
+                .GenerateOHLC(mockedOHLCGenerator)
                 .RegisterRemoteClient(mockedClientService)
                 .Configure(mockedConfiguator);
 
@@ -479,14 +475,13 @@ namespace Evelyn.UnitTest.Behavior
         [TestMethod("Run feed source on local client.")]
         public void RunFeedSourceForLocalClient()
         {
-            IEvelyn engine = IEvelyn.NewInstance;
-
             var mockedClient = new MockedLocalClient();
             var mockedClientFake = new MockedLocalClient();
             var mockedClientService = new MockedClientService();
             var mockedConfigurator = new MockedConfigurator();
 
-            engine.RegisterRemoteClient(mockedClientService)
+            IEvelyn engine = IEvelyn.NewInstance
+                .RegisterRemoteClient(mockedClientService)
                 .RegisterLocalClient("MockedClient", mockedClient, "l2205")
                 .RegisterLocalClient("MockedClientFake", mockedClientFake, "pp2205")
                 .Configure(mockedConfigurator);
@@ -607,8 +602,6 @@ namespace Evelyn.UnitTest.Behavior
             var BaseTime = DateTime.Now;
             var TradingDay = DateOnly.FromDateTime(BaseTime);
 
-            IEvelyn engine = IEvelyn.NewInstance;
-
             var mockedClient = new MockedLocalClient();
             var mockedClientFake = new MockedLocalClient();
             var mockedConfigurator = new MockedConfigurator();
@@ -616,7 +609,8 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * Prepare engine for ordering.
              */
-            engine.RegisterLocalClient("MockedClient", mockedClient, "l2205")
+            IEvelyn engine = IEvelyn.NewInstance
+                .RegisterLocalClient("MockedClient", mockedClient, "l2205")
                 .RegisterLocalClient("MockedClientFake", mockedClientFake, "pp2205")
                 .RegisterInstrument(
                 new Instrument
@@ -810,8 +804,6 @@ namespace Evelyn.UnitTest.Behavior
         [TestMethod("Deregister client.")]
         public void CallDeregisterClient()
         {
-            IEvelyn engine = IEvelyn.NewInstance;
-
             var mockedClient = new MockedLocalClient();
             var mockedClientFake = new MockedLocalClient();
             var mockedConfigurator = new MockedConfigurator();
@@ -819,7 +811,8 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * Prepare engine for ordering.
              */
-            engine.RegisterLocalClient("MockedClient", mockedClient, "l2205")
+            IEvelyn engine = IEvelyn.NewInstance
+                .RegisterLocalClient("MockedClient", mockedClient, "l2205")
                 .RegisterLocalClient("MockedClientFake", mockedClientFake, "pp2205")
                 .Configure(mockedConfigurator);
 

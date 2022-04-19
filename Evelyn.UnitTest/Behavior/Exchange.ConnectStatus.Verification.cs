@@ -34,8 +34,8 @@ namespace Evelyn.UnitTest.Behavior
         {
             base.Initialize();
 
-            Engine = IEvelyn.NewInstance;
-            Engine.RegisterLocalClient("MOCKED_CLIENT", Client, "l2205", "pp2205")
+            Engine = IEvelyn.NewInstance
+                .RegisterLocalClient("MOCKED_CLIENT", Client, "l2205", "pp2205")
                 .RegisterInstrument(
                  new Instrument
                  {
