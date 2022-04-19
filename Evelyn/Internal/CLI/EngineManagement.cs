@@ -67,11 +67,23 @@ namespace Evelyn.CLI
                     _engine.AlterClient(client.ClientID);
                     _engine.DeregisterClient(client.ClientID);
                 });
-                return new ManagementResult<bool> { Result = true, Description = new Description { Code = 0 } };
+                return new ManagementResult<bool>
+                {
+                    Result = true,
+                    Description = new Description { Code = 0 }
+                };
             }
             catch (Exception e)
             {
-                return new ManagementResult<bool> { Result = false, Description = new Description { Code = 31, Message = e.Message } };
+                return new ManagementResult<bool>
+                {
+                    Result = false,
+                    Description = new Description
+                    {
+                        Code = 31,
+                        Message = e.Message
+                    }
+                };
             }
         }
 
