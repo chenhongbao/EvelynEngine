@@ -246,20 +246,35 @@ namespace Evelyn.CLI
             {
                 try
                 {
-                    return new ManagementResult<string>
+                    if (client.Algorithm == null)
                     {
-                        Description = new Description { Code = 0 },
-                        Result = client.Algorithm.OnCommand(command)
-                    };
+                        return new ManagementResult<string>
+                        {
+                            Description = new Description
+                            {
+                                Code = 26,
+                                Message = "Client is not local client, " + client
+                            },
+                            Result = String.Empty
+                        };
+                    }
+                    else
+                    {
+                        return new ManagementResult<string>
+                        {
+                            Description = new Description { Code = 0 },
+                            Result = client.Algorithm.OnCommand(command)
+                        };
+                    }
                 }
-                catch (NullReferenceException)
+                catch (Exception ex)
                 {
                     return new ManagementResult<string>
                     {
                         Description = new Description
                         {
-                            Code = 26,
-                            Message = "Client is not local client, " + client
+                            Code = 27,
+                            Message = "Invoke command throws exception: " + ex.Message
                         },
                         Result = String.Empty
                     };
@@ -271,7 +286,7 @@ namespace Evelyn.CLI
                 {
                     Description = new Description
                     {
-                        Code = 27,
+                        Code = 28,
                         Message = "No such client " + clientID
                     },
                     Result = String.Empty

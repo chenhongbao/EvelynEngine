@@ -128,7 +128,7 @@ namespace Evelyn.Extension.CLI
         {
             if (result.Description.Code != 0)
             {
-                Console.WriteLine("\u0020\u0020Code:\t{0}\n\u0020\u0020Message:\t{1}", result.Description.Code, result.Description.Message);
+                Console.WriteLine("\u0020\u0020{0}", JsonSerializer.Serialize(result.Description, EvelynJsonSerialization.Options).Replace("\n", "\n\u0020\u0020"));
             }
             else
             {
@@ -142,7 +142,7 @@ namespace Evelyn.Extension.CLI
                 }
                 else
                 {
-                    Console.WriteLine(JsonSerializer.Serialize(result.Result, EvelynJsonSerialization.Options).Replace("\n", "\n\u0020\u0020"));
+                    Console.WriteLine("\u0020\u0020{0}", JsonSerializer.Serialize(result.Result, EvelynJsonSerialization.Options).Replace("\n", "\n\u0020\u0020"));
                 }
             }
         }
