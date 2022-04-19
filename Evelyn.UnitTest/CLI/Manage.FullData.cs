@@ -562,7 +562,7 @@ namespace Evelyn.UnitTest.CLI
              */
             result = ManagementService.Management.SendCommand("UNKNOWN_CLIENT", "UNKNOWN_CLIENT_COMMAND");
 
-            Assert.AreEqual(28, result.Description.Code);
+            Assert.AreNotEqual(0, result.Description.Code);
             Assert.AreEqual(string.Empty, result.Result);
 
             /*
@@ -572,7 +572,7 @@ namespace Evelyn.UnitTest.CLI
 
             result = ManagementService.Management.SendCommand("REMOTE_CLIENT", "REMOTE_CLIENT_COMMAND");
 
-            Assert.AreEqual(27, result.Description.Code);
+            Assert.AreNotEqual(0, result.Description.Code);
             Assert.AreEqual(string.Empty, result.Result);
         }
 

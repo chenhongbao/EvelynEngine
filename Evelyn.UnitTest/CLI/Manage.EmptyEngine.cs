@@ -122,7 +122,7 @@ namespace Evelyn.UnitTest.CLI
             var alter = ManagementService.Management.AlterClient("ANY_CLIENT_ID", "l2205", "pp2205");
 
             Assert.AreEqual("ANY_CLIENT_ID", alter.Result.ClientID);
-            Assert.AreEqual(21, alter.Description.Code);
+            Assert.AreNotEqual(0, alter.Description.Code);
             Assert.AreEqual("no such client", alter.Description.Message.Substring(0, 14).ToLower());
         }
 
@@ -147,7 +147,7 @@ namespace Evelyn.UnitTest.CLI
             var query = ManagementService.Management.QueryClientOrder("ANY_CLIENT_ID", "ANY_ORDER_ID");
 
             Assert.AreEqual("ANY_CLIENT_ID", query.Result.ClientID);
-            Assert.AreEqual(24, query.Description.Code);
+            Assert.AreNotEqual(0, query.Description.Code);
             Assert.AreEqual("no such client", query.Description.Message.Substring(0, 14).ToLower());
         }
 
@@ -164,7 +164,7 @@ namespace Evelyn.UnitTest.CLI
             Assert.AreEqual(0, query.Result.Logs.Count);
             Assert.AreEqual(DateTime.MaxValue, query.Result.LastLogTime);
 
-            Assert.AreEqual(22, query.Description.Code);
+            Assert.AreNotEqual(0, query.Description.Code);
             Assert.AreEqual("no such client", query.Description.Message.Substring(0, 14).ToLower());
         }
     }
