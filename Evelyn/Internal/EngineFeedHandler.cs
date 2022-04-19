@@ -157,12 +157,18 @@ namespace Evelyn.Internal
                 return true;
             }
             else if (option.Trigger.When == TriggerType.Time
-                && option.Trigger.Time.CompareTo(_trackTime) < 0)
+                && option.Trigger.Time?.CompareTo(_trackTime) < 0)
             {
                 return true;
             }
             else if (option.Trigger.When == TriggerType.StateChange
                 && _instruments.TryGetValue(instrumentID, out var instrument) && instrument.Status == option.Trigger.StateChange)
+            {
+                return true;
+            }
+            else if (option.Trigger.When == TriggerType.Combined
+                && _instruments.TryGetValue(instrumentID, out var instr0) && instr0.Status == option.Trigger.StateChange
+                && option.Trigger.Time?.CompareTo(_trackTime) < 0)
             {
                 return true;
             }

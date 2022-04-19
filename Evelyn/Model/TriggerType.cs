@@ -20,6 +20,7 @@ namespace Evelyn.Model
     {
         Immediate = 1,
         Time,
-        StateChange
+        StateChange,
+        Combined
     }
 }

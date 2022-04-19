@@ -18,30 +18,8 @@ namespace Evelyn.Model
 {
     public struct TriggerCondition
     {
-        private TriggerType? _triggerType = null;
-        private InstrumentStatus? _stateChange = null;
-        private DateTime? _moment = null;
-
-        public TriggerCondition()
-        {
-        }
-
-        public TriggerType When
-        {
-            get => _triggerType ?? throw new NullReferenceException("Trigger type has no value.");
-            set => _triggerType = value;
-        }
-
-        public InstrumentStatus StateChange
-        {
-            get => _stateChange ?? throw new NullReferenceException("Trigger instrument state has no value.");
-            set => _stateChange = value;
-        }
-
-        public DateTime Time
-        {
-            get => _moment ?? throw new NullReferenceException("Trigger moment has no value.");
-            set => _moment = value;
-        }
+        public TriggerType When { get; set; }
+        public InstrumentStatus? StateChange { get; set; }
+        public DateTime? Time { get; set; }
     }
 }
