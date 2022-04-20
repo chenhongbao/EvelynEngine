@@ -93,9 +93,9 @@ namespace Evelyn.Extension.Client
             _algorithm.OnUnload();
         }
 
-        public string OnCommand(string command)
+        public string OnCommand(params string[] commands)
         {
-            return _algorithm.OnCommand(command);
+            return _algorithm.OnCommand(commands);
         }
     }
 

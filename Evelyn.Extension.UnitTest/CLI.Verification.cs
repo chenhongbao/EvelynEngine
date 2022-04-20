@@ -45,21 +45,24 @@ namespace Evelyn.Extension.UnitTest
              */
             Assert.IsNotNull(MngConsole.ParseCommand("SendCommand CLIENT_ID \"COMMAND MESSAGE\"")?.Invoke(Service));
             Assert.AreEqual("CLIENT_ID", Service.Command.Item1);
-            Assert.AreEqual("COMMAND MESSAGE", Service.Command.Item2);
+            Assert.AreEqual(1, Service.Command.Item2.Length);
+            Assert.AreEqual("COMMAND MESSAGE", Service.Command.Item2[0]);
 
             /*
              * Blank as prefix.
              */
             Assert.IsNotNull(MngConsole.ParseCommand("\u0020\u0020SendCommand CLIENT_ID \"COMMAND MESSAGE\"")?.Invoke(Service));
             Assert.AreEqual("CLIENT_ID", Service.Command.Item1);
-            Assert.AreEqual("COMMAND MESSAGE", Service.Command.Item2);
+            Assert.AreEqual(1, Service.Command.Item2.Length);
+            Assert.AreEqual("COMMAND MESSAGE", Service.Command.Item2[0]);
 
             /*
              * All string parameter has quotes.
              */
             Assert.IsNotNull(MngConsole.ParseCommand("\u0020\u0020SendCommand \"CLIENT ID\" \"2022-03-25 16:44\"")?.Invoke(Service));
             Assert.AreEqual("CLIENT ID", Service.Command.Item1);
-            Assert.AreEqual("2022-03-25 16:44", Service.Command.Item2);
+            Assert.AreEqual(1, Service.Command.Item2.Length);
+            Assert.AreEqual("2022-03-25 16:44", Service.Command.Item2[0]);
         }
 
         [TestMethod("Alter client.")]
@@ -168,7 +171,7 @@ namespace Evelyn.Extension.UnitTest
 
     internal class MockedManagement : IManagement
     {
-        internal (string, string) Command { get; set; }
+        internal (string, string[]) Command { get; set; }
         internal (string, string[]) Alter { get; set; }
         internal (string, DateTime, LogLevel) QueryLogs { get; set; }
         internal (string, string) ClientOrder { get; set; }
@@ -212,9 +215,9 @@ namespace Evelyn.Extension.UnitTest
             return new ManagementResult<EngineInformation>();
         }
 
-        public ManagementResult<string> SendCommand(string clientID, string command)
+        public ManagementResult<string> SendCommand(string clientID, params string[] commands)
         {
-            Command = (clientID, command);
+            Command = (clientID, commands);
             return new ManagementResult<string>();
         }
     }

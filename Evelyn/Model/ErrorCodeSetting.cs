@@ -16,7 +16,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 namespace Evelyn.Model
 {
-    public struct ErrorCodeSetting
+    public class ErrorCodeSetting
     {
         public int OK { get; private set; } = 0;
         public int ExchangeDisconnected { get; set; } = 1;

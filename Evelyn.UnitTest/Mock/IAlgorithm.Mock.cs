@@ -19,6 +19,7 @@ using Evelyn.Plugin;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Evelyn.UnitTest.Mock
 {
@@ -71,9 +72,9 @@ namespace Evelyn.UnitTest.Mock
         }
 
 
-        public string OnCommand(string command)
+        public string OnCommand(params string[] commands)
         {
-            return command;
+            return commands.Aggregate((lhs, rhs) => String.Format("{0}_{1}", lhs, rhs));
         }
 
         #region Mocking Methods

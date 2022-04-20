@@ -288,9 +288,9 @@ namespace Evelyn.Extension
         {
         }
 
-        public string OnCommand(string command)
+        public string OnCommand(params string[] commands)
         {
-            return command;
+            return commands.Aggregate((lhs, rhs) => String.Format("{0}\u0020{1}", lhs, rhs));
         }
     }
 

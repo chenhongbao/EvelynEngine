@@ -46,17 +46,29 @@ namespace Evelyn.Model
 
         internal static void Initialize()
         {
-            if (File.Exists(ConfigFile))
+            try
             {
-                using (StreamReader reader = new StreamReader(ConfigFile))
+                LoadConfig(ConfigFile);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("{0}\n{1}", ex.Message, ex.StackTrace);
+            }
+        }
+
+        private static void LoadConfig(string file)
+        {
+            if (File.Exists(file))
+            {
+                using (StreamReader reader = new StreamReader(file))
                 {
-                    _codes = JsonSerializer.Deserialize<ErrorCodeSetting>(reader.ReadToEnd());
+                    _codes = JsonSerializer.Deserialize<ErrorCodeSetting>(reader.ReadToEnd()) ?? new ErrorCodeSetting();
                 }
             }
             else
             {
                 _codes = new ErrorCodeSetting();
-                using (StreamWriter writer = new StreamWriter(ConfigFile, append: false))
+                using (StreamWriter writer = new StreamWriter(file, append: false))
                 {
                     writer.WriteLine(JsonSerializer.Serialize(_codes, new JsonSerializerOptions { WriteIndented = true }));
                 }

@@ -22,6 +22,6 @@ namespace Evelyn.Plugin
 
         public void OnUnload();
 
-        public string OnCommand(string command);
+        public string OnCommand(params string[] commands);
     }
 }

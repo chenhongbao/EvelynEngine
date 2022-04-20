@@ -33,6 +33,6 @@ namespace Evelyn.Plugin
 
         public ManagementResult<ClientLogInformation> QueryClientLog(string clientID, DateTime afterTime, LogLevel logLevel = LogLevel.None);
 
-        public ManagementResult<string> SendCommand(string clientID, string command);
+        public ManagementResult<string> SendCommand(string clientID, params string[] commands);
     }
 }

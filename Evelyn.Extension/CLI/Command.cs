@@ -214,21 +214,21 @@ namespace Evelyn.Extension.CLI
 
                 case "SendCommand":
 
-                    if (Arguments.Length != 2)
+                    if (Arguments.Length < 2)
                     {
                         return new ManagementResult<object>
                         {
                             Result = new object(),
                             Description = new Description
                             {
-                                Code = ErrorCodes.NeedExtactParameters,
-                                Message = "Need exactly 2 parameters."
+                                Code = ErrorCodes.NeedMoreParameters,
+                                Message = "Need 2 parameters at least."
                             }
                         };
                     }
                     else
                     {
-                        var result = manage.SendCommand(Arguments[0], Arguments[1]);
+                        var result = manage.SendCommand(Arguments[0], Arguments.ToList().GetRange(1, Arguments.Length - 1).ToArray());
                         return new ManagementResult<object>
                         {
                             Result = result.Result,

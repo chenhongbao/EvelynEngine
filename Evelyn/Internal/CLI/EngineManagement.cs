@@ -264,7 +264,7 @@ namespace Evelyn.CLI
             }
         }
 
-        public ManagementResult<string> SendCommand(string clientID, string command)
+        public ManagementResult<string> SendCommand(string clientID, params string[] commands)
         {
             if (_engine.Handler.Clients.TryGetValue(clientID, out var client))
             {
@@ -290,7 +290,7 @@ namespace Evelyn.CLI
                             {
                                 Code = ErrorCodes.OK
                             },
-                            Result = client.Algorithm.OnCommand(command)
+                            Result = client.Algorithm.OnCommand(commands)
                         };
                     }
                 }
