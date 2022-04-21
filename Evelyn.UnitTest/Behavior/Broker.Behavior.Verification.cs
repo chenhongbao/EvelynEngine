@@ -179,7 +179,7 @@ namespace Evelyn.UnitTest.Behavior
                 },
                 new Description
                 {
-                    Code = 0,
+                    Code = ErrorCodes.SimBrokerDuplicatedOrders,
                     Message = "Order is rejected."
                 });
 
@@ -566,7 +566,7 @@ namespace Evelyn.UnitTest.Behavior
              */
             var description = Client.ReceivedTrades[0].Item2;
 
-            Assert.AreNotEqual(0, description.Code);
+            Assert.AreEqual(ErrorCodes.DuplicatedOrder, description.Code);
         }
 
         [TestMethod("Delete order with an unexisting ID.")]
@@ -604,7 +604,7 @@ namespace Evelyn.UnitTest.Behavior
              */
             var description = Client.ReceivedTrades[0].Item2;
 
-            Assert.AreNotEqual(0, description.Code);
+            Assert.AreEqual(ErrorCodes.NoSuchOrder, description.Code);
         }
     }
 }

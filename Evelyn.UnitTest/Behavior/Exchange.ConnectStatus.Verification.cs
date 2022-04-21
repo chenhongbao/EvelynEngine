@@ -107,16 +107,30 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * Feed source sends back the subscription responses and clients receive the respones.
              */
-            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK-l2205" }, true);
+            Configurator.FeedSource.MockedReplySubscribe(
+                "l2205",
+                new Description
+                {
+                    Code = ErrorCodes.OK,
+                    Message = "OK-l2205"
+                },
+                true);
 
             Assert.AreEqual("l2205", Client.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, Client.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, Client.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual("OK-l2205", Client.ReceivedSubscribe.Item2.Message);
 
-            Configurator.FeedSource.MockedReplySubscribe("pp2205", new Description { Code = 0, Message = "OK-pp2205" }, true);
+            Configurator.FeedSource.MockedReplySubscribe(
+                "pp2205",
+                new Description
+                {
+                    Code = ErrorCodes.OK,
+                    Message = "OK-pp2205"
+                },
+                true);
 
             Assert.AreEqual("pp2205", Client.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, Client.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, Client.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual("OK-pp2205", Client.ReceivedSubscribe.Item2.Message);
 
             /*
@@ -176,7 +190,7 @@ namespace Evelyn.UnitTest.Behavior
 
             var description = Client.ReceivedTrades[0].Item2;
 
-            Assert.AreNotEqual(0, description.Code);
+            Assert.AreEqual(ErrorCodes.ExchangeDisconnected, description.Code);
         }
 
         [TestMethod("Reject deleting order when exchange is disconnected.")]
@@ -215,7 +229,7 @@ namespace Evelyn.UnitTest.Behavior
 
             var description = Client.ReceivedTrades[0].Item2;
 
-            Assert.AreNotEqual(0, description.Code);
+            Assert.AreEqual(ErrorCodes.ExchangeDisconnected, description.Code);
         }
     }
 }

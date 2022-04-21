@@ -81,7 +81,7 @@ namespace Evelyn.Extension.UnitTest
              */
             var result = MngConsole.ParseCommand("AlterClient CLIENT_ID")?.Invoke(Service);
             Assert.IsNotNull(result);
-            Assert.AreNotEqual(ErrorCodes.OK, result?.Description.Code);
+            Assert.AreEqual(ErrorCodes.NeedMoreParameters, result?.Description.Code);
         }
 
         [TestMethod("Query client logs.")]
@@ -137,7 +137,7 @@ namespace Evelyn.Extension.UnitTest
              */
             var result = MngConsole.ParseCommand("QueryEngineInformation UN_USED_PARAMETER")?.Invoke(Service);
             Assert.IsNotNull(result);
-            Assert.AreNotEqual(ErrorCodes.OK, result?.Description.Code);
+            Assert.AreEqual(ErrorCodes.NeedExtactParameters, result?.Description.Code);
         }
 
         [TestMethod("Query clients.")]
@@ -154,7 +154,7 @@ namespace Evelyn.Extension.UnitTest
              */
             var result = MngConsole.ParseCommand("QueryClients UN_USED_PARAMETER")?.Invoke(Service);
             Assert.IsNotNull(result);
-            Assert.AreNotEqual(ErrorCodes.OK, result?.Description.Code);
+            Assert.AreEqual(ErrorCodes.NeedExtactParameters, result?.Description.Code);
         }
 
         [TestMethod("Exit system.")]
