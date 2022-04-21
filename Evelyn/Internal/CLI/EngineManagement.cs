@@ -301,7 +301,7 @@ namespace Evelyn.CLI
                         Description = new Description
                         {
                             Code = ErrorCodes.CommandThrowsException,
-                            Message = "Invoke command throws exception: " + ex.Message + "."
+                            Message = "Invoke command throws exception, " + ex.Message + "."
                         },
                         Result = String.Empty
                     };
