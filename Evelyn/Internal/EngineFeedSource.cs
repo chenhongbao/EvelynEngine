@@ -120,7 +120,8 @@ namespace Evelyn.Internal
                         else
                         {
                             /*
-                             * Send a fake unsubscription response to client.
+                             * Send a fake unsubscription response to client if the unsubscribed instrument is still
+                             * subscribed by other clients.
                              */
                             Handler.OnSubscribed(
                                 instrument,
