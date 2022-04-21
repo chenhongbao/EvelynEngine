@@ -59,7 +59,7 @@ namespace Evelyn.Internal
                     ++_counters[instrument];
 
                     /*
-                     * Send a fake unsubscription response to client if the instrument is subscribed
+                     * Send a fake subscription response to client if the instrument is subscribed
                      * and response has arrived, otherwise waits for response.
                      */
                     if (Handler.HasSubscriptionResponse(instrument, isSubscribed: true))
@@ -90,7 +90,7 @@ namespace Evelyn.Internal
 
                     /*
                      * Except operation ensures the instrument doesn't exist in dictionary. So no need
-                     * to handle the return value.
+                     * to handle the return value of TryAdd().
                      */
                     _counters.TryAdd(instrument, 1);
                 });
@@ -104,6 +104,11 @@ namespace Evelyn.Internal
                         --_counters[instrument];
                         if (_counters[instrument] == 0)
                         {
+                            /*
+                             * No need to send fake unsubscription response because the real unsubscription to
+                             * feed source is sent after the last unsubscription request. And the last client that
+                             * unsubscribes an instrument will receives the response from feed source.
+                             */
                             if (IsConnected)
                             {
                                 Handler.EraseSubscriptionResponse(instrument, isSubscribed: false);
@@ -116,11 +121,6 @@ namespace Evelyn.Internal
                         {
                             /*
                              * Send a fake unsubscription response to client.
-                             * 
-                             * NOTE: No need to check unsubscription response here because the real unsubscription
-                             * always follows the last unsubscription request, and before the point all fake
-                             * responses are correctly sent. After the real unsubscription request is sent to 
-                             * feed source, the last client receives the real response.
                              */
                             Handler.OnSubscribed(
                                 instrument,

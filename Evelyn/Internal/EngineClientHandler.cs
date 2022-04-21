@@ -218,7 +218,7 @@ namespace Evelyn.Internal
                         new Description
                         {
                             Code = ErrorCodes.ExchangeDisconnected,
-                            Message = "Feed source is disconnected."
+                            Message = "Broker is disconnected."
                         },
                         clientID);
                 }
