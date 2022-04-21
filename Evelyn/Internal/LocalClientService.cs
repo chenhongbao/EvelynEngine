@@ -50,15 +50,11 @@ namespace Evelyn.Internal
             /*
              * Call OnLoad when engine is configured.
              */
-            foreach (var clientID in _savedClients.Keys)
-            {
-                var client = _savedClients[clientID];
-                InitializeClient(client.ClientID, client.Algorithm, client.Instruments);
-            }
+            _savedClients.Values.ToList().ForEach(client => InitializeClient(client.ClientID, client.Algorithm, client.Instruments));
             _savedClients.Clear();
 
             /*
-             * Send instruments to clients.
+             * Send registered instruments to clients.
              */
             _clientHandler.FeedHandler.SendInstruments();
 
