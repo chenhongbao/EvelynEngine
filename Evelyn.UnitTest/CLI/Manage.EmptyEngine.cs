@@ -14,6 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+using Evelyn.Model;
 using Evelyn.UnitTest.Behavior;
 using Evelyn.UnitTest.Mock;
 using Microsoft.Extensions.Logging;
@@ -61,7 +62,7 @@ namespace Evelyn.UnitTest.CLI
              * 
              * Description is fine, no error.
              */
-            Assert.AreEqual(0, description.Code);
+            Assert.AreEqual(ErrorCodes.OK, description.Code);
             Assert.AreEqual(string.Empty, description.Message);
 
             /*
@@ -97,7 +98,7 @@ namespace Evelyn.UnitTest.CLI
             /*
              * Query returns no error.
              */
-            Assert.AreEqual(0, description.Code);
+            Assert.AreEqual(ErrorCodes.OK, description.Code);
             Assert.AreEqual(string.Empty, description.Message);
 
             /*
@@ -117,12 +118,12 @@ namespace Evelyn.UnitTest.CLI
         public void AlterReturnError()
         {
             /*
-             * Altering an non existing client returns error (21).
+             * Altering an non existing client returns error.
              */
             var alter = ManagementService.Management.AlterClient("ANY_CLIENT_ID", "l2205", "pp2205");
 
             Assert.AreEqual("ANY_CLIENT_ID", alter.Result.ClientID);
-            Assert.AreNotEqual(0, alter.Description.Code);
+            Assert.AreEqual(ErrorCodes.AlterClientThrowsException, alter.Description.Code);
             Assert.AreEqual("no such client", alter.Description.Message.Substring(0, 14).ToLower());
         }
 
@@ -135,7 +136,7 @@ namespace Evelyn.UnitTest.CLI
             var query = ManagementService.Management.QueryClients();
 
             Assert.AreEqual(0, query.Result.Clients.Count);
-            Assert.AreEqual(0, query.Description.Code);
+            Assert.AreEqual(ErrorCodes.OK, query.Description.Code);
         }
 
         [TestMethod("Query non existing client's order returns error.")]
@@ -147,7 +148,7 @@ namespace Evelyn.UnitTest.CLI
             var query = ManagementService.Management.QueryClientOrder("ANY_CLIENT_ID", "ANY_ORDER_ID");
 
             Assert.AreEqual("ANY_CLIENT_ID", query.Result.ClientID);
-            Assert.AreNotEqual(0, query.Description.Code);
+            Assert.AreEqual(ErrorCodes.NoSuchClient, query.Description.Code);
             Assert.AreEqual("no such client", query.Description.Message.Substring(0, 14).ToLower());
         }
 
@@ -164,7 +165,7 @@ namespace Evelyn.UnitTest.CLI
             Assert.AreEqual(0, query.Result.Logs.Count);
             Assert.AreEqual(DateTime.MaxValue, query.Result.LastLogTime);
 
-            Assert.AreNotEqual(0, query.Description.Code);
+            Assert.AreEqual(ErrorCodes.NoSuchClient, query.Description.Code);
             Assert.AreEqual("no such client", query.Description.Message.Substring(0, 14).ToLower());
         }
     }

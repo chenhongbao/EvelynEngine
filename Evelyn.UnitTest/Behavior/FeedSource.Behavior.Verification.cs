@@ -111,10 +111,10 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * Feed source sends subscription response and client A receives the response.
              */
-            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK-l2205" }, true);
+            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = ErrorCodes.OK, Message = "OK-l2205" }, true);
 
             Assert.AreEqual("l2205", ClientA.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, ClientA.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, ClientA.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual("OK-l2205", ClientA.ReceivedSubscribe.Item2.Message);
 
             /*
@@ -150,7 +150,7 @@ namespace Evelyn.UnitTest.Behavior
              * Check engine sends a subscription response to client B.
              */
             Assert.AreEqual("l2205", ClientB.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, ClientB.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, ClientB.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual(String.Empty, ClientB.ReceivedSubscribe.Item2.Message);
 
             /*
@@ -218,17 +218,17 @@ namespace Evelyn.UnitTest.Behavior
             Assert.AreEqual(1, Configurator.FeedSource.SubscribedInstruments.Count);
             Assert.AreEqual("l2205", Configurator.FeedSource.SubscribedInstruments[0]);
 
-            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK-l2205" }, true);
+            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = ErrorCodes.OK, Message = "OK-l2205" }, true);
 
             /*
              * Both client A and client B receive subscription response.
              */
             Assert.AreEqual("l2205", ClientA.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, ClientA.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, ClientA.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual("OK-l2205", ClientA.ReceivedSubscribe.Item2.Message);
 
             Assert.AreEqual("l2205", ClientB.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, ClientB.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, ClientB.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual("OK-l2205", ClientB.ReceivedSubscribe.Item2.Message);
 
             /*
@@ -270,7 +270,7 @@ namespace Evelyn.UnitTest.Behavior
              * Client A receives an unsubscription response.
              */
             Assert.AreEqual("l2205", ClientA.ReceivedUnsubscribe.Item1);
-            Assert.AreEqual(0, ClientA.ReceivedUnsubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, ClientA.ReceivedUnsubscribe.Item2.Code);
             Assert.AreEqual(String.Empty, ClientA.ReceivedUnsubscribe.Item2.Message);
 
             /*
@@ -321,13 +321,13 @@ namespace Evelyn.UnitTest.Behavior
             Assert.AreEqual(1, Configurator.FeedSource.UnsubscribedInstruments.Count);
             Assert.AreEqual("l2205", Configurator.FeedSource.UnsubscribedInstruments[0]);
 
-            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK-l2205" }, false);
+            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = ErrorCodes.OK, Message = "OK-l2205" }, false);
 
             /*
              * Client B receives the unsubscription response.
              */
             Assert.AreEqual("l2205", ClientB.ReceivedUnsubscribe.Item1);
-            Assert.AreEqual(0, ClientB.ReceivedUnsubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, ClientB.ReceivedUnsubscribe.Item2.Code);
             Assert.AreEqual("OK-l2205", ClientB.ReceivedUnsubscribe.Item2.Message);
 
             /*
@@ -387,7 +387,7 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * 1. Feed source receives the request, sends back response, and client A receives the response.
              */
-            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0 }, true);
+            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = ErrorCodes.OK }, true);
 
             Assert.AreEqual(1, Configurator.FeedSource.SubscribedInstruments.Count);
             Assert.AreEqual("l2205", Configurator.FeedSource.SubscribedInstruments[0]);
@@ -396,18 +396,18 @@ namespace Evelyn.UnitTest.Behavior
              * Client A receives the response.
              */
             Assert.AreEqual("l2205", ClientA.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, ClientA.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, ClientA.ReceivedSubscribe.Item2.Code);
 
             /*
              * 2. Feed source sends again the response, and client A doesn't receive the response.
              */
-            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 1 }, true);
+            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = ErrorCodes.DuplicatedSubscription }, true);
 
             /*
              * Check response is still the first one, second response has Code of 1.
              */
             Assert.AreEqual("l2205", ClientA.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, ClientA.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, ClientA.ReceivedSubscribe.Item2.Code);
         }
 
         [TestMethod("Feed source returns unsubcription response many times.")]
@@ -429,7 +429,7 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * 1. Feed source receives the request, sends back response, and client A receives the response.
              */
-            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0 }, false);
+            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = ErrorCodes.OK }, false);
 
             Assert.AreEqual(1, Configurator.FeedSource.SubscribedInstruments.Count);
             Assert.AreEqual("l2205", Configurator.FeedSource.SubscribedInstruments[0]);
@@ -440,12 +440,12 @@ namespace Evelyn.UnitTest.Behavior
             Assert.AreEqual(String.Empty, ClientA.ReceivedSubscribe.Item1);
 
             Assert.AreEqual("l2205", ClientA.ReceivedUnsubscribe.Item1);
-            Assert.AreEqual(0, ClientA.ReceivedUnsubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, ClientA.ReceivedUnsubscribe.Item2.Code);
 
             /*
              * 2. Feed source sends again the response, and client A doesn't receive the response.
              */
-            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 1 }, false);
+            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = ErrorCodes.DuplicatedSubscription }, false);
 
             /*
              * Check unsubcription response is still the first one, second response has Code of 1.
@@ -453,7 +453,7 @@ namespace Evelyn.UnitTest.Behavior
             Assert.AreEqual(String.Empty, ClientA.ReceivedSubscribe.Item1);
 
             Assert.AreEqual("l2205", ClientA.ReceivedUnsubscribe.Item1);
-            Assert.AreEqual(0, ClientA.ReceivedUnsubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, ClientA.ReceivedUnsubscribe.Item2.Code);
         }
 
         [TestMethod("Same client susbcribes for the same instrument many times.")]
@@ -478,13 +478,13 @@ namespace Evelyn.UnitTest.Behavior
             Assert.AreEqual(1, Configurator.FeedSource.SubscribedInstruments.Count);
             Assert.AreEqual("l2205", Configurator.FeedSource.SubscribedInstruments[0]);
 
-            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0 }, true);
+            Configurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = ErrorCodes.OK }, true);
 
             /*
              * Client A receives the response.
              */
             Assert.AreEqual("l2205", ClientA.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, ClientA.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, ClientA.ReceivedSubscribe.Item2.Code);
 
             /*
              * 2. Client susbcribes for the same instrument by altering client.

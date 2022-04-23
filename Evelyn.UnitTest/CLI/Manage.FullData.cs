@@ -209,7 +209,7 @@ namespace Evelyn.UnitTest.CLI
             Configurator.Broker.MockedTrade(OrderA3Trade,
                 new Description
                 {
-                    Code = 0,
+                    Code = ErrorCodes.OK,
                     Message = "Order is completed."
                 });
 
@@ -266,7 +266,7 @@ namespace Evelyn.UnitTest.CLI
             Configurator.Broker.MockedTrade(OrderB1Trade,
                 new Description
                 {
-                    Code = 0,
+                    Code = ErrorCodes.OK,
                     Message = "Order is trading."
                 });
         }
@@ -279,7 +279,7 @@ namespace Evelyn.UnitTest.CLI
             /*
              * Query returns no error.
              */
-            Assert.AreEqual(0, query.Description.Code);
+            Assert.AreEqual(ErrorCodes.OK, query.Description.Code);
             Assert.AreEqual(string.Empty, query.Description.Message);
 
             /*
@@ -372,7 +372,7 @@ namespace Evelyn.UnitTest.CLI
             var alter = ManagementService.Management.AlterClient("MOCKED_CLIENT_A", "l2205");
 
             Assert.AreEqual("MOCKED_CLIENT_A", alter.Result.ClientID);
-            Assert.AreEqual(0, alter.Description.Code);
+            Assert.AreEqual(ErrorCodes.OK, alter.Description.Code);
             Assert.AreEqual(string.Empty, alter.Description.Message);
 
             /*
@@ -554,7 +554,7 @@ namespace Evelyn.UnitTest.CLI
              */
             var result = ManagementService.Management.SendCommand("MOCKED_CLIENT_A", "MOCKED_CLIENT_A_COMMAND");
 
-            Assert.AreEqual(0, result.Description.Code);
+            Assert.AreEqual(ErrorCodes.OK, result.Description.Code);
             Assert.AreEqual("MOCKED_CLIENT_A_COMMAND", result.Result);
 
             /*
@@ -562,7 +562,7 @@ namespace Evelyn.UnitTest.CLI
              */
             result = ManagementService.Management.SendCommand("UNKNOWN_CLIENT", "UNKNOWN_CLIENT_COMMAND");
 
-            Assert.AreNotEqual(0, result.Description.Code);
+            Assert.AreEqual(ErrorCodes.NoSuchClient, result.Description.Code);
             Assert.AreEqual(string.Empty, result.Result);
 
             /*
@@ -572,7 +572,7 @@ namespace Evelyn.UnitTest.CLI
 
             result = ManagementService.Management.SendCommand("REMOTE_CLIENT", "REMOTE_CLIENT_COMMAND");
 
-            Assert.AreNotEqual(0, result.Description.Code);
+            Assert.AreEqual(ErrorCodes.NoLocalClient, result.Description.Code);
             Assert.AreEqual(string.Empty, result.Result);
         }
 
@@ -587,7 +587,7 @@ namespace Evelyn.UnitTest.CLI
             var r = ManagementService.Management.AlterClient("MOCKED_CLIENT_A", "ANY_INSTRUMENT_ID");
 
             Assert.AreEqual("MOCKED_CLIENT_A", r.Result.ClientID);
-            Assert.AreNotEqual(0, r.Description.Code);
+            Assert.AreEqual(ErrorCodes.AlterClientThrowsException, r.Description.Code);
         }
     }
 }

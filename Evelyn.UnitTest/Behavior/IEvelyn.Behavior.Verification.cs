@@ -69,10 +69,10 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * Feed source sends subscription response.
              */
-            mockedConfigurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, true);
+            mockedConfigurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = ErrorCodes.OK, Message = "OK" }, true);
 
             Assert.AreEqual("l2205", client.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, client.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, client.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual("OK", client.ReceivedSubscribe.Item2.Message);
             Assert.AreEqual(true, client.ReceivedSubscribe.Item3);
 
@@ -101,13 +101,13 @@ namespace Evelyn.UnitTest.Behavior
             Assert.AreEqual(1, mockedConfigurator.FeedSource.UnsubscribedInstruments.Count);
             Assert.AreEqual("l2205", mockedConfigurator.FeedSource.UnsubscribedInstruments[0]);
 
-            mockedConfigurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, false);
+            mockedConfigurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = ErrorCodes.OK, Message = "OK" }, false);
 
             /*
              * Client receives unsubscription response.
              */
             Assert.AreEqual("l2205", client.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, client.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, client.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual("OK", client.ReceivedSubscribe.Item2.Message);
             Assert.AreEqual(false, client.ReceivedSubscribe.Item3);
 
@@ -164,10 +164,10 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * Feed source sends subscription response.
              */
-            mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, true);
+            mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = ErrorCodes.OK, Message = "OK" }, true);
 
             Assert.AreEqual("l2205", client.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, client.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, client.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual("OK", client.ReceivedSubscribe.Item2.Message);
             Assert.AreEqual(true, client.ReceivedSubscribe.Item3);
 
@@ -185,7 +185,7 @@ namespace Evelyn.UnitTest.Behavior
              * Engine sends the error response.
              */
             Assert.AreEqual("l2205", client.ReceivedSubscribe.Item1);
-            Assert.AreNotEqual(0, client.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.DuplicatedSubscription, client.ReceivedSubscribe.Item2.Code);
             Assert.AreNotEqual("OK", client.ReceivedSubscribe.Item2.Message);
             Assert.AreEqual(true, client.ReceivedSubscribe.Item3);
 
@@ -200,13 +200,13 @@ namespace Evelyn.UnitTest.Behavior
             Assert.AreEqual(1, mockedConfiguator.FeedSource.UnsubscribedInstruments.Count);
             Assert.AreEqual("l2205", mockedConfiguator.FeedSource.UnsubscribedInstruments[0]);
 
-            mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, false);
+            mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = ErrorCodes.OK, Message = "OK" }, false);
 
             /*
              * Client receives unsubscription response.
              */
             Assert.AreEqual("l2205", client.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, client.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, client.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual("OK", client.ReceivedSubscribe.Item2.Message);
             Assert.AreEqual(false, client.ReceivedSubscribe.Item3);
 
@@ -226,7 +226,7 @@ namespace Evelyn.UnitTest.Behavior
              * Engine sends the error response to client.
              */
             Assert.AreEqual("l2205", client.ReceivedSubscribe.Item1);
-            Assert.AreNotEqual(0, client.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.NoSuchSubscription, client.ReceivedSubscribe.Item2.Code);
             Assert.AreNotEqual("OK", client.ReceivedSubscribe.Item2.Message);
             Assert.AreEqual(false, client.ReceivedSubscribe.Item3);
         }
@@ -348,7 +348,7 @@ namespace Evelyn.UnitTest.Behavior
                 },
                 new Description
                 {
-                    Code = 0,
+                    Code = ErrorCodes.OK,
                     Message = "Order is trading."
                 });
 
@@ -371,7 +371,7 @@ namespace Evelyn.UnitTest.Behavior
 
             var description = client.ReceivedTrades[0].Item2;
 
-            Assert.AreEqual(0, description.Code);
+            Assert.AreEqual(ErrorCodes.OK, description.Code);
             Assert.AreEqual("Order is trading.", description.Message);
 
             /*
@@ -407,7 +407,7 @@ namespace Evelyn.UnitTest.Behavior
                 },
                 new Description
                 {
-                    Code = 1,
+                    Code = ErrorCodes.OK,
                     Message = "Order is deleted."
                 });
 
@@ -427,7 +427,7 @@ namespace Evelyn.UnitTest.Behavior
 
             description = client.ReceivedTrades[1].Item2;
 
-            Assert.AreEqual(1, description.Code);
+            Assert.AreEqual(ErrorCodes.OK, description.Code);
             Assert.AreEqual("Order is deleted.", description.Message);
 
             /*
@@ -461,7 +461,7 @@ namespace Evelyn.UnitTest.Behavior
             var client = mockedClientService.GetClientOrCreate("MOCKED_CLIENT");
 
             mockedClientService.MockedSubscribe("l2205", true, "MOCKED_CLIENT");
-            mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK" }, true);
+            mockedConfiguator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = ErrorCodes.OK, Message = "OK" }, true);
 
             /*
              * Here sends the ticks.
@@ -510,18 +510,18 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * Feed source sends the subscription responses.
              */
-            mockedConfigurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK-l2205" }, true);
-            mockedConfigurator.FeedSource.MockedReplySubscribe("pp2205", new Description { Code = 0, Message = "OK-pp2205" }, true);
+            mockedConfigurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = ErrorCodes.OK, Message = "OK-l2205" }, true);
+            mockedConfigurator.FeedSource.MockedReplySubscribe("pp2205", new Description { Code = ErrorCodes.OK, Message = "OK-pp2205" }, true);
 
             /*
              * And also client receives subscription response.
              */
             Assert.AreEqual("l2205", mockedClient.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, mockedClient.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, mockedClient.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual("OK-l2205", mockedClient.ReceivedSubscribe.Item2.Message);
 
             Assert.AreEqual("pp2205", mockedClientFake.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, mockedClientFake.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, mockedClientFake.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual("OK-pp2205", mockedClientFake.ReceivedSubscribe.Item2.Message);
 
             /*
@@ -559,7 +559,7 @@ namespace Evelyn.UnitTest.Behavior
              * Feed source doesn't receive the subscription request for pp2205, but engine sends a subscription response.
              */
             Assert.AreEqual("pp2205", mockedClient.ReceivedSubscribe.Item1);
-            Assert.AreEqual(0, mockedClient.ReceivedSubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, mockedClient.ReceivedSubscribe.Item2.Code);
             Assert.AreEqual(String.Empty, mockedClient.ReceivedSubscribe.Item2.Message);
 
             /*
@@ -571,13 +571,13 @@ namespace Evelyn.UnitTest.Behavior
             /*
              * Feed source sends the unsubscription response.
              */
-            mockedConfigurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = 0, Message = "OK-l2205" }, false);
+            mockedConfigurator.FeedSource.MockedReplySubscribe("l2205", new Description { Code = ErrorCodes.OK, Message = "OK-l2205" }, false);
 
             /*
              * Client receives unsubscription response.
              */
             Assert.AreEqual("l2205", mockedClient.ReceivedUnsubscribe.Item1);
-            Assert.AreEqual(0, mockedClient.ReceivedUnsubscribe.Item2.Code);
+            Assert.AreEqual(ErrorCodes.OK, mockedClient.ReceivedUnsubscribe.Item2.Code);
             Assert.AreEqual("OK-l2205", mockedClient.ReceivedUnsubscribe.Item2.Message);
 
             /*
@@ -715,7 +715,7 @@ namespace Evelyn.UnitTest.Behavior
                 },
                 new Description
                 {
-                    Code = 0,
+                    Code = ErrorCodes.OK,
                     Message = "Order is trading."
                 });
 
@@ -735,7 +735,7 @@ namespace Evelyn.UnitTest.Behavior
 
             var description = mockedClient.ReceivedTrades[0].Item2;
 
-            Assert.AreEqual(0, description.Code);
+            Assert.AreEqual(ErrorCodes.OK, description.Code);
             Assert.AreEqual("Order is trading.", description.Message);
 
             /*
@@ -774,7 +774,7 @@ namespace Evelyn.UnitTest.Behavior
                 },
                 new Description
                 {
-                    Code = 1,
+                    Code = ErrorCodes.OK,
                     Message = "Order is deleted."
                 });
 
@@ -792,7 +792,7 @@ namespace Evelyn.UnitTest.Behavior
 
             description = mockedClient.ReceivedTrades[1].Item2;
 
-            Assert.AreEqual(1, description.Code);
+            Assert.AreEqual(ErrorCodes.OK, description.Code);
             Assert.AreEqual("Order is deleted.", description.Message);
 
             /*
