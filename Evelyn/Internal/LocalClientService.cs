@@ -63,27 +63,27 @@ namespace Evelyn.Internal
 
         public void SendInstrument(Instrument instrument, string clientID)
         {
-            CallClientMethod(clientID, client => client.Algorithm.OnFeed(instrument));
+            CallClientMethod(clientID, client => client.Algorithm?.OnFeed(instrument));
         }
 
         public void SendOHLC(OHLC ohlc, string clientID)
         {
-            CallClientMethod(clientID, client => client.Algorithm.OnFeed(ohlc));
+            CallClientMethod(clientID, client => client.Algorithm?.OnFeed(ohlc));
         }
 
         public void SendSubscribe(string instrumentID, Description description, bool isSubscribed, string clientID)
         {
-            CallClientMethod(clientID, client => client.Algorithm.OnSubscribed(instrumentID, description, isSubscribed));
+            CallClientMethod(clientID, client => client.Algorithm?.OnSubscribed(instrumentID, description, isSubscribed));
         }
 
         public void SendTick(Tick tick, string clientID)
         {
-            CallClientMethod(clientID, client => client.Algorithm.OnFeed(tick));
+            CallClientMethod(clientID, client => client.Algorithm?.OnFeed(tick));
         }
 
         public void SendTrade(Trade trade, Description description, string clientID)
         {
-            CallClientMethod(clientID, client => client.Algorithm.OnTrade(trade, description));
+            CallClientMethod(clientID, client => client.Algorithm?.OnTrade(trade, description));
         }
 
         internal void RegisterClient(string clientID, IAlgorithm algorithm, params string[] instrumentID)
@@ -108,7 +108,7 @@ namespace Evelyn.Internal
             ClientHandler.OnClientConnect(clientID, algorithm, this);
             instrumentID.ToList().ForEach(instrument => ClientHandler.OnSubscribe(instrument, true, clientID));
 
-            CallClientMethod(clientID, client => client.Algorithm.OnLoad(new LocalClientOperator(clientID, ClientHandler)));
+            CallClientMethod(clientID, client => client.Algorithm?.OnLoad(new LocalClientOperator(clientID, ClientHandler)));
         }
 
         private void CallClientMethod(string clientID, Action<Client> action)
