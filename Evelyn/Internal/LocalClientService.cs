@@ -115,13 +115,20 @@ namespace Evelyn.Internal
         {
             if (ClientHandler.Clients.TryGetValue(clientID, out var client))
             {
-                try
+                if (client.Algorithm == null)
                 {
-                    action(client);
+                    throw new NullReferenceException("Client has no algorithm, possibly not local client?");
                 }
-                catch (Exception ex)
+                else
                 {
-                    Logger.LogWarning("{0}, {1}\n{2}", DateTime.Now, ex.Message, ex.StackTrace);
+                    try
+                    {
+                        action(client);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogWarning("{0}, {1}\n{2}", DateTime.Now, ex.Message, ex.StackTrace);
+                    }
                 }
             }
             else
