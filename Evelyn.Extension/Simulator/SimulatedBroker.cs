@@ -22,8 +22,8 @@ namespace Evelyn.Extension.Simulator
 {
     public class SimulatedBroker : IBroker
     {
-        private readonly List<Bucket> _sellSide = new List<Bucket>();
-        private readonly List<Bucket> _buySide = new List<Bucket>();
+        private readonly Dictionary<string, List<Bucket>> _sellSide = new Dictionary<string, List<Bucket>>();
+        private readonly Dictionary<string, List<Bucket>> _buySide = new Dictionary<string, List<Bucket>>();
         private readonly ISet<string> _orderID = new HashSet<string>();
         private readonly Queue<DeleteOrder> _deletion = new Queue<DeleteOrder>();
 
@@ -203,9 +203,16 @@ namespace Evelyn.Extension.Simulator
             }
         }
 
-        private IEnumerable<Bucket> FindDeleted(DeleteOrder delete, List<Bucket> buckets)
+        private IEnumerable<Bucket> FindDeleted(DeleteOrder delete, Dictionary<string, List<Bucket>> buckets)
         {
-            return buckets.Where(bucket => bucket.Orders.Where(exec => exec.OriginalOrder.InstrumentID == delete.InstrumentID && exec.OriginalOrder.OrderID == delete.OrderID).Count() > 0);
+            if (buckets.TryGetValue(delete.InstrumentID, out var deleting))
+            {
+                return deleting.Where(bucket => bucket.Orders.Where(exec => exec.OriginalOrder.InstrumentID == delete.InstrumentID && exec.OriginalOrder.OrderID == delete.OrderID).Count() > 0);
+            }
+            else
+            {
+                return new List<Bucket>();
+            }
         }
 
         public void New(NewOrder order)
@@ -254,24 +261,36 @@ namespace Evelyn.Extension.Simulator
             }
         }
 
-        private void Enbook(NewOrder order, List<Bucket> buckets)
+        private void Enbook(NewOrder order, Dictionary<string, List<Bucket>> buckets)
         {
-            var foundBuckets = buckets.Where(bucket => bucket.Price == order.Price);
-            if (foundBuckets.Count() == 0)
+            if (!buckets.ContainsKey(order.InstrumentID))
             {
-                buckets.Add(new Bucket
-                {
-                    Price = order.Price,
-                    Orders = new List<ExecutingOrder> { new ExecutingOrder { OriginalOrder = order, LeaveQuantity = order.Quantity } }
-                });
+                buckets.Add(order.InstrumentID, new List<Bucket>());
             }
-            else if (foundBuckets.Count() == 1)
+
+            if (buckets.TryGetValue(order.InstrumentID, out var instrumentBuckets))
             {
-                foundBuckets.First().Orders.Add(new ExecutingOrder { OriginalOrder = order, LeaveQuantity = order.Quantity });
+                var foundBuckets = instrumentBuckets.Where(bucket => bucket.Price == order.Price);
+                if (foundBuckets.Count() == 0)
+                {
+                    instrumentBuckets.Add(new Bucket
+                    {
+                        Price = order.Price,
+                        Orders = new List<ExecutingOrder> { new ExecutingOrder { OriginalOrder = order, LeaveQuantity = order.Quantity } }
+                    });
+                }
+                else if (foundBuckets.Count() == 1)
+                {
+                    foundBuckets.First().Orders.Add(new ExecutingOrder { OriginalOrder = order, LeaveQuantity = order.Quantity });
+                }
+                else
+                {
+                    throw new InvalidDataException("Duplicated bucket for price " + order.Price + ".");
+                }
             }
             else
             {
-                throw new InvalidDataException("Duplicated bucket for price " + order.Price + ".");
+                throw new InvalidOperationException("Fail creating instrument entry for new order.");
             }
         }
 
@@ -312,110 +331,111 @@ namespace Evelyn.Extension.Simulator
 
         private void MatchBook(Tick tick)
         {
-            /*
-             * Sort buckets by price from high to low.
-             */
-            _sellSide.Where(bucket => bucket.Price <= tick.BidPrice).ToList()
-                .ForEach(bucket =>
-                {
-                    bucket.Orders.ForEach(exec =>
+            if (_sellSide.TryGetValue(tick.InstrumentID, out var sellBuckets))
+            {
+                sellBuckets.Where(bucket => bucket.Price <= tick.BidPrice).ToList()
+                    .ForEach(bucket =>
                     {
-                        /*
-                         * Copy by value.
-                         */
-                        Trade trade = InitializeTrade(exec.OriginalOrder);
-                        trade.TradePrice = tick.BidPrice ?? throw new InvalidDataException("Bid price has no value.");
-
-                        /*
-                         * Trade order according to bid volume. 
-                         */
-                        if (exec.LeaveQuantity <= tick.BidVolume)
+                        bucket.Orders.ForEach(exec =>
                         {
                             /*
-                             * Completed.
+                             * Copy by value.
                              */
-                            trade.TradeQuantity = exec.LeaveQuantity;
-                            trade.LeaveQuantity -= trade.TradeQuantity;
-                            trade.Status = OrderStatus.Completed;
-                            trade.Message = "Completed";
+                            Trade trade = InitializeTrade(exec.OriginalOrder);
+                            trade.TradePrice = tick.BidPrice ?? throw new InvalidDataException("Bid price has no value.");
 
                             /*
-                             * Update order.
+                             * Trade order according to bid volume. 
                              */
-                            exec.LeaveQuantity = 0;
-                        }
-                        else
-                        {
-                            trade.TradeQuantity = (int)tick.BidVolume;
-                            trade.LeaveQuantity -= trade.TradeQuantity;
-                            trade.Status = OrderStatus.Trading;
-                            trade.Message = "Trading";
+                            if (exec.LeaveQuantity <= tick.BidVolume)
+                            {
+                                /*
+                                 * Completed.
+                                 */
+                                trade.TradeQuantity = exec.LeaveQuantity;
+                                trade.LeaveQuantity = 0;
+                                trade.Status = OrderStatus.Completed;
+                                trade.Message = "Completed";
 
-                            exec.LeaveQuantity = trade.LeaveQuantity;
-                        }
+                                /*
+                                 * Update order.
+                                 */
+                                exec.LeaveQuantity = 0;
+                            }
+                            else
+                            {
+                                exec.LeaveQuantity -= (int)tick.BidVolume;
 
-                        trade.TradeID = trade.OrderID + (trade.Quantity - trade.LeaveQuantity).ToString("{0:D2}");
-                        trade.TimeStamp = tick.TimeStamp;
+                                trade.TradeQuantity = (int)tick.BidVolume;
+                                trade.LeaveQuantity = exec.LeaveQuantity;
+                                trade.Status = OrderStatus.Trading;
+                                trade.Message = "Trading";
+                            }
 
-                        TryCatch(() => Handler.OnTrade(trade, new Description { }));
+                            trade.TradeID = trade.OrderID + (trade.Quantity - trade.LeaveQuantity).ToString("{0:D2}");
+                            trade.TimeStamp = tick.TimeStamp;
+
+                            TryCatch(() => Handler.OnTrade(trade, new Description { }));
+                        });
+
+                        bucket.Orders.RemoveAll(order => order.LeaveQuantity == 0);
                     });
+            }
 
-                    bucket.Orders.RemoveAll(order => order.LeaveQuantity == 0);
-                });
 
-            /*
-             * Sort buckets by price from low to high.
-             */
-            _buySide.Where(bucket => bucket.Price >= tick.AskPrice).ToList()
-                .ForEach(bucket =>
-                {
-                    bucket.Orders.ForEach(exec =>
+            if (_buySide.TryGetValue(tick.InstrumentID, out var buyBuckets))
+            {
+                buyBuckets.Where(bucket => bucket.Price >= tick.AskPrice).ToList()
+                    .ForEach(bucket =>
                     {
-                        /*
-                         * Copy by value.
-                         */
-                        Trade trade = InitializeTrade(exec.OriginalOrder);
-                        trade.TradePrice = tick.AskPrice ?? throw new InvalidDataException("Ask price has no value.");
-
-                        /*
-                         * Trade order according to bid volume. 
-                         */
-                        if (exec.LeaveQuantity <= tick.AskVolume)
+                        bucket.Orders.ForEach(exec =>
                         {
                             /*
-                             * Completed.
+                             * Copy by value.
                              */
-                            trade.TradeQuantity = exec.LeaveQuantity;
-                            trade.LeaveQuantity = 0;
-                            trade.Status = OrderStatus.Completed;
-                            trade.Message = "Completed";
+                            Trade trade = InitializeTrade(exec.OriginalOrder);
+                            trade.TradePrice = tick.AskPrice ?? throw new InvalidDataException("Ask price has no value.");
 
                             /*
-                             * Update order.
+                             * Trade order according to bid volume. 
                              */
-                            exec.LeaveQuantity = 0;
-                        }
-                        else
-                        {
-                            exec.LeaveQuantity -= (int)tick.AskVolume;
+                            if (exec.LeaveQuantity <= tick.AskVolume)
+                            {
+                                /*
+                                 * Completed.
+                                 */
+                                trade.TradeQuantity = exec.LeaveQuantity;
+                                trade.LeaveQuantity = 0;
+                                trade.Status = OrderStatus.Completed;
+                                trade.Message = "Completed";
 
-                            trade.TradeQuantity = (int)tick.AskVolume;
-                            trade.LeaveQuantity = exec.LeaveQuantity;
-                            trade.Status = OrderStatus.Trading;
-                            trade.Message = "Trading";
-                        }
+                                /*
+                                 * Update order.
+                                 */
+                                exec.LeaveQuantity = 0;
+                            }
+                            else
+                            {
+                                exec.LeaveQuantity -= (int)tick.AskVolume;
 
-                        /*
-                         * Last total trade quantity as suffix of trade ID.
-                         */
-                        trade.TradeID = trade.OrderID + (trade.Quantity - trade.LeaveQuantity).ToString("{0:D2}");
-                        trade.TimeStamp = tick.TimeStamp;
+                                trade.TradeQuantity = (int)tick.AskVolume;
+                                trade.LeaveQuantity = exec.LeaveQuantity;
+                                trade.Status = OrderStatus.Trading;
+                                trade.Message = "Trading";
+                            }
 
-                        TryCatch(() => Handler.OnTrade(trade, new Description { }));
+                            /*
+                             * Last total trade quantity as suffix of trade ID.
+                             */
+                            trade.TradeID = trade.OrderID + (trade.Quantity - trade.LeaveQuantity).ToString("{0:D2}");
+                            trade.TimeStamp = tick.TimeStamp;
+
+                            TryCatch(() => Handler.OnTrade(trade, new Description { }));
+                        });
+
+                        bucket.Orders.RemoveAll(order => order.LeaveQuantity == 0);
                     });
-
-                    bucket.Orders.RemoveAll(order => order.LeaveQuantity == 0);
-                });
+            }
         }
 
         private void TryCatch(Action action)

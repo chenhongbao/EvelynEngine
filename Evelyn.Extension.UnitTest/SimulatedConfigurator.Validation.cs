@@ -185,8 +185,8 @@ namespace Evelyn.Extension.UnitTest
             Assert.AreEqual(0, FeedHandler.Ticks.Count);
         }
 
-        [TestMethod("Trade orders.")]
-        public void TradeOrders()
+        [TestMethod("Trade buy orders.")]
+        public void TradeBuyOrders()
         {
             new SimulatedConfigurator(Ticks, Instruments).Configure(out var broker, out var feedSource);
 
@@ -281,6 +281,112 @@ namespace Evelyn.Extension.UnitTest
             Assert.AreEqual("l2205", trade.InstrumentID);
             Assert.AreEqual(8898, trade.TradePrice);
             Assert.AreEqual(15, trade.Quantity);
+            Assert.AreEqual(5, trade.TradeQuantity);
+            Assert.AreEqual(0, trade.LeaveQuantity);
+            Assert.AreEqual(OrderStatus.Completed, trade.Status);
+        }
+
+        [TestMethod("Trade sell orders.")]
+        public void TradeSellOrders()
+        {
+            new SimulatedConfigurator(Ticks, Instruments).Configure(out var broker, out var feedSource);
+
+            Broker = (SimulatedBroker)broker;
+            Broker.Register(OrderHandler, BrokerExchange);
+
+            FeedSource = (SimulatedFeedSource)feedSource;
+            FeedSource.Register(FeedHandler, FeedSourceExchange);
+
+            /*
+             * Request two orders, one is completed at one trade, and the other is completed by two trades.
+             * 
+             * 1. Request two trades, first order sells at a higher price and second order, and feeds' prices are going up.
+             * 2. The second order trades a portion, and then completes.
+             * 3. The first order is completed at one tick.
+             */
+
+            Broker.New(new NewOrder
+            {
+                InstrumentID = "pp2205",
+                ExchangeID = "DCE",
+                OrderID = Broker.NewOrderID,
+                Price = 8498,
+                Quantity = 5,
+                Direction = Direction.Sell,
+                Offset = Offset.Open
+            });
+
+            Broker.New(new NewOrder
+            {
+                InstrumentID = "pp2205",
+                ExchangeID = "DCE",
+                OrderID = Broker.NewOrderID,
+                Price = 8496,
+                Quantity = 15,
+                Direction = Direction.Sell,
+                Offset = Offset.Open
+            });
+
+            /*
+             * Send first two instrument status updates.
+             */
+            Assert.IsTrue(FeedSource.Flop());
+            Assert.IsTrue(FeedSource.Flop());
+
+            /*
+             * Send the following four l2205 ticks.
+             */
+            Assert.IsTrue(FeedSource.Flop());
+            Assert.IsTrue(FeedSource.Flop());
+            Assert.IsTrue(FeedSource.Flop());
+            Assert.IsTrue(FeedSource.Flop());
+
+            /*
+             * No order is traded by now.
+             */
+            Assert.AreEqual(0, OrderHandler.Trades.Count);
+
+            /*
+             * 1. Send the first pp2205 tick, the second order is traded 10 volume.
+             */
+            Assert.IsTrue(FeedSource.Flop());
+            Assert.AreEqual(1, OrderHandler.Trades.Count);
+
+            var trade = OrderHandler.Trades[0].Item1;
+
+            Assert.AreEqual("pp2205", trade.InstrumentID);
+            Assert.AreEqual(8496, trade.TradePrice);
+            Assert.AreEqual(15, trade.Quantity);
+            Assert.AreEqual(10, trade.TradeQuantity);
+            Assert.AreEqual(5, trade.LeaveQuantity);
+            Assert.AreEqual(OrderStatus.Trading, trade.Status);
+
+            /*
+             * 2. Send the second tick, the second order is completed at a higher price.
+             */
+            Assert.IsTrue(FeedSource.Flop());
+            Assert.AreEqual(2, OrderHandler.Trades.Count);
+
+            trade = OrderHandler.Trades[1].Item1;
+
+            Assert.AreEqual("pp2205", trade.InstrumentID);
+            Assert.AreEqual(8497, trade.TradePrice);
+            Assert.AreEqual(15, trade.Quantity);
+            Assert.AreEqual(5, trade.TradeQuantity);
+            Assert.AreEqual(0, trade.LeaveQuantity);
+            Assert.AreEqual(OrderStatus.Completed, trade.Status);
+
+            /*
+             * 3. Send the third tick, the first order is completed.
+             */
+            Assert.IsTrue(FeedSource.Flop());
+            Assert.AreEqual(3, OrderHandler.Trades.Count);
+
+            trade = OrderHandler.Trades[2].Item1; ;
+
+            Assert.AreEqual("pp2205", trade.InstrumentID);
+            Assert.AreEqual(8498, trade.TradePrice);
+            Assert.AreEqual(5, trade.Quantity);
             Assert.AreEqual(5, trade.TradeQuantity);
             Assert.AreEqual(0, trade.LeaveQuantity);
             Assert.AreEqual(OrderStatus.Completed, trade.Status);
