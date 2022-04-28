@@ -229,6 +229,12 @@ namespace Evelyn.Internal
             }
             else
             {
+                /*
+                 * Fill trading day and insert time.
+                 */
+                newOrder.TradingDay = Broker.TradingDay;
+                newOrder.TimeStamp = DateTime.Now;
+
                 var clientOrder = new ClientOrder(newOrder, Broker.NewOrderID);
 
                 if (!client.Orders.TryAdd(newOrder.OrderID, clientOrder))
