@@ -26,8 +26,8 @@ namespace Evelyn.Extension.UnitTest
     [TestClass]
     public class SimulatedConfiguratorValidation : SimulatedConfiguratorData
     {
-        private SimulatedBroker Broker { get; set; } = null;
-        private SimulatedFeedSource FeedSource { get; set; } = null;
+        private SimulatedBroker? Broker { get; set; } = null;
+        private SimulatedFeedSource? FeedSource { get; set; } = null;
 
         [TestInitialize]
         public new void Initialize()

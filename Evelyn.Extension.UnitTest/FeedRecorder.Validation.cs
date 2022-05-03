@@ -84,9 +84,9 @@ namespace Evelyn.Extension.UnitTest
         [TestMethod("Tick formatter and parser.")]
         public void TickFormatterParser()
         {
-            var line = FeedRecorder.Format(SampleTick);
+            var line = FeedRecorder.Utilities.Format(SampleTick);
 
-            Assert.IsTrue(FeedRecorder.Parse(line, out Tick tick));
+            Assert.IsTrue(FeedRecorder.Utilities.Parse(line, out Tick tick));
             Assert.AreEqual(SampleTick.InstrumentID, tick.InstrumentID);
             Assert.AreEqual(SampleTick.ExchangeID, tick.ExchangeID);
             Assert.AreEqual(SampleTick.Symbol, tick.Symbol);
@@ -113,18 +113,18 @@ namespace Evelyn.Extension.UnitTest
         [TestMethod("OHLC formatter and parser.")]
         public void OHLCFormatterParser()
         {
-            var line = FeedRecorder.Format(SampleOHLC);
+            var line = FeedRecorder.Utilities.Format(SampleOHLC);
 
-            Assert.IsTrue(FeedRecorder.Parse(line, out OHLC ohlc));
+            Assert.IsTrue(FeedRecorder.Utilities.Parse(line, out OHLC ohlc));
             Assert.AreEqual(SampleOHLC, ohlc);
         }
 
         [TestMethod("Instrument formatter and parser.")]
         public void InstrumentFormatterParser()
         {
-            var line = FeedRecorder.Format(SampleInstrument);
+            var line = FeedRecorder.Utilities.Format(SampleInstrument);
 
-            Assert.IsTrue(FeedRecorder.Parse(line, out Instrument instrument));
+            Assert.IsTrue(FeedRecorder.Utilities.Parse(line, out Instrument instrument));
             Assert.AreEqual(SampleInstrument, instrument);
         }
     }
