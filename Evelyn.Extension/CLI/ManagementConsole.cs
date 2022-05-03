@@ -26,11 +26,12 @@ namespace Evelyn.Extension.CLI
         internal Command? ReadCommand()
         {
             Console.Write(">>");
-            return ParseCommand(Console.ReadLine()?.Trim());
+            return ParseCommand(Console.ReadLine());
         }
 
         internal Command? ParseCommand(string? line)
         {
+            line = line?.Trim();
             if (line == null || line == String.Empty)
             {
                 return null;

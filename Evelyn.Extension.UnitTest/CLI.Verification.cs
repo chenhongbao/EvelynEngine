@@ -37,6 +37,14 @@ namespace Evelyn.Extension.UnitTest
             Service = new MockedManagement();
         }
 
+        [TestMethod("Check empty command.")]
+        public void CheckEmptyCommand()
+        {
+            Assert.IsNull(MngConsole.ParseCommand(""));
+            Assert.IsNull(MngConsole.ParseCommand(" "));
+            Assert.IsNull(MngConsole.ParseCommand("\t\n"));
+        }
+
         [TestMethod("Check command syntax.")]
         public void CheckCommandSyntax()
         {

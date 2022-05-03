@@ -451,8 +451,23 @@ namespace Evelyn.UnitTest.CLI
             /*
              * Check order equality.
              */
-            Assert.AreEqual(OrderA1, order1.Order);
-            Assert.AreEqual(order1.Order, clientAOrder1.Order);
+            Assert.AreEqual(OrderA1.InstrumentID, order1.Order.InstrumentID);
+            Assert.AreEqual(OrderA1.ExchangeID, order1.Order.ExchangeID);
+            Assert.AreEqual(OrderA1.Symbol, order1.Order.Symbol);
+            Assert.AreEqual(OrderA1.OrderID, order1.Order.OrderID);
+            Assert.AreEqual(OrderA1.Price, order1.Order.Price);
+            Assert.AreEqual(OrderA1.Quantity, order1.Order.Quantity);
+            Assert.AreEqual(OrderA1.Direction, order1.Order.Direction);
+            Assert.AreEqual(OrderA1.Offset, order1.Order.Offset);
+
+            Assert.AreEqual(order1.Order.InstrumentID, clientAOrder1.Order.InstrumentID);
+            Assert.AreEqual(order1.Order.ExchangeID, clientAOrder1.Order.ExchangeID);
+            Assert.AreEqual(order1.Order.Symbol, clientAOrder1.Order.Symbol);
+            Assert.AreEqual(order1.Order.OrderID, clientAOrder1.Order.OrderID);
+            Assert.AreEqual(order1.Order.Price, clientAOrder1.Order.Price);
+            Assert.AreEqual(order1.Order.Quantity, clientAOrder1.Order.Quantity);
+            Assert.AreEqual(order1.Order.Direction, clientAOrder1.Order.Direction);
+            Assert.AreEqual(order1.Order.Offset, clientAOrder1.Order.Offset);
 
             /*
              * No trade.
@@ -477,8 +492,23 @@ namespace Evelyn.UnitTest.CLI
             /*
              * Check order equality.
              */
-            Assert.AreEqual(OrderA3, order3.Order);
-            Assert.AreEqual(order3.Order, clientAOrder3.Order);
+            Assert.AreEqual(OrderA3.InstrumentID, order3.Order.InstrumentID);
+            Assert.AreEqual(OrderA3.ExchangeID, order3.Order.ExchangeID);
+            Assert.AreEqual(OrderA3.Symbol, order3.Order.Symbol);
+            Assert.AreEqual(OrderA3.OrderID, order3.Order.OrderID);
+            Assert.AreEqual(OrderA3.Price, order3.Order.Price);
+            Assert.AreEqual(OrderA3.Quantity, order3.Order.Quantity);
+            Assert.AreEqual(OrderA3.Direction, order3.Order.Direction);
+            Assert.AreEqual(OrderA3.Offset, order3.Order.Offset);
+
+            Assert.AreEqual(order3.Order.InstrumentID, clientAOrder3.Order.InstrumentID);
+            Assert.AreEqual(order3.Order.ExchangeID, clientAOrder3.Order.ExchangeID);
+            Assert.AreEqual(order3.Order.Symbol, clientAOrder3.Order.Symbol);
+            Assert.AreEqual(order3.Order.OrderID, clientAOrder3.Order.OrderID);
+            Assert.AreEqual(order3.Order.Price, clientAOrder3.Order.Price);
+            Assert.AreEqual(order3.Order.Quantity, clientAOrder3.Order.Quantity);
+            Assert.AreEqual(order3.Order.Direction, clientAOrder3.Order.Direction);
+            Assert.AreEqual(order3.Order.Offset, clientAOrder3.Order.Offset);
 
             /*
              * Check 1 completed trade.
@@ -525,8 +555,23 @@ namespace Evelyn.UnitTest.CLI
             /*
              * Check order equality.
              */
-            Assert.AreEqual(OrderB1, order4.Order);
-            Assert.AreEqual(order4.Order, clientBOrder1.Order);
+            Assert.AreEqual(OrderB1.InstrumentID, order4.Order.InstrumentID);
+            Assert.AreEqual(OrderB1.ExchangeID, order4.Order.ExchangeID);
+            Assert.AreEqual(OrderB1.Symbol, order4.Order.Symbol);
+            Assert.AreEqual(OrderB1.OrderID, order4.Order.OrderID);
+            Assert.AreEqual(OrderB1.Price, order4.Order.Price);
+            Assert.AreEqual(OrderB1.Quantity, order4.Order.Quantity);
+            Assert.AreEqual(OrderB1.Direction, order4.Order.Direction);
+            Assert.AreEqual(OrderB1.Offset, order4.Order.Offset);
+
+            Assert.AreEqual(order4.Order.InstrumentID, clientBOrder1.Order.InstrumentID);
+            Assert.AreEqual(order4.Order.ExchangeID, clientBOrder1.Order.ExchangeID);
+            Assert.AreEqual(order4.Order.Symbol, clientBOrder1.Order.Symbol);
+            Assert.AreEqual(order4.Order.OrderID, clientBOrder1.Order.OrderID);
+            Assert.AreEqual(order4.Order.Price, clientBOrder1.Order.Price);
+            Assert.AreEqual(order4.Order.Quantity, clientBOrder1.Order.Quantity);
+            Assert.AreEqual(order4.Order.Direction, clientBOrder1.Order.Direction);
+            Assert.AreEqual(order4.Order.Offset, clientBOrder1.Order.Offset);
 
             /*
              * Client B has 1 trade.
