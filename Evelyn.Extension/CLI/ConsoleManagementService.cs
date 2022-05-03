@@ -37,23 +37,30 @@ namespace Evelyn.Extension.CLI
             ThreadPool.QueueUserWorkItem(state =>
             {
                 Command? cmd;
-                while ((cmd = _console.ReadCommand()) != null)
+                while (true)
                 {
+                    if ((cmd = _console.ReadCommand()) == null)
+                    {
+                        continue;
+                    }
+
                     try
                     {
                         _console.WriteResult(cmd, cmd.Invoke(_manage));
                     }
                     catch (Exception ex)
                     {
-                        _console.WriteResult(cmd, new Model.CLI.ManagementResult<object>
-                        {
-                            Result = new object(),
-                            Description = new Description
+                        _console.WriteResult(
+                            cmd,
+                            new Model.CLI.ManagementResult<object>
                             {
-                                Code = ErrorCodes.CommandThrowsException,
-                                Message = ex.Message,
-                            }
-                        });
+                                Result = new object(),
+                                Description = new Description
+                                {
+                                    Code = ErrorCodes.CommandThrowsException,
+                                    Message = ex.Message,
+                                }
+                            });
                     }
                 }
             });

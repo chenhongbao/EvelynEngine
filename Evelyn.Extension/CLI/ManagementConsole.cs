@@ -14,10 +14,8 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-using Evelyn.Internal;
 using Evelyn.Model;
 using Evelyn.Model.CLI;
-using Evelyn.Plugin;
 using System.Text;
 using System.Text.Json;
 
@@ -28,14 +26,14 @@ namespace Evelyn.Extension.CLI
         internal Command? ReadCommand()
         {
             Console.Write(">>");
-            return ParseCommand(Console.ReadLine());
+            return ParseCommand(Console.ReadLine()?.Trim());
         }
 
         internal Command? ParseCommand(string? line)
         {
-            if (line == null)
+            if (line == null || line == String.Empty)
             {
-                return new Command { };
+                return null;
             }
 
             string? method = null;
