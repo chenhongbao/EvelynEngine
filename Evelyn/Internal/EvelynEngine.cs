@@ -139,7 +139,7 @@ namespace Evelyn.Internal
 
         public IEvelyn DeregisterClient(string clientID)
         {
-            var client =_clientHandler.Clients.Values.ToList().Find(client => client.ClientID == clientID);
+            var client = _clientHandler.Clients.Values.ToList().Find(client => client.ClientID == clientID);
             if (client == default)
             {
                 throw new ArgumentException("No such client with ID \'" + clientID + "\'.");
@@ -149,10 +149,12 @@ namespace Evelyn.Internal
                 try
                 {
                     /*
-                     * Remove client from list and if it is local client, call Unload callback.
+                     * Call unload callback and then remove client from list and if it is local client.
+                     * First call the callback because inside the callback, client may still call engine's method, 
+                     * and it requires the presence of the client.
                      */
-                    _clientHandler.OnClientDisconnect(client.ClientID);
                     client.Algorithm?.OnUnload();
+                    _clientHandler.OnClientDisconnect(client.ClientID);
                 }
                 catch (Exception ex)
                 {
