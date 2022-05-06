@@ -505,5 +505,32 @@ namespace Evelyn.UnitTest.Behavior
              */
             Assert.AreEqual(0, Configurator.FeedSource.SubscribedInstruments.Count);
         }
+
+        [TestMethod("Alter client before connect and then connect.")]
+        public void AlterClientBeforeConnect()
+        {
+            /*
+             * Alter client before connect, and then connects. Engine send correct subscription
+             * requests to feed source.
+             */
+            Engine.RegisterLocalClient("MOCKED_CLIENT_A", ClientA, "l2205")
+                .Configure(Configurator);
+
+            /*
+             * Alter client before connect.
+             */
+            Engine.AlterClient("MOCKED_CLIENT_A", "l2209");
+
+            /*
+             * Connect engine.
+             */
+            Configurator.FeedSource.MockedConnect(true);
+
+            /*
+             * Feed source receives the altered instrument only.
+             */
+            Assert.AreEqual(1, Configurator.FeedSource.SubscribedInstruments.Count);
+            Assert.AreEqual("l2209", Configurator.FeedSource.SubscribedInstruments.First());
+        }
     }
 }
