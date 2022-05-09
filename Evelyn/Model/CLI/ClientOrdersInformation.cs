@@ -14,12 +14,10 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-namespace Evelyn.Model.CLI
+namespace Evelyn.Model.CLI;
+
+public struct ClientOrdersInformation
 {
-    public struct ClientBrief
-    {
-        public string ClientID { get; set; }
-        public List<string> Subscription { get; set; }
-        public int OrderCount { get; set; }
-    }
+    public string ClientID { get; set; }
+    public List<ClientOrderBrief> Orders { get; set; }
 }

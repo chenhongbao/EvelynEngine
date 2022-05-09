@@ -106,6 +106,30 @@ namespace Evelyn.Extension.CLI
 
                     }
 
+                case "QueryClientOrders":
+
+                    if (Arguments.Length != 1)
+                    {
+                        return new ManagementResult<object>
+                        {
+                            Result = new object(),
+                            Description = new Description
+                            {
+                                Code = ErrorCodes.NeedExtactParameters,
+                                Message = "Need exactly 2 parameters."
+                            }
+                        };
+                    }
+                    else
+                    {
+                        var result = manage.QueryClientOrders(Arguments[0]);
+                        return new ManagementResult<object>
+                        {
+                            Result = result.Result,
+                            Description = result.Description
+                        };
+                    }
+
                 case "QueryClientOrder":
 
                     if (Arguments.Length != 2)
@@ -128,7 +152,6 @@ namespace Evelyn.Extension.CLI
                             Result = result.Result,
                             Description = result.Description
                         };
-
                     }
 
                 case "QueryClientLog":

@@ -19,8 +19,7 @@ namespace Evelyn.Model.CLI
     public struct ClientOrderInformation
     {
         public string ClientID { get; set; }
-        public NewOrder Order { get; set; }
+        public ClientOrderBrief Brief { get; set; }
         public List<Trade> Trades { get; set; }
-        public OrderStatus Status { get; set; }
     }
 }

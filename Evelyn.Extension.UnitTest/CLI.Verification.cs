@@ -120,6 +120,16 @@ namespace Evelyn.Extension.UnitTest
             Assert.AreEqual(LogLevel.None, Service.QueryLogs.Item3);
         }
 
+        [TestMethod("Query all of the client orders.")]
+        public void CallQueryClientOrders()
+        {
+            /*
+             * Common case.
+             */
+            Assert.IsNotNull(MngConsole.ParseCommand("QueryClientOrders CLIENT_ID")?.Invoke(Service));
+            Assert.AreEqual("CLIENT_ID", Service.ClientOrders);
+        }
+
         [TestMethod("Query client order.")]
         public void CallQueryClientOrder()
         {
@@ -183,6 +193,7 @@ namespace Evelyn.Extension.UnitTest
         internal (string, string[]) Alter { get; set; }
         internal (string, DateTime, LogLevel) QueryLogs { get; set; }
         internal (string, string) ClientOrder { get; set; }
+        internal string ClientOrders { get; set; } = string.Empty;
         internal bool Engine { get; set; } = false;
         internal bool Clients { get; set; } = false;
         internal bool Exit { get; set; } = false;
@@ -209,6 +220,12 @@ namespace Evelyn.Extension.UnitTest
         {
             ClientOrder = (clientID, orderID);
             return new ManagementResult<ClientOrderInformation>();
+        }
+
+        public ManagementResult<ClientOrdersInformation> QueryClientOrders(string clientID)
+        {
+            ClientOrders = clientID;
+            return new ManagementResult<ClientOrdersInformation>();
         }
 
         public ManagementResult<ClientsInformation> QueryClients()

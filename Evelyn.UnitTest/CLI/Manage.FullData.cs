@@ -431,12 +431,19 @@ namespace Evelyn.UnitTest.CLI
             /*
              * Client A has 2 orders, and 1 order is scheduled and not triggered.
              */
-            Assert.AreEqual(2, clientA.Orders.Count);
+            Assert.AreEqual(2, clientA.OrderCount);
+
+            /*
+             * Query orders by client ID.
+             */
+            var qryOrdersResult = ManagementService.Management.QueryClientOrders("MOCKED_CLIENT_A").Result;
+
+            Assert.AreEqual("MOCKED_CLIENT_A", qryOrdersResult.ClientID);
 
             /*
              * First order trades l2205.
              */
-            var order1 = clientA.Orders.Where(brief => brief.Order.OrderID == "MOCKED_ORDER_1").First();
+            var order1 = qryOrdersResult.Orders.Where(brief => brief.Order.OrderID == "MOCKED_ORDER_1").First();
             var clientAOrder1 = ManagementService.Management.QueryClientOrder("MOCKED_CLIENT_A", "MOCKED_ORDER_1").Result;
 
             Assert.AreEqual("MOCKED_CLIENT_A", order1.ClientID);
@@ -446,7 +453,7 @@ namespace Evelyn.UnitTest.CLI
             Assert.AreEqual(OrderStatus.None, order1.Status);
 
             Assert.AreEqual(order1.ClientID, clientAOrder1.ClientID);
-            Assert.AreEqual(order1.Status, clientAOrder1.Status);
+            Assert.AreEqual(order1.Status, clientAOrder1.Brief.Status);
 
             /*
              * Check order equality.
@@ -460,14 +467,14 @@ namespace Evelyn.UnitTest.CLI
             Assert.AreEqual(OrderA1.Direction, order1.Order.Direction);
             Assert.AreEqual(OrderA1.Offset, order1.Order.Offset);
 
-            Assert.AreEqual(order1.Order.InstrumentID, clientAOrder1.Order.InstrumentID);
-            Assert.AreEqual(order1.Order.ExchangeID, clientAOrder1.Order.ExchangeID);
-            Assert.AreEqual(order1.Order.Symbol, clientAOrder1.Order.Symbol);
-            Assert.AreEqual(order1.Order.OrderID, clientAOrder1.Order.OrderID);
-            Assert.AreEqual(order1.Order.Price, clientAOrder1.Order.Price);
-            Assert.AreEqual(order1.Order.Quantity, clientAOrder1.Order.Quantity);
-            Assert.AreEqual(order1.Order.Direction, clientAOrder1.Order.Direction);
-            Assert.AreEqual(order1.Order.Offset, clientAOrder1.Order.Offset);
+            Assert.AreEqual(order1.Order.InstrumentID, clientAOrder1.Brief.Order.InstrumentID);
+            Assert.AreEqual(order1.Order.ExchangeID, clientAOrder1.Brief.Order.ExchangeID);
+            Assert.AreEqual(order1.Order.Symbol, clientAOrder1.Brief.Order.Symbol);
+            Assert.AreEqual(order1.Order.OrderID, clientAOrder1.Brief.Order.OrderID);
+            Assert.AreEqual(order1.Order.Price, clientAOrder1.Brief.Order.Price);
+            Assert.AreEqual(order1.Order.Quantity, clientAOrder1.Brief.Order.Quantity);
+            Assert.AreEqual(order1.Order.Direction, clientAOrder1.Brief.Order.Direction);
+            Assert.AreEqual(order1.Order.Offset, clientAOrder1.Brief.Order.Offset);
 
             /*
              * No trade.
@@ -477,7 +484,7 @@ namespace Evelyn.UnitTest.CLI
             /*
              * Second order trades pp2205.
              */
-            var order3 = clientA.Orders.Where(brief => brief.Order.OrderID == "MOCKED_ORDER_3").First();
+            var order3 = qryOrdersResult.Orders.Where(brief => brief.Order.OrderID == "MOCKED_ORDER_3").First();
             var clientAOrder3 = ManagementService.Management.QueryClientOrder("MOCKED_CLIENT_A", "MOCKED_ORDER_3").Result;
 
             Assert.AreEqual("MOCKED_CLIENT_A", order3.ClientID);
@@ -487,7 +494,7 @@ namespace Evelyn.UnitTest.CLI
             Assert.AreEqual(OrderStatus.Completed, order3.Status);
 
             Assert.AreEqual(order3.ClientID, clientAOrder3.ClientID);
-            Assert.AreEqual(order3.Status, clientAOrder3.Status);
+            Assert.AreEqual(order3.Status, clientAOrder3.Brief.Status);
 
             /*
              * Check order equality.
@@ -501,14 +508,14 @@ namespace Evelyn.UnitTest.CLI
             Assert.AreEqual(OrderA3.Direction, order3.Order.Direction);
             Assert.AreEqual(OrderA3.Offset, order3.Order.Offset);
 
-            Assert.AreEqual(order3.Order.InstrumentID, clientAOrder3.Order.InstrumentID);
-            Assert.AreEqual(order3.Order.ExchangeID, clientAOrder3.Order.ExchangeID);
-            Assert.AreEqual(order3.Order.Symbol, clientAOrder3.Order.Symbol);
-            Assert.AreEqual(order3.Order.OrderID, clientAOrder3.Order.OrderID);
-            Assert.AreEqual(order3.Order.Price, clientAOrder3.Order.Price);
-            Assert.AreEqual(order3.Order.Quantity, clientAOrder3.Order.Quantity);
-            Assert.AreEqual(order3.Order.Direction, clientAOrder3.Order.Direction);
-            Assert.AreEqual(order3.Order.Offset, clientAOrder3.Order.Offset);
+            Assert.AreEqual(order3.Order.InstrumentID, clientAOrder3.Brief.Order.InstrumentID);
+            Assert.AreEqual(order3.Order.ExchangeID, clientAOrder3.Brief.Order.ExchangeID);
+            Assert.AreEqual(order3.Order.Symbol, clientAOrder3.Brief.Order.Symbol);
+            Assert.AreEqual(order3.Order.OrderID, clientAOrder3.Brief.Order.OrderID);
+            Assert.AreEqual(order3.Order.Price, clientAOrder3.Brief.Order.Price);
+            Assert.AreEqual(order3.Order.Quantity, clientAOrder3.Brief.Order.Quantity);
+            Assert.AreEqual(order3.Order.Direction, clientAOrder3.Brief.Order.Direction);
+            Assert.AreEqual(order3.Order.Offset, clientAOrder3.Brief.Order.Offset);
 
             /*
              * Check 1 completed trade.
@@ -530,6 +537,13 @@ namespace Evelyn.UnitTest.CLI
             Assert.AreEqual("MOCKED_CLIENT_B", clientB.ClientID);
 
             /*
+             * Query orders for client B.
+             */
+            qryOrdersResult = ManagementService.Management.QueryClientOrders("MOCKED_CLIENT_B").Result;
+
+            Assert.AreEqual("MOCKED_CLIENT_B", qryOrdersResult.ClientID);
+
+            /*
              * Client B subscribes for 1 instrument.
              */
             Assert.AreEqual(1, clientB.Subscription.Count);
@@ -538,9 +552,9 @@ namespace Evelyn.UnitTest.CLI
             /*
              * Client B has 1 order.
              */
-            Assert.AreEqual(1, clientB.Orders.Count);
+            Assert.AreEqual(1, clientB.OrderCount);
 
-            var order4 = clientB.Orders.Where(brief => brief.Order.OrderID == "MOCKED_ORDER_1").First();
+            var order4 = qryOrdersResult.Orders.Where(brief => brief.Order.OrderID == "MOCKED_ORDER_1").First();
             var clientBOrder1 = ManagementService.Management.QueryClientOrder("MOCKED_CLIENT_B", "MOCKED_ORDER_1").Result;
 
             Assert.AreEqual("MOCKED_CLIENT_B", order4.ClientID);
@@ -550,7 +564,7 @@ namespace Evelyn.UnitTest.CLI
             Assert.AreEqual(OrderStatus.Trading, order4.Status);
 
             Assert.AreEqual(order4.ClientID, clientBOrder1.ClientID);
-            Assert.AreEqual(order4.Status, clientBOrder1.Status);
+            Assert.AreEqual(order4.Status, clientBOrder1.Brief.Status);
 
             /*
              * Check order equality.
@@ -564,14 +578,14 @@ namespace Evelyn.UnitTest.CLI
             Assert.AreEqual(OrderB1.Direction, order4.Order.Direction);
             Assert.AreEqual(OrderB1.Offset, order4.Order.Offset);
 
-            Assert.AreEqual(order4.Order.InstrumentID, clientBOrder1.Order.InstrumentID);
-            Assert.AreEqual(order4.Order.ExchangeID, clientBOrder1.Order.ExchangeID);
-            Assert.AreEqual(order4.Order.Symbol, clientBOrder1.Order.Symbol);
-            Assert.AreEqual(order4.Order.OrderID, clientBOrder1.Order.OrderID);
-            Assert.AreEqual(order4.Order.Price, clientBOrder1.Order.Price);
-            Assert.AreEqual(order4.Order.Quantity, clientBOrder1.Order.Quantity);
-            Assert.AreEqual(order4.Order.Direction, clientBOrder1.Order.Direction);
-            Assert.AreEqual(order4.Order.Offset, clientBOrder1.Order.Offset);
+            Assert.AreEqual(order4.Order.InstrumentID, clientBOrder1.Brief.Order.InstrumentID);
+            Assert.AreEqual(order4.Order.ExchangeID, clientBOrder1.Brief.Order.ExchangeID);
+            Assert.AreEqual(order4.Order.Symbol, clientBOrder1.Brief.Order.Symbol);
+            Assert.AreEqual(order4.Order.OrderID, clientBOrder1.Brief.Order.OrderID);
+            Assert.AreEqual(order4.Order.Price, clientBOrder1.Brief.Order.Price);
+            Assert.AreEqual(order4.Order.Quantity, clientBOrder1.Brief.Order.Quantity);
+            Assert.AreEqual(order4.Order.Direction, clientBOrder1.Brief.Order.Direction);
+            Assert.AreEqual(order4.Order.Offset, clientBOrder1.Brief.Order.Offset);
 
             /*
              * Client B has 1 trade.

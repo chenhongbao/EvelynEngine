@@ -125,7 +125,7 @@ namespace Evelyn.CLI
                     Description = new Description
                     {
                         Code = ErrorCodes.NoSuchClient,
-                        Message = "No such client with ID " + clientID + "."
+                        Message = "No such client with ID \'" + clientID + "\'."
                     }
                 };
             }
@@ -142,9 +142,8 @@ namespace Evelyn.CLI
                         Result = new ClientOrderInformation
                         {
                             ClientID = clientID,
-                            Order = order.OriginalOrder,
+                            Brief = GetOrderBrief(clientID, order),
                             Trades = order.Trades.ToList(),
-                            Status = order.Status
                         },
                         Description = new Description()
                     };
@@ -160,7 +159,7 @@ namespace Evelyn.CLI
                         Description = new Description
                         {
                             Code = ErrorCodes.NoSuchOrder,
-                            Message = "No such order with ID " + orderID + "."
+                            Message = "No such order with ID \'" + orderID + "\'."
                         }
                     };
                 }
@@ -176,7 +175,61 @@ namespace Evelyn.CLI
                     Description = new Description
                     {
                         Code = ErrorCodes.NoSuchClient,
-                        Message = "No such client with ID " + clientID + "."
+                        Message = "No such client with ID \'" + clientID + "\'."
+                    }
+                };
+            }
+        }
+
+        private ClientOrderBrief GetOrderBrief(string clientID, ClientOrder order)
+        {
+            var brief = new ClientOrderBrief
+            {
+                ClientID = clientID,
+                Order = order.OriginalOrder,
+                TradeQuantity = order.Trades.Select(trade => trade.TradeQuantity).Sum(),
+                Status = order.Status
+            };
+
+            if (brief.TradeQuantity > 0)
+            {
+                brief.AverageTradePrice = order.Trades.Select(trade => trade.TradePrice * trade.TradeQuantity).Sum() / order.Trades.Select(trade => trade.TradeQuantity).Sum();
+                brief.LastTradeTime = order.Trades.Last().TimeStamp;
+            }
+
+            return brief;
+        }
+
+        public ManagementResult<ClientOrdersInformation> QueryClientOrders(string clientID)
+        {
+            if (_engine.Handler.Clients.TryGetValue(clientID, out var client))
+            {
+                return new ManagementResult<ClientOrdersInformation>
+                {
+                    Result = new ClientOrdersInformation
+                    {
+                        ClientID = clientID,
+                        Orders = client.Orders.Values.Select(order => GetOrderBrief(clientID, order)).ToList(),
+                    },
+                    Description = new Description
+                    {
+                        Code = ErrorCodes.NoSuchClient,
+                        Message = "No such client with ID \'" + clientID + "\'."
+                    }
+                };
+            }
+            else
+            {
+                return new ManagementResult<ClientOrdersInformation>
+                {
+                    Result = new ClientOrdersInformation
+                    {
+                        ClientID = clientID
+                    },
+                    Description = new Description
+                    {
+                        Code = ErrorCodes.NoSuchClient,
+                        Message = "No such client with ID \'" + clientID + "\'."
                     }
                 };
             }
@@ -192,24 +245,7 @@ namespace Evelyn.CLI
                     {
                         ClientID = client.ClientID,
                         Subscription = client.Subscription.Instruments,
-                        Orders = client.Orders.Values.Select(clientOrder =>
-                        {
-                            var brief = new ClientOrderBrief
-                            {
-                                ClientID = client.ClientID,
-                                Order = clientOrder.OriginalOrder,
-                                TradeQuantity = clientOrder.Trades.Select(trade => trade.TradeQuantity).Sum(),
-                                Status = clientOrder.Status
-                            };
-
-                            if (brief.TradeQuantity > 0)
-                            {
-                                brief.AverageTradePrice = clientOrder.Trades.Select(trade => trade.TradePrice * trade.TradeQuantity).Sum() / clientOrder.Trades.Select(trade => trade.TradeQuantity).Sum();
-                                brief.LastTradeTime = clientOrder.Trades.Last().TimeStamp;
-                            }
-
-                            return brief;
-                        }).ToList()
+                        OrderCount = client.Orders.Count
                     }).ToList()
                 },
                 Description = new Description()
@@ -277,7 +313,7 @@ namespace Evelyn.CLI
                             Description = new Description
                             {
                                 Code = ErrorCodes.NoLocalClient,
-                                Message = "Client is not local client with ID " + clientID + "."
+                                Message = "Client is not local client with ID \'" + clientID + "\'."
                             },
                             Result = String.Empty
                         };
@@ -314,7 +350,7 @@ namespace Evelyn.CLI
                     Description = new Description
                     {
                         Code = ErrorCodes.NoSuchClient,
-                        Message = "No such client " + clientID + "."
+                        Message = "No such client \'" + clientID + "\'."
                     },
                     Result = String.Empty
                 };
