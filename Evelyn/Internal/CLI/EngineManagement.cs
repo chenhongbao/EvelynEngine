@@ -211,11 +211,7 @@ namespace Evelyn.CLI
                         ClientID = clientID,
                         Orders = client.Orders.Values.Select(order => GetOrderBrief(clientID, order)).ToList(),
                     },
-                    Description = new Description
-                    {
-                        Code = ErrorCodes.NoSuchClient,
-                        Message = "No such client with ID \'" + clientID + "\'."
-                    }
+                    Description = new Description()
                 };
             }
             else
