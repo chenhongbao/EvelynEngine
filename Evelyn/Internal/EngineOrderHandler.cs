@@ -65,7 +65,11 @@ namespace Evelyn.Internal
                 }
             }
 
-            Logger.LogWarning("{0}\n{1}", "No such order with broker's order ID " + trade.OrderID, new System.Diagnostics.StackTrace().ToString());
+            /*
+             * For a deleted or completed order, return error response, and the order ID
+             * is an empty string. In this case, no such order found.
+             */
+            Logger.LogWarning("No such order with broker's order ID \'{0}\'.\n{1}", trade.OrderID, new System.Diagnostics.StackTrace().ToString());
         }
     }
 }
