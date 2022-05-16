@@ -230,10 +230,10 @@ namespace Evelyn.Internal
             else
             {
                 /*
-                 * Fill trading day and insert time.
+                 * Fill trading day and insert time only when they are null.
                  */
-                newOrder.TradingDay = Broker.TradingDay;
-                newOrder.TimeStamp = DateTime.Now;
+                newOrder.TradingDay = newOrder.TradingDay ?? Broker.TradingDay;
+                newOrder.TimeStamp = newOrder.TimeStamp ?? DateTime.Now;
 
                 var clientOrder = new ClientOrder(newOrder, Broker.NewOrderID);
 
