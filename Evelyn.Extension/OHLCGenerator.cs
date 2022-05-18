@@ -33,6 +33,7 @@ namespace Evelyn.Extension
         }
     }
 
+    // TODO Need refactor the code and more detailed unit test.
     class SingleOHLCGenerator
     {
         private long _volume;
