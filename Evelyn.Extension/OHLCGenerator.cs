@@ -67,7 +67,7 @@ namespace Evelyn.Extension
 
             var generated = false;
 
-            if (tick.TimeStamp.Minute != _timeStamp.Minute)
+            if ((tick.TimeStamp.Hour, tick.TimeStamp.Minute) != (_timeStamp.Hour, _timeStamp.Minute))
             {
                 _resetFields = false;
 
